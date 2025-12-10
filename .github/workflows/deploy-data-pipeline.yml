@@ -1,0 +1,85 @@
+name: Deploy Data Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+  push:
+    branches:
+      - main
+    paths:
+      - 'databricks/**'
+      - 'scripts/**'
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-notebooks:
+    name: Deploy Databricks Notebooks
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'dev' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Databricks CLI
+        run: pip install databricks-cli databricks-sdk
+
+      - name: Configure Databricks
+        env:
+          DATABRICKS_HOST: ${{ secrets[format('{0}_DATABRICKS_HOST', inputs.environment)] || secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.environment)] || secrets.DATABRICKS_TOKEN }}
+        run: |
+          mkdir -p ~/.databrickscfg
+          cat > ~/.databrickscfg << EOF
+          [DEFAULT]
+          host = $DATABRICKS_HOST
+          token = $DATABRICKS_TOKEN
+          EOF
+
+      - name: Upload notebooks
+        run: |
+          databricks workspace import_dir databricks/notebooks /Shared/neo4j-pipeline --overwrite
+          echo "✅ Notebooks uploaded successfully"
+
+      - name: Update job configurations
+        run: |
+          chmod +x scripts/create-databricks-jobs.sh
+          ./scripts/create-databricks-jobs.sh ${{ inputs.environment || 'dev' }}
+
+  validate-notebooks:
+    name: Validate Notebooks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install pyspark neo4j pytest
+
+      - name: Syntax check notebooks
+        run: |
+          for notebook in databricks/notebooks/*.py; do
+            echo "Checking $notebook"
+            python -m py_compile "$notebook"
+          done
+          echo "✅ All notebooks passed syntax check"

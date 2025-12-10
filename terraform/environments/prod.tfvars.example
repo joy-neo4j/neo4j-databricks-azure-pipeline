@@ -1,0 +1,45 @@
+# Production Environment Configuration
+environment         = "prod"
+location            = "eastus"
+resource_group_name = "rg-neo4j-databricks-prod"
+
+# Databricks Configuration
+databricks_sku            = "premium"
+databricks_workspace_name = "dbw-neo4j-prod"
+
+# Neo4j Configuration
+neo4j_tier   = "enterprise"
+neo4j_memory = "32GB"
+neo4j_region = "eastus"
+
+# Storage Configuration
+storage_account_name   = "stneo4jprod"
+storage_container_name = "pipeline-data"
+
+# Key Vault Configuration
+key_vault_name     = "kv-neo4j-prod"
+enable_key_vault   = true
+
+# Monitoring Configuration
+enable_monitoring             = true
+log_analytics_workspace_name = "log-neo4j-prod"
+
+# Auto-pause Configuration
+auto_pause_minutes = 0  # Disabled in production
+
+# Network Configuration
+enable_private_endpoint = true
+vnet_address_space      = ["10.2.0.0/16"]
+
+# Cost Management
+budget_amount           = 1500
+budget_alert_threshold  = 85
+
+# Tags
+tags = {
+  Environment = "Production"
+  ManagedBy   = "Terraform"
+  Project     = "Neo4j-Databricks-Pipeline"
+  CostCenter  = "Engineering"
+  Compliance  = "Required"
+}

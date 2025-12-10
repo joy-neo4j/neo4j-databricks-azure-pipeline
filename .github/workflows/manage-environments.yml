@@ -1,0 +1,113 @@
+name: Manage Environments
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        type: choice
+        options:
+          - promote
+          - rollback
+          - backup
+      source_environment:
+        description: 'Source environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      target_environment:
+        description: 'Target environment (for promote action)'
+        required: false
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  promote:
+    name: Promote Environment
+    runs-on: ubuntu-latest
+    if: ${{ inputs.action == 'promote' }}
+    environment: ${{ inputs.target_environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install databricks-cli databricks-sdk
+
+      - name: Export from source
+        env:
+          DATABRICKS_HOST: ${{ secrets[format('{0}_DATABRICKS_HOST', inputs.source_environment)] }}
+          DATABRICKS_TOKEN: ${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.source_environment)] }}
+        run: |
+          databricks workspace export_dir /Shared/neo4j-pipeline ./export --overwrite
+
+      - name: Import to target
+        env:
+          DATABRICKS_HOST: ${{ secrets[format('{0}_DATABRICKS_HOST', inputs.target_environment)] }}
+          DATABRICKS_TOKEN: ${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.target_environment)] }}
+        run: |
+          databricks workspace import_dir ./export /Shared/neo4j-pipeline --overwrite
+          echo "✅ Promoted from ${{ inputs.source_environment }} to ${{ inputs.target_environment }}"
+
+  backup:
+    name: Backup Environment
+    runs-on: ubuntu-latest
+    if: ${{ inputs.action == 'backup' }}
+    environment: ${{ inputs.source_environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install databricks-cli
+
+      - name: Create backup
+        env:
+          DATABRICKS_HOST: ${{ secrets[format('{0}_DATABRICKS_HOST', inputs.source_environment)] }}
+          DATABRICKS_TOKEN: ${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.source_environment)] }}
+        run: |
+          mkdir -p backups/${{ inputs.source_environment }}-$(date +%Y%m%d-%H%M%S)
+          databricks workspace export_dir /Shared/neo4j-pipeline ./backups/${{ inputs.source_environment }}-$(date +%Y%m%d-%H%M%S) --overwrite
+
+      - name: Upload backup
+        uses: actions/upload-artifact@v3
+        with:
+          name: backup-${{ inputs.source_environment }}-${{ github.run_number }}
+          path: backups/
+          retention-days: 30
+
+  rollback:
+    name: Rollback Environment
+    runs-on: ubuntu-latest
+    if: ${{ inputs.action == 'rollback' }}
+    environment: ${{ inputs.source_environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: List available backups
+        run: |
+          echo "## Available Backups" >> $GITHUB_STEP_SUMMARY
+          echo "Please manually download and restore from artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "or use the backup action to create a new backup before rollback" >> $GITHUB_STEP_SUMMARY

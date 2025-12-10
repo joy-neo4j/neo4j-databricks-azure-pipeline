@@ -1,0 +1,44 @@
+# Development Environment Configuration
+environment         = "dev"
+location            = "eastus"
+resource_group_name = "rg-neo4j-databricks-dev"
+
+# Databricks Configuration
+databricks_sku           = "premium"
+databricks_workspace_name = "dbw-neo4j-dev"
+
+# Neo4j Configuration
+neo4j_tier   = "professional"
+neo4j_memory = "8GB"
+neo4j_region = "eastus"
+
+# Storage Configuration
+storage_account_name   = "stneo4jdev"
+storage_container_name = "pipeline-data"
+
+# Key Vault Configuration
+key_vault_name     = "kv-neo4j-dev"
+enable_key_vault   = true
+
+# Monitoring Configuration
+enable_monitoring             = true
+log_analytics_workspace_name = "log-neo4j-dev"
+
+# Auto-pause Configuration
+auto_pause_minutes = 120  # 2 hours
+
+# Network Configuration
+enable_private_endpoint = false
+vnet_address_space      = ["10.0.0.0/16"]
+
+# Cost Management
+budget_amount           = 500
+budget_alert_threshold  = 80
+
+# Tags
+tags = {
+  Environment = "Development"
+  ManagedBy   = "Terraform"
+  Project     = "Neo4j-Databricks-Pipeline"
+  CostCenter  = "Engineering"
+}
