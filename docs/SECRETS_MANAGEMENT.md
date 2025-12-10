@@ -1,0 +1,409 @@
+# GitHub Secrets Management Guide
+
+## Overview
+
+This guide provides comprehensive instructions for managing GitHub secrets in the Neo4j-Databricks pipeline deployment. The system supports both repository-level and environment-specific secrets with automatic fallback mechanisms.
+
+## Table of Contents
+
+- [Secret Types](#secret-types)
+- [Required Secrets](#required-secrets)
+- [Environment-Specific Secrets](#environment-specific-secrets)
+- [Setup Instructions](#setup-instructions)
+- [Fallback Mechanism](#fallback-mechanism)
+- [Secret Validation](#secret-validation)
+- [Secret Rotation](#secret-rotation)
+- [Best Practices](#best-practices)
+- [Troubleshooting](#troubleshooting)
+
+## Secret Types
+
+### Repository Secrets
+Shared across all environments and workflows. Suitable for:
+- Development credentials
+- Non-production resources
+- Shared API keys
+
+### Environment Secrets
+Specific to each environment (dev, staging, prod). Required for:
+- Production credentials
+- Environment-specific configurations
+- Sensitive production keys
+
+## Required Secrets
+
+### Azure Authentication
+
+#### `AZURE_CREDENTIALS`
+**Type:** JSON  
+**Required:** Yes  
+**Description:** Azure service principal credentials for resource deployment
+
+**Format:**
+```json
+{
+  "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "clientSecret": "your-client-secret",
+  "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
+```
+
+**How to create:**
+```bash
+az login
+az ad sp create-for-rbac \
+  --name "neo4j-databricks-pipeline" \
+  --role Contributor \
+  --scopes /subscriptions/<SUBSCRIPTION_ID> \
+  --sdk-auth
+```
+
+#### `AZURE_SUBSCRIPTION_ID`
+**Type:** UUID  
+**Required:** Yes  
+**Description:** Azure subscription ID
+
+**How to get:**
+```bash
+az account show --query id -o tsv
+```
+
+#### `AZURE_TENANT_ID`
+**Type:** UUID  
+**Required:** Yes  
+**Description:** Azure Active Directory tenant ID
+
+**How to get:**
+```bash
+az account show --query tenantId -o tsv
+```
+
+### Databricks Configuration
+
+#### `DATABRICKS_HOST`
+**Type:** URL  
+**Required:** Yes  
+**Description:** Databricks workspace URL
+
+**Format:** `https://<workspace-id>.azuredatabricks.net`
+
+**How to get:**
+- After workspace creation via Terraform
+- From Azure Portal → Databricks workspace → URL
+
+#### `DATABRICKS_TOKEN`
+**Type:** String  
+**Required:** Yes  
+**Description:** Databricks personal access token
+**Rotation:** Every 90 days
+
+**How to create:**
+1. Login to Databricks workspace
+2. Click User Settings → Access Tokens
+3. Click "Generate New Token"
+4. Set comment: "GitHub Actions Pipeline"
+5. Set lifetime: 90 days
+6. Copy token (starts with `dapi`)
+
+#### `DATABRICKS_ACCOUNT_ID`
+**Type:** UUID  
+**Required:** Yes  
+**Description:** Databricks account ID for workspace creation
+
+**How to get:**
+- From Databricks Account Console
+- URL: `https://accounts.azuredatabricks.net`
+
+### Neo4j Aura Configuration
+
+#### `AURA_CLIENT_ID`
+**Type:** UUID  
+**Required:** Yes  
+**Description:** Neo4j Aura API client ID
+
+**How to create:**
+1. Login to Neo4j Aura Console
+2. Navigate to Account Settings → API Keys
+3. Click "Create API Key"
+4. Name: "GitHub Actions Pipeline"
+5. Copy Client ID
+
+#### `AURA_CLIENT_SECRET`
+**Type:** String  
+**Required:** Yes  
+**Description:** Neo4j Aura API client secret
+**Rotation:** Every 90 days
+
+**How to create:**
+- Created at the same time as Client ID
+- **Important:** Save immediately, cannot be retrieved later
+
+## Environment-Specific Secrets
+
+For production deployments, use environment-specific secrets that override repository secrets:
+
+### Naming Convention
+`{ENVIRONMENT}_{SECRET_NAME}`
+
+Examples:
+- `PROD_AZURE_CREDENTIALS`
+- `PROD_DATABRICKS_TOKEN`
+- `STAGING_DATABRICKS_HOST`
+
+### Configuration
+
+1. **Create GitHub Environment:**
+   - Go to: Settings → Environments
+   - Create environment: `prod`
+   - Add protection rules:
+     - Required reviewers: 2
+     - Deployment branches: `main` only
+
+2. **Add Environment Secrets:**
+   - Select environment: `prod`
+   - Click "Add Secret"
+   - Enter secret name (without environment prefix)
+   - Enter value
+
+## Setup Instructions
+
+### Method 1: Manual Setup (via GitHub UI)
+
+1. **Navigate to Repository Secrets:**
+   ```
+   Repository → Settings → Secrets and variables → Actions → New repository secret
+   ```
+
+2. **Add Each Required Secret:**
+   - Click "New repository secret"
+   - Enter secret name exactly as specified
+   - Paste secret value
+   - Click "Add secret"
+
+3. **Verify Secrets:**
+   - All required secrets should appear in the list
+   - Environment-specific secrets in each environment
+
+### Method 2: Automated Setup (via CLI)
+
+1. **Install GitHub CLI:**
+   ```bash
+   # macOS
+   brew install gh
+   
+   # Linux
+   curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+   ```
+
+2. **Authenticate:**
+   ```bash
+   gh auth login
+   ```
+
+3. **Run Secrets Manager:**
+   ```bash
+   python scripts/secrets-manager.py \
+     --repo joy-neo4j/neo4j-databricks-azure-pipeline \
+     --action setup
+   ```
+
+### Method 3: Using Secrets Manager Script
+
+The repository includes a comprehensive secrets management script:
+
+```bash
+# Interactive setup
+python scripts/secrets-manager.py \
+  --repo your-org/your-repo \
+  --action setup
+
+# Validate existing secrets
+python scripts/secrets-manager.py \
+  --repo your-org/your-repo \
+  --action validate
+
+# List configured secrets
+python scripts/secrets-manager.py \
+  --repo your-org/your-repo \
+  --action list
+```
+
+## Fallback Mechanism
+
+The pipeline implements an intelligent fallback strategy:
+
+### Priority Order
+1. **Environment-Specific Secret:** `PROD_AZURE_CREDENTIALS`
+2. **Repository Secret:** `AZURE_CREDENTIALS`
+3. **Azure Key Vault:** `keyvault://prod/azure-credentials`
+4. **Error:** Secret not found
+
+### Implementation Example
+```yaml
+# In GitHub Actions workflow
+env:
+  AZURE_CREDS: ${{ secrets[format('{0}_AZURE_CREDENTIALS', inputs.environment)] || secrets.AZURE_CREDENTIALS }}
+```
+
+### Behavior
+- Automatically tries environment-specific secret first
+- Falls back to repository secret if not found
+- Provides clear error message if all sources fail
+- No manual intervention required
+
+## Secret Validation
+
+### Automatic Validation
+All workflows include a validation step that checks:
+- Secret existence
+- Secret format (UUID, JSON, URL)
+- Secret content structure
+- Token validity (prefix check)
+
+### Manual Validation
+```bash
+python scripts/secrets-manager.py \
+  --repo your-org/your-repo \
+  --action validate
+```
+
+### Validation Rules
+
+| Secret | Validation |
+|--------|-----------|
+| AZURE_CREDENTIALS | Valid JSON with required fields |
+| AZURE_SUBSCRIPTION_ID | Valid UUID format |
+| AZURE_TENANT_ID | Valid UUID format |
+| DATABRICKS_TOKEN | Starts with `dapi`, length > 30 |
+| AURA_CLIENT_ID | Valid UUID format |
+| AURA_CLIENT_SECRET | Length > 20 characters |
+
+## Secret Rotation
+
+### Recommended Rotation Schedule
+
+| Secret | Frequency | Priority |
+|--------|-----------|----------|
+| DATABRICKS_TOKEN | 90 days | High |
+| AURA_CLIENT_SECRET | 90 days | High |
+| AZURE_CREDENTIALS | 365 days | Medium |
+
+### Rotation Process
+
+1. **Create New Secret:**
+   ```bash
+   # Example: New Databricks token
+   databricks tokens create --comment "Rotation $(date +%Y-%m-%d)"
+   ```
+
+2. **Update GitHub Secret:**
+   ```bash
+   gh secret set DATABRICKS_TOKEN --repo your-org/your-repo
+   # Paste new token when prompted
+   ```
+
+3. **Verify New Secret:**
+   ```bash
+   python scripts/secrets-manager.py --repo your-org/your-repo --action validate
+   ```
+
+4. **Revoke Old Secret:**
+   ```bash
+   # Example: Revoke old Databricks token
+   databricks tokens delete --token-id <old-token-id>
+   ```
+
+### Automated Rotation Reminders
+The monitoring configuration includes alerts for secrets expiring within 14 days.
+
+## Best Practices
+
+### Security
+1. **Never commit secrets to code**
+2. **Use environment-specific secrets for production**
+3. **Enable secret scanning in repository settings**
+4. **Rotate secrets regularly**
+5. **Use minimal required permissions**
+6. **Audit secret access logs**
+
+### Organization
+1. **Use consistent naming conventions**
+2. **Document all secrets in this guide**
+3. **Maintain secret inventory**
+4. **Use secret prefixes for clarity**
+5. **Group related secrets**
+
+### Access Control
+1. **Limit secret access to necessary personnel**
+2. **Use environment protection rules**
+3. **Require approvals for production**
+4. **Enable audit logging**
+5. **Review access regularly**
+
+## Troubleshooting
+
+### Secret Not Found Error
+```
+Error: Required secret AZURE_CREDENTIALS not found
+```
+
+**Solutions:**
+1. Verify secret name (case-sensitive)
+2. Check secret is in correct scope (repository vs environment)
+3. Validate workflow has access to environment
+4. Check typos in secret reference
+
+### Invalid Secret Format
+```
+Error: Secret validation failed for AZURE_CREDENTIALS
+```
+
+**Solutions:**
+1. Verify JSON format is valid
+2. Check all required fields are present
+3. Remove extra whitespace
+4. Ensure quotes are properly escaped
+
+### Authentication Failed
+```
+Error: Azure authentication failed
+```
+
+**Solutions:**
+1. Verify service principal is valid
+2. Check subscription ID matches
+3. Ensure service principal has required permissions
+4. Verify secret hasn't expired
+
+### Token Expired
+```
+Error: Databricks token expired or invalid
+```
+
+**Solutions:**
+1. Generate new token in Databricks
+2. Update GitHub secret
+3. Verify token starts with `dapi`
+4. Check token hasn't been revoked
+
+## Additional Resources
+
+- [GitHub Secrets Documentation](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+- [Azure Service Principal Guide](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal)
+- [Databricks Token Management](https://docs.databricks.com/dev-tools/auth.html#personal-access-tokens)
+- [Neo4j Aura API Documentation](https://neo4j.com/docs/aura/platform/api/)
+
+## Support
+
+For issues related to secrets management:
+1. Check this documentation first
+2. Run validation script
+3. Review workflow logs
+4. Open GitHub issue with details
+5. Contact repository maintainers
+
+---
+
+**Last Updated:** 2024-01-10  
+**Version:** 1.0.0

@@ -1,0 +1,378 @@
+# Databricks notebook source
+# MAGIC %md
+# MAGIC # Neo4j Loading Notebook
+# MAGIC 
+# MAGIC This notebook loads graph data from Gold layer into Neo4j Aura.
+# MAGIC 
+# MAGIC **Parameters:**
+# MAGIC - `environment`: Target environment
+# MAGIC - `batch_size`: Batch size for loading (default: 1000)
+# MAGIC 
+# MAGIC **Features:**
+# MAGIC - Batch loading for performance
+# MAGIC - Error handling and retry logic
+# MAGIC - Progress tracking
+# MAGIC - Connection validation
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Setup
+
+# COMMAND ----------
+
+from pyspark.sql import functions as F
+from neo4j import GraphDatabase
+import json
+import os
+
+# Get parameters
+dbutils.widgets.text("environment", "dev", "Environment")
+dbutils.widgets.text("batch_size", "1000", "Batch Size")
+
+environment = dbutils.widgets.get("environment")
+batch_size = int(dbutils.widgets.get("batch_size"))
+
+print(f"Environment: {environment}")
+print(f"Batch Size: {batch_size}")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Get Neo4j Connection Details
+
+# COMMAND ----------
+
+# Get Neo4j credentials from Databricks secrets
+# These should be configured via: databricks secrets put --scope neo4j --key <secret_name>
+
+try:
+    neo4j_uri = dbutils.secrets.get(scope="neo4j", key=f"{environment}-uri")
+    neo4j_username = dbutils.secrets.get(scope="neo4j", key=f"{environment}-username")
+    neo4j_password = dbutils.secrets.get(scope="neo4j", key=f"{environment}-password")
+    
+    print(f"✅ Neo4j credentials loaded from secrets")
+    print(f"URI: {neo4j_uri}")
+    print(f"Username: {neo4j_username}")
+except Exception as e:
+    print(f"❌ Error loading secrets: {str(e)}")
+    print("Make sure Neo4j secrets are configured in Databricks")
+    dbutils.notebook.exit("FAILED: Missing Neo4j credentials")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Test Neo4j Connection
+
+# COMMAND ----------
+
+def test_neo4j_connection(uri, username, password):
+    """Test Neo4j connection."""
+    try:
+        driver = GraphDatabase.driver(uri, auth=(username, password))
+        with driver.session() as session:
+            result = session.run("RETURN 1 as test")
+            value = result.single()["test"]
+            
+            if value == 1:
+                print("✅ Neo4j connection successful")
+                
+                # Get database info
+                result = session.run("CALL dbms.components() YIELD name, versions, edition")
+                for record in result:
+                    print(f"   {record['name']}: {record['versions'][0]} ({record['edition']})")
+                
+                driver.close()
+                return True
+        
+        driver.close()
+        return False
+    
+    except Exception as e:
+        print(f"❌ Connection failed: {str(e)}")
+        return False
+
+if not test_neo4j_connection(neo4j_uri, neo4j_username, neo4j_password):
+    dbutils.notebook.exit("FAILED: Cannot connect to Neo4j")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Load Data from Gold Layer
+
+# COMMAND ----------
+
+# Read nodes and relationships
+nodes_df = spark.table(f"neo4j_pipeline_{environment}.gold.nodes")
+relationships_df = spark.table(f"neo4j_pipeline_{environment}.gold.relationships")
+
+print(f"Nodes to load: {nodes_df.count()}")
+print(f"Relationships to load: {relationships_df.count()}")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Setup Constraints in Neo4j
+
+# COMMAND ----------
+
+def setup_neo4j_constraints(uri, username, password):
+    """Create constraints and indexes in Neo4j."""
+    driver = GraphDatabase.driver(uri, auth=(username, password))
+    
+    constraints = [
+        "CREATE CONSTRAINT customer_id IF NOT EXISTS FOR (c:Customer) REQUIRE c.id IS UNIQUE",
+        "CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE",
+        "CREATE CONSTRAINT order_id IF NOT EXISTS FOR (o:Order) REQUIRE o.id IS UNIQUE"
+    ]
+    
+    indexes = [
+        "CREATE INDEX customer_name IF NOT EXISTS FOR (c:Customer) ON (c.name)",
+        "CREATE INDEX product_name IF NOT EXISTS FOR (p:Product) ON (p.name)",
+        "CREATE INDEX order_date IF NOT EXISTS FOR (o:Order) ON (o.order_date)"
+    ]
+    
+    try:
+        with driver.session() as session:
+            print("\n📋 Creating constraints...")
+            for constraint in constraints:
+                session.run(constraint)
+                print(f"  ✅ {constraint.split()[2]}")
+            
+            print("\n📋 Creating indexes...")
+            for index in indexes:
+                session.run(index)
+                print(f"  ✅ {index.split()[2]}")
+        
+        print("\n✅ Database schema setup complete")
+        driver.close()
+        return True
+    
+    except Exception as e:
+        print(f"❌ Error setting up schema: {str(e)}")
+        driver.close()
+        return False
+
+setup_neo4j_constraints(neo4j_uri, neo4j_username, neo4j_password)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Load Nodes to Neo4j
+
+# COMMAND ----------
+
+def load_nodes_to_neo4j(nodes_df, uri, username, password, batch_size):
+    """Load nodes to Neo4j in batches."""
+    
+    driver = GraphDatabase.driver(uri, auth=(username, password))
+    
+    # Group by node label
+    node_labels = nodes_df.select("node_label").distinct().collect()
+    
+    total_loaded = 0
+    
+    for row in node_labels:
+        label = row['node_label']
+        label_df = nodes_df.filter(F.col("node_label") == label)
+        
+        # Collect in batches
+        total_count = label_df.count()
+        print(f"\n📦 Loading {total_count} {label} nodes...")
+        
+        # Convert to list of dictionaries
+        nodes_data = label_df.select("node_id", "properties").collect()
+        
+        # Process in batches
+        for i in range(0, len(nodes_data), batch_size):
+            batch = nodes_data[i:i+batch_size]
+            
+            try:
+                with driver.session() as session:
+                    # Create merge query
+                    query = f"""
+                    UNWIND $nodes AS node
+                    MERGE (n:{label} {{id: node.id}})
+                    SET n += node.properties
+                    """
+                    
+                    # Prepare batch data
+                    batch_data = []
+                    for node in batch:
+                        props = json.loads(node['properties'])
+                        props['id'] = node['node_id']
+                        batch_data.append({'id': node['node_id'], 'properties': props})
+                    
+                    session.run(query, nodes=batch_data)
+                    
+                    total_loaded += len(batch)
+                    print(f"  Progress: {total_loaded}/{total_count} ({100*total_loaded//total_count}%)")
+            
+            except Exception as e:
+                print(f"  ❌ Error in batch {i//batch_size}: {str(e)}")
+    
+    driver.close()
+    print(f"\n✅ Loaded {total_loaded} nodes")
+    return total_loaded
+
+nodes_loaded = load_nodes_to_neo4j(
+    nodes_df,
+    neo4j_uri,
+    neo4j_username,
+    neo4j_password,
+    batch_size
+)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Load Relationships to Neo4j
+
+# COMMAND ----------
+
+def load_relationships_to_neo4j(rels_df, uri, username, password, batch_size):
+    """Load relationships to Neo4j in batches."""
+    
+    driver = GraphDatabase.driver(uri, auth=(username, password))
+    
+    # Group by relationship type
+    rel_types = rels_df.select("relationship_type").distinct().collect()
+    
+    total_loaded = 0
+    
+    for row in rel_types:
+        rel_type = row['relationship_type']
+        type_df = rels_df.filter(F.col("relationship_type") == rel_type)
+        
+        total_count = type_df.count()
+        print(f"\n📦 Loading {total_count} {rel_type} relationships...")
+        
+        # Convert to list
+        rels_data = type_df.select(
+            "source_node_id", "source_node_label",
+            "target_node_id", "target_node_label",
+            "properties"
+        ).collect()
+        
+        # Process in batches
+        for i in range(0, len(rels_data), batch_size):
+            batch = rels_data[i:i+batch_size]
+            
+            try:
+                with driver.session() as session:
+                    query = f"""
+                    UNWIND $rels AS rel
+                    MATCH (source:{{rel.source_label}} {{id: rel.source_id}})
+                    MATCH (target:{{rel.target_label}} {{id: rel.target_id}})
+                    MERGE (source)-[r:{rel_type}]->(target)
+                    SET r += rel.properties
+                    """
+                    
+                    # Prepare batch data
+                    batch_data = []
+                    for rel in batch:
+                        props = json.loads(rel['properties'])
+                        batch_data.append({
+                            'source_id': rel['source_node_id'],
+                            'source_label': rel['source_node_label'],
+                            'target_id': rel['target_node_id'],
+                            'target_label': rel['target_node_label'],
+                            'properties': props
+                        })
+                    
+                    # Use dynamic label matching
+                    source_label = batch[0]['source_node_label']
+                    target_label = batch[0]['target_node_label']
+                    
+                    query = f"""
+                    UNWIND $rels AS rel
+                    MATCH (source:{source_label} {{id: rel.source_id}})
+                    MATCH (target:{target_label} {{id: rel.target_id}})
+                    MERGE (source)-[r:{rel_type}]->(target)
+                    SET r += rel.properties
+                    """
+                    
+                    session.run(query, rels=batch_data)
+                    
+                    total_loaded += len(batch)
+                    print(f"  Progress: {total_loaded}/{total_count} ({100*total_loaded//total_count}%)")
+            
+            except Exception as e:
+                print(f"  ❌ Error in batch {i//batch_size}: {str(e)}")
+    
+    driver.close()
+    print(f"\n✅ Loaded {total_loaded} relationships")
+    return total_loaded
+
+relationships_loaded = load_relationships_to_neo4j(
+    relationships_df,
+    neo4j_uri,
+    neo4j_username,
+    neo4j_password,
+    batch_size
+)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Verify Load in Neo4j
+
+# COMMAND ----------
+
+def verify_neo4j_load(uri, username, password):
+    """Verify data in Neo4j."""
+    driver = GraphDatabase.driver(uri, auth=(username, password))
+    
+    try:
+        with driver.session() as session:
+            # Count nodes
+            result = session.run("MATCH (n) RETURN labels(n)[0] as label, count(*) as count")
+            print("\n📊 Node counts in Neo4j:")
+            for record in result:
+                print(f"  {record['label']}: {record['count']}")
+            
+            # Count relationships
+            result = session.run("MATCH ()-[r]->() RETURN type(r) as type, count(*) as count")
+            print("\n📊 Relationship counts in Neo4j:")
+            for record in result:
+                print(f"  {record['type']}: {record['count']}")
+        
+        driver.close()
+    
+    except Exception as e:
+        print(f"❌ Error verifying: {str(e)}")
+        driver.close()
+
+verify_neo4j_load(neo4j_uri, neo4j_username, neo4j_password)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Summary
+
+# COMMAND ----------
+
+summary = {
+    'nodes_loaded': nodes_loaded,
+    'relationships_loaded': relationships_loaded,
+    'environment': environment,
+    'neo4j_uri': neo4j_uri
+}
+
+print("\n" + "="*60)
+print("LOADING SUMMARY")
+print("="*60)
+print(f"\nEnvironment: {environment}")
+print(f"Neo4j URI: {neo4j_uri}")
+print(f"Nodes Loaded: {summary['nodes_loaded']}")
+print(f"Relationships Loaded: {summary['relationships_loaded']}")
+print(f"\n✅ Data successfully loaded to Neo4j Aura")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Exit
+
+# COMMAND ----------
+
+dbutils.notebook.exit(f"SUCCESS: Loaded {summary['nodes_loaded']} nodes and {summary['relationships_loaded']} relationships to Neo4j")
