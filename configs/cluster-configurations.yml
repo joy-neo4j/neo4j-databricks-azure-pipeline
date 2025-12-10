@@ -1,0 +1,94 @@
+# Databricks Cluster Configurations
+# Environment-specific cluster configurations
+
+dev:
+  cluster_name: "neo4j-pipeline-dev"
+  spark_version: "13.3.x-scala2.12"
+  node_type_id: "Standard_DS3_v2"
+  driver_node_type_id: "Standard_DS3_v2"
+  num_workers: 1
+  min_workers: 1
+  max_workers: 3
+  autotermination_minutes: 120
+  enable_elastic_disk: true
+  spark_conf:
+    "spark.databricks.cluster.profile": "singleNode"
+    "spark.databricks.delta.preview.enabled": "true"
+    "spark.sql.adaptive.enabled": "true"
+  custom_tags:
+    Environment: "dev"
+    CostCenter: "Engineering"
+    AutoShutdown: "true"
+
+staging:
+  cluster_name: "neo4j-pipeline-staging"
+  spark_version: "13.3.x-scala2.12"
+  node_type_id: "Standard_DS3_v2"
+  driver_node_type_id: "Standard_DS4_v2"
+  num_workers: 2
+  min_workers: 1
+  max_workers: 5
+  autotermination_minutes: 60
+  enable_elastic_disk: true
+  spark_conf:
+    "spark.databricks.delta.preview.enabled": "true"
+    "spark.sql.adaptive.enabled": "true"
+    "spark.databricks.io.cache.enabled": "true"
+  custom_tags:
+    Environment: "staging"
+    CostCenter: "Engineering"
+    AutoShutdown: "true"
+
+prod:
+  cluster_name: "neo4j-pipeline-prod"
+  spark_version: "13.3.x-scala2.12"
+  node_type_id: "Standard_DS4_v2"
+  driver_node_type_id: "Standard_DS5_v2"
+  num_workers: 3
+  min_workers: 2
+  max_workers: 10
+  autotermination_minutes: 0  # Disabled in production
+  enable_elastic_disk: true
+  spark_conf:
+    "spark.databricks.delta.preview.enabled": "true"
+    "spark.sql.adaptive.enabled": "true"
+    "spark.databricks.io.cache.enabled": "true"
+    "spark.sql.adaptive.coalescePartitions.enabled": "true"
+  custom_tags:
+    Environment: "prod"
+    CostCenter: "Engineering"
+    AutoShutdown: "false"
+    Compliance: "Required"
+
+# Common libraries for all environments
+common_libraries:
+  - maven:
+      coordinates: "org.neo4j:neo4j-connector-apache-spark_2.12:5.2.0_for_spark_3"
+  - pypi:
+      package: "neo4j"
+  - pypi:
+      package: "pyyaml"
+  - pypi:
+      package: "pandas"
+
+# Init scripts configuration
+init_scripts:
+  - workspace:
+      destination: "/Shared/neo4j-pipeline/init-scripts/neo4j-connector-setup.sh"
+
+# Job cluster configuration
+job_clusters:
+  small:
+    spark_version: "13.3.x-scala2.12"
+    node_type_id: "Standard_DS3_v2"
+    num_workers: 2
+  
+  medium:
+    spark_version: "13.3.x-scala2.12"
+    node_type_id: "Standard_DS4_v2"
+    num_workers: 4
+  
+  large:
+    spark_version: "13.3.x-scala2.12"
+    node_type_id: "Standard_DS5_v2"
+    num_workers: 8

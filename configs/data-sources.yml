@@ -1,0 +1,68 @@
+# Data Sources Configuration
+# Defines all data sources for the ETL pipeline
+
+sources:
+  - name: customers
+    type: csv
+    path: /mnt/data/customers.csv
+    schema:
+      id: integer
+      name: string
+      email: string
+      created_at: timestamp
+    validation:
+      required_columns: [id, name, email]
+      unique_columns: [id, email]
+    
+  - name: products
+    type: csv
+    path: /mnt/data/products.csv
+    schema:
+      id: integer
+      name: string
+      category: string
+      price: decimal
+      created_at: timestamp
+    validation:
+      required_columns: [id, name, price]
+      unique_columns: [id]
+  
+  - name: orders
+    type: csv
+    path: /mnt/data/orders.csv
+    schema:
+      id: integer
+      customer_id: integer
+      product_id: integer
+      quantity: integer
+      total_amount: decimal
+      order_date: timestamp
+    validation:
+      required_columns: [id, customer_id, product_id, quantity, total_amount]
+      unique_columns: [id]
+      foreign_keys:
+        - column: customer_id
+          references: customers.id
+        - column: product_id
+          references: products.id
+
+# Storage Configuration
+storage:
+  bronze_path: /mnt/data/bronze
+  silver_path: /mnt/data/silver
+  gold_path: /mnt/data/gold
+  checkpoint_path: /mnt/data/checkpoints
+  
+# Processing Configuration
+processing:
+  batch_size: 1000
+  max_retries: 3
+  timeout_seconds: 3600
+  enable_streaming: false
+  
+# Data Quality Rules
+data_quality:
+  enable_validation: true
+  fail_on_error: false
+  log_validation_errors: true
+  validation_report_path: /mnt/data/reports/validation

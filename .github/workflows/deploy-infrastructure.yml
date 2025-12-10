@@ -1,0 +1,74 @@
+name: Deploy Infrastructure Only
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    name: Deploy Azure Infrastructure
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.0
+          terraform_wrapper: false
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets[format('{0}_AZURE_CREDENTIALS', inputs.environment)] || secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: |
+          terraform init \
+            -backend-config="resource_group_name=rg-tfstate-${{ inputs.environment }}" \
+            -backend-config="storage_account_name=sttfstate${{ inputs.environment }}" \
+            -backend-config="container_name=tfstate" \
+            -backend-config="key=neo4j-databricks.tfstate"
+
+      - name: Terraform Plan
+        working-directory: ./terraform
+        env:
+          TF_VAR_databricks_token: ${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.environment)] || secrets.DATABRICKS_TOKEN }}
+          TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
+          TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+        run: |
+          terraform plan \
+            -var-file="environments/${{ inputs.environment }}.tfvars.example" \
+            -out=tfplan
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        env:
+          TF_VAR_databricks_token: ${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.environment)] || secrets.DATABRICKS_TOKEN }}
+          TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
+          TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+        run: terraform apply -auto-approve tfplan
+
+      - name: Output deployment info
+        working-directory: ./terraform
+        run: |
+          echo "## Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          terraform output deployment_info >> $GITHUB_STEP_SUMMARY
