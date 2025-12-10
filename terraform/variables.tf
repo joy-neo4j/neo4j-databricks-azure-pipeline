@@ -10,7 +10,7 @@ variable "environment" {
 variable "location" {
   description = "Azure region for resources"
   type        = string
-  default     = "eastus"
+  default     = "uksouth"
 }
 
 variable "resource_group_name" {
@@ -63,7 +63,7 @@ variable "neo4j_memory" {
 variable "neo4j_region" {
   description = "Neo4j Aura region"
   type        = string
-  default     = "eastus"
+  default     = "uksouth"
 }
 
 variable "aura_client_id" {
