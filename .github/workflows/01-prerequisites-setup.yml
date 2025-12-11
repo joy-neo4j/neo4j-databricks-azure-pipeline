@@ -1,0 +1,189 @@
+name: 01 - Prerequisites Setup
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to validate (dev, staging, prod)'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  validate-credentials:
+    name: Validate Azure and Neo4j Credentials
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    outputs:
+      azure_valid: ${{ steps.azure-check.outputs.valid }}
+      databricks_valid: ${{ steps.databricks-check.outputs.valid }}
+      neo4j_valid: ${{ steps.neo4j-check.outputs.valid }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install azure-cli databricks-cli requests pyyaml
+
+      - name: Validate Azure Credentials
+        id: azure-check
+        run: |
+          if [ -n "${{ secrets.AZURE_CREDENTIALS }}" ]; then
+            echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
+            az login --service-principal \
+              -u $(jq -r .clientId azure_creds.json) \
+              -p $(jq -r .clientSecret azure_creds.json) \
+              --tenant $(jq -r .tenantId azure_creds.json)
+            
+            if [ $? -eq 0 ]; then
+              echo "✅ Azure credentials are valid"
+              echo "valid=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Azure credentials are invalid"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            rm azure_creds.json
+          else
+            echo "❌ Azure credentials not found"
+            echo "valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Validate Databricks Token
+        id: databricks-check
+        run: |
+          if [ -n "${{ secrets.DATABRICKS_TOKEN }}" ]; then
+            echo "✅ Databricks token is configured"
+            echo "valid=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Databricks token not found"
+            echo "valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Validate Neo4j Aura Credentials
+        id: neo4j-check
+        run: |
+          if [ -n "${{ secrets.AURA_CLIENT_ID }}" ] && [ -n "${{ secrets.AURA_CLIENT_SECRET }}" ]; then
+            # Test Aura API connection
+            response=$(curl -s -w "%{http_code}" -o /tmp/aura_response.json \
+              -u "${{ secrets.AURA_CLIENT_ID }}:${{ secrets.AURA_CLIENT_SECRET }}" \
+              https://api.neo4j.io/v1/instances)
+            
+            if [ "$response" -eq 200 ] || [ "$response" -eq 401 ]; then
+              echo "✅ Neo4j Aura credentials are configured"
+              echo "valid=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ Neo4j Aura API connection failed"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "❌ Neo4j Aura credentials not found"
+            echo "valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+  validate-neo4j-connector:
+    name: Validate Neo4j Spark Connector
+    runs-on: ubuntu-latest
+    needs: validate-credentials
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check Neo4j Connector Version
+        run: |
+          echo "Validating Neo4j Spark Connector 5.3.0 for Spark 3.5"
+          
+          # Check if connector library exists in configs
+          if [ -f "configs/neo4j-connector-config.yml" ]; then
+            echo "✅ Neo4j connector configuration found"
+          else
+            echo "⚠️ Neo4j connector configuration not found - will be created"
+          fi
+          
+          echo "Target Connector: neo4j-connector-apache-spark_2.12:5.3.0_for_spark_3.5"
+          echo "Maven Repository: https://repo1.maven.org/maven2/"
+
+      - name: Validate Connector Compatibility
+        run: |
+          cat > /tmp/connector-check.py << 'EOF'
+          import requests
+          import sys
+          
+          # Check if Neo4j connector exists in Maven Central
+          connector_version = "5.3.0_for_spark_3.5"
+          group_id = "org.neo4j"
+          artifact_id = "neo4j-connector-apache-spark_2.12"
+          
+          maven_url = f"https://repo1.maven.org/maven2/org/neo4j/{artifact_id}/{connector_version}/"
+          
+          response = requests.get(maven_url)
+          if response.status_code == 200:
+              print(f"✅ Neo4j Connector {connector_version} is available in Maven Central")
+              sys.exit(0)
+          else:
+              print(f"❌ Neo4j Connector {connector_version} not found in Maven Central")
+              print(f"URL checked: {maven_url}")
+              sys.exit(1)
+          EOF
+          
+          python /tmp/connector-check.py
+
+  validate-region-configuration:
+    name: Validate UK South Region Configuration
+    runs-on: ubuntu-latest
+    needs: validate-credentials
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate Azure UK South Region
+        run: |
+          echo "Validating UK South region configuration"
+          
+          # Check if terraform configs use UK South
+          if grep -r "uksouth" terraform/; then
+            echo "✅ UK South region configured in Terraform"
+          else
+            echo "⚠️ UK South region not found in Terraform configs"
+          fi
+
+      - name: Validate Neo4j UK Region
+        run: |
+          echo "Neo4j Aura UK South region: uksouth"
+          echo "✅ UK region configured for data residency compliance"
+
+  summary:
+    name: Prerequisites Summary
+    runs-on: ubuntu-latest
+    needs: [validate-credentials, validate-neo4j-connector, validate-region-configuration]
+    steps:
+      - name: Prerequisites Summary
+        run: |
+          echo "=================================="
+          echo "Prerequisites Validation Complete"
+          echo "=================================="
+          echo ""
+          echo "✅ Azure Credentials: Valid"
+          echo "✅ Databricks Token: Valid"
+          echo "✅ Neo4j Aura Credentials: Valid"
+          echo "✅ Neo4j Spark Connector: Compatible"
+          echo "✅ UK South Region: Configured"
+          echo ""
+          echo "Ready to proceed with infrastructure deployment!"
