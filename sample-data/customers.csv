@@ -1,11 +1,1001 @@
-id,name,email,created_at
-1,John Doe,john.doe@example.com,2024-01-15 10:30:00
-2,Jane Smith,jane.smith@example.com,2024-01-16 11:45:00
-3,Bob Johnson,bob.johnson@example.com,2024-01-17 09:20:00
-4,Alice Williams,alice.williams@example.com,2024-01-18 14:10:00
-5,Charlie Brown,charlie.brown@example.com,2024-01-19 16:55:00
-6,Diana Prince,diana.prince@example.com,2024-01-20 08:30:00
-7,Eve Anderson,eve.anderson@example.com,2024-01-21 13:15:00
-8,Frank Miller,frank.miller@example.com,2024-01-22 10:45:00
-9,Grace Lee,grace.lee@example.com,2024-01-23 15:20:00
-10,Henry Wilson,henry.wilson@example.com,2024-01-24 11:00:00
+id,name,email,age,gender,city,country,signup_date,customer_segment,preferences,created_at
+1,Lisa Moore,lisa.moore1@example.co.uk,30,Female,Coventry,United Kingdom,2022-10-05 00:00:00,Occasional,Beauty,2022-10-05 00:00:00
+2,Susan Scott,susan.scott2@example.co.uk,35,Other,Bradford,United Kingdom,2023-05-11 00:00:00,New,"Toys,Books,Sports",2023-05-11 00:00:00
+3,Lisa Johnson,lisa.johnson3@example.co.uk,40,Prefer not to say,Bradford,United Kingdom,2021-04-01 00:00:00,Regular,"Electronics,Toys,Home & Garden",2021-04-01 00:00:00
+4,Harper Martinez,harper.martinez4@example.co.uk,36,Other,Leicester,United Kingdom,2020-11-02 00:00:00,Premium,"Sports,Electronics",2020-11-02 00:00:00
+5,Daniel Gonzalez,daniel.gonzalez5@example.co.uk,39,Prefer not to say,Leicester,United Kingdom,2022-05-10 00:00:00,Regular,Books,2022-05-10 00:00:00
+6,Barbara Wilson,barbara.wilson6@example.co.uk,34,Other,Birmingham,United Kingdom,2020-09-30 00:00:00,New,Beauty,2020-09-30 00:00:00
+7,Sarah Garcia,sarah.garcia7@example.co.uk,29,Female,Edinburgh,United Kingdom,2021-08-28 00:00:00,Premium,"Books,Beauty,Automotive",2021-08-28 00:00:00
+8,Charlotte Lee,charlotte.lee8@example.co.uk,41,Female,Newcastle,United Kingdom,2023-03-29 00:00:00,New,Books,2023-03-29 00:00:00
+9,Mia Miller,mia.miller9@example.co.uk,31,Female,Liverpool,United Kingdom,2023-02-15 00:00:00,New,"Toys,Sports",2023-02-15 00:00:00
+10,Karen Ramirez,karen.ramirez10@example.co.uk,19,Female,Wolverhampton,United Kingdom,2023-05-16 00:00:00,Occasional,Beauty,2023-05-16 00:00:00
+11,Paul Lopez,paul.lopez11@example.co.uk,46,Male,Belfast,United Kingdom,2023-10-20 00:00:00,Premium,Books,2023-10-20 00:00:00
+12,Ashley Garcia,ashley.garcia12@example.co.uk,63,Male,Cardiff,United Kingdom,2021-05-05 00:00:00,Premium,"Home & Garden,Toys,Books",2021-05-05 00:00:00
+13,Barbara Lee,barbara.lee13@example.co.uk,73,Prefer not to say,Glasgow,United Kingdom,2023-12-12 00:00:00,Premium,"Fashion,Books,Electronics",2023-12-12 00:00:00
+14,Andrew Wilson,andrew.wilson14@example.co.uk,23,Male,Manchester,United Kingdom,2022-10-04 00:00:00,Occasional,"Books,Toys,Automotive",2022-10-04 00:00:00
+15,John Johnson,john.johnson15@example.co.uk,35,Prefer not to say,Leeds,United Kingdom,2022-04-11 00:00:00,Premium,Fashion,2022-04-11 00:00:00
+16,Margaret Johnson,margaret.johnson16@example.co.uk,56,Other,Sheffield,United Kingdom,2022-08-02 00:00:00,New,Home & Garden,2022-08-02 00:00:00
+17,Mark Johnson,mark.johnson17@example.co.uk,49,Female,Nottingham,United Kingdom,2022-03-14 00:00:00,Occasional,"Toys,Home & Garden,Electronics",2022-03-14 00:00:00
+18,Sarah Anderson,sarah.anderson18@example.co.uk,41,Male,Newcastle,United Kingdom,2023-05-25 00:00:00,Regular,"Automotive,Books,Toys",2023-05-25 00:00:00
+19,Michelle Thompson,michelle.thompson19@example.co.uk,33,Prefer not to say,Liverpool,United Kingdom,2022-05-02 00:00:00,Regular,"Beauty,Fashion",2022-05-02 00:00:00
+20,Linda Garcia,linda.garcia20@example.co.uk,43,Female,Wolverhampton,United Kingdom,2023-06-20 00:00:00,Regular,Books,2023-06-20 00:00:00
+21,Ashley Garcia,ashley.garcia21@example.co.uk,23,Prefer not to say,Liverpool,United Kingdom,2021-09-08 00:00:00,New,Beauty,2021-09-08 00:00:00
+22,Sophia Taylor,sophia.taylor22@example.co.uk,23,Male,Stoke-on-Trent,United Kingdom,2021-06-11 00:00:00,Occasional,"Toys,Electronics,Home & Garden",2021-06-11 00:00:00
+23,Ashley Thomas,ashley.thomas23@example.co.uk,60,Female,Coventry,United Kingdom,2021-09-07 00:00:00,Occasional,"Automotive,Books",2021-09-07 00:00:00
+24,Charles Hernandez,charles.hernandez24@example.co.uk,48,Female,Sheffield,United Kingdom,2023-04-11 00:00:00,Occasional,"Beauty,Sports,Books",2023-04-11 00:00:00
+25,Anthony White,anthony.white25@example.co.uk,54,Male,Glasgow,United Kingdom,2023-06-28 00:00:00,Premium,"Automotive,Books,Sports",2023-06-28 00:00:00
+26,Anthony Jones,anthony.jones26@example.co.uk,58,Male,Birmingham,United Kingdom,2022-09-29 00:00:00,Regular,Home & Garden,2022-09-29 00:00:00
+27,Barbara Sanchez,barbara.sanchez27@example.co.uk,63,Other,Bradford,United Kingdom,2022-10-09 00:00:00,New,"Electronics,Home & Garden,Fashion",2022-10-09 00:00:00
+28,Betty Harris,betty.harris28@example.co.uk,36,Prefer not to say,Newcastle,United Kingdom,2022-01-26 00:00:00,New,"Toys,Automotive,Fashion",2022-01-26 00:00:00
+29,Emma Moore,emma.moore29@example.co.uk,32,Female,Manchester,United Kingdom,2022-08-31 00:00:00,Premium,Toys,2022-08-31 00:00:00
+30,Emily King,emily.king30@example.co.uk,74,Other,Birmingham,United Kingdom,2020-02-24 00:00:00,Regular,"Books,Toys",2020-02-24 00:00:00
+31,Charles Hill,charles.hill31@example.co.uk,68,Prefer not to say,Bradford,United Kingdom,2023-02-05 00:00:00,Regular,Electronics,2023-02-05 00:00:00
+32,Matthew Ramirez,matthew.ramirez32@example.co.uk,25,Prefer not to say,Stoke-on-Trent,United Kingdom,2022-09-18 00:00:00,Regular,Electronics,2022-09-18 00:00:00
+33,Robert King,robert.king33@example.co.uk,52,Prefer not to say,Bristol,United Kingdom,2020-08-22 00:00:00,Regular,"Sports,Beauty",2020-08-22 00:00:00
+34,Barbara Gonzalez,barbara.gonzalez34@example.co.uk,41,Prefer not to say,Belfast,United Kingdom,2023-01-26 00:00:00,Premium,"Sports,Fashion,Toys",2023-01-26 00:00:00
+35,Jessica Garcia,jessica.garcia35@example.co.uk,25,Other,Plymouth,United Kingdom,2020-07-11 00:00:00,New,Fashion,2020-07-11 00:00:00
+36,Karen Williams,karen.williams36@example.co.uk,45,Female,Manchester,United Kingdom,2021-03-26 00:00:00,Occasional,"Books,Electronics",2021-03-26 00:00:00
+37,Patricia Young,patricia.young37@example.co.uk,19,Other,Bradford,United Kingdom,2021-10-09 00:00:00,Occasional,"Home & Garden,Sports,Automotive",2021-10-09 00:00:00
+38,Michael Jackson,michael.jackson38@example.co.uk,58,Prefer not to say,Sheffield,United Kingdom,2021-08-09 00:00:00,Regular,Beauty,2021-08-09 00:00:00
+39,Karen Hill,karen.hill39@example.co.uk,70,Other,Leeds,United Kingdom,2023-04-27 00:00:00,Premium,"Electronics,Home & Garden,Automotive",2023-04-27 00:00:00
+40,Sophia Smith,sophia.smith40@example.co.uk,22,Other,Stoke-on-Trent,United Kingdom,2020-10-29 00:00:00,New,Toys,2020-10-29 00:00:00
+41,Karen Williams,karen.williams41@example.co.uk,26,Other,Coventry,United Kingdom,2022-11-30 00:00:00,Occasional,"Fashion,Beauty,Home & Garden",2022-11-30 00:00:00
+42,Andrew Lee,andrew.lee42@example.co.uk,50,Female,Sheffield,United Kingdom,2021-10-30 00:00:00,Regular,"Beauty,Books",2021-10-30 00:00:00
+43,John King,john.king43@example.co.uk,21,Female,Stoke-on-Trent,United Kingdom,2022-09-06 00:00:00,Occasional,"Books,Electronics",2022-09-06 00:00:00
+44,Richard Lewis,richard.lewis44@example.co.uk,53,Prefer not to say,London,United Kingdom,2020-04-09 00:00:00,New,Electronics,2020-04-09 00:00:00
+45,Sophia Wilson,sophia.wilson45@example.co.uk,63,Prefer not to say,Stoke-on-Trent,United Kingdom,2022-02-09 00:00:00,New,"Toys,Automotive",2022-02-09 00:00:00
+46,Lisa Hernandez,lisa.hernandez46@example.co.uk,73,Prefer not to say,Coventry,United Kingdom,2021-03-26 00:00:00,Premium,"Sports,Electronics,Home & Garden",2021-03-26 00:00:00
+47,Joshua Sanchez,joshua.sanchez47@example.co.uk,69,Prefer not to say,Bradford,United Kingdom,2022-10-12 00:00:00,Regular,Automotive,2022-10-12 00:00:00
+48,Christopher Wilson,christopher.wilson48@example.co.uk,66,Male,Plymouth,United Kingdom,2023-08-19 00:00:00,Regular,"Books,Fashion",2023-08-19 00:00:00
+49,Linda Thompson,linda.thompson49@example.co.uk,27,Male,Birmingham,United Kingdom,2021-09-30 00:00:00,Premium,"Automotive,Fashion,Toys",2021-09-30 00:00:00
+50,Joshua Lopez,joshua.lopez50@example.co.uk,61,Female,Kingston upon Hull,United Kingdom,2022-09-01 00:00:00,New,Beauty,2022-09-01 00:00:00
+51,William Moore,william.moore51@example.co.uk,51,Male,Coventry,United Kingdom,2020-04-13 00:00:00,New,"Books,Electronics,Home & Garden",2020-04-13 00:00:00
+52,David Brown,david.brown52@example.co.uk,56,Female,Newcastle,United Kingdom,2023-05-25 00:00:00,Premium,"Fashion,Electronics",2023-05-25 00:00:00
+53,Emily Rodriguez,emily.rodriguez53@example.co.uk,25,Other,Sheffield,United Kingdom,2021-01-02 00:00:00,Occasional,"Toys,Beauty",2021-01-02 00:00:00
+54,Susan Anderson,susan.anderson54@example.co.uk,32,Other,Manchester,United Kingdom,2021-06-12 00:00:00,New,Toys,2021-06-12 00:00:00
+55,Sandra Young,sandra.young55@example.co.uk,30,Male,Leeds,United Kingdom,2021-10-09 00:00:00,Premium,"Beauty,Automotive,Electronics",2021-10-09 00:00:00
+56,Linda Moore,linda.moore56@example.co.uk,36,Prefer not to say,Plymouth,United Kingdom,2021-11-17 00:00:00,Premium,"Toys,Home & Garden",2021-11-17 00:00:00
+57,Mary Torres,mary.torres57@example.co.uk,31,Prefer not to say,Nottingham,United Kingdom,2021-07-05 00:00:00,Premium,Automotive,2021-07-05 00:00:00
+58,Robert Wright,robert.wright58@example.co.uk,26,Other,Stoke-on-Trent,United Kingdom,2023-07-04 00:00:00,Occasional,"Fashion,Books",2023-07-04 00:00:00
+59,Richard Hernandez,richard.hernandez59@example.co.uk,34,Prefer not to say,Bristol,United Kingdom,2021-06-13 00:00:00,New,"Books,Sports,Beauty",2021-06-13 00:00:00
+60,Anthony Allen,anthony.allen60@example.co.uk,21,Male,Glasgow,United Kingdom,2023-12-09 00:00:00,Occasional,Fashion,2023-12-09 00:00:00
+61,Betty Johnson,betty.johnson61@example.co.uk,39,Other,Plymouth,United Kingdom,2022-09-15 00:00:00,Occasional,Home & Garden,2022-09-15 00:00:00
+62,Ava Young,ava.young62@example.co.uk,65,Prefer not to say,Bristol,United Kingdom,2022-03-06 00:00:00,Premium,"Beauty,Home & Garden,Books",2022-03-06 00:00:00
+63,Mary Sanchez,mary.sanchez63@example.co.uk,36,Other,Newcastle,United Kingdom,2023-02-18 00:00:00,Premium,Books,2023-02-18 00:00:00
+64,William Clark,william.clark64@example.co.uk,74,Male,Glasgow,United Kingdom,2022-06-12 00:00:00,New,Home & Garden,2022-06-12 00:00:00
+65,Paul Clark,paul.clark65@example.co.uk,30,Female,London,United Kingdom,2022-03-09 00:00:00,New,"Toys,Fashion,Beauty",2022-03-09 00:00:00
+66,Ava Jones,ava.jones66@example.co.uk,46,Female,Kingston upon Hull,United Kingdom,2023-05-12 00:00:00,New,Automotive,2023-05-12 00:00:00
+67,Mia Jones,mia.jones67@example.co.uk,30,Male,Bradford,United Kingdom,2023-10-19 00:00:00,Occasional,Electronics,2023-10-19 00:00:00
+68,Donald Clark,donald.clark68@example.co.uk,40,Other,London,United Kingdom,2020-05-08 00:00:00,Occasional,Beauty,2020-05-08 00:00:00
+69,Charles Scott,charles.scott69@example.co.uk,33,Female,Liverpool,United Kingdom,2020-09-04 00:00:00,New,"Fashion,Sports",2020-09-04 00:00:00
+70,James Nguyen,james.nguyen70@example.co.uk,65,Other,Birmingham,United Kingdom,2020-12-28 00:00:00,Regular,"Fashion,Electronics",2020-12-28 00:00:00
+71,Joshua Flores,joshua.flores71@example.co.uk,38,Male,Glasgow,United Kingdom,2023-05-04 00:00:00,New,"Home & Garden,Electronics",2023-05-04 00:00:00
+72,Susan Allen,susan.allen72@example.co.uk,49,Male,Leeds,United Kingdom,2020-05-11 00:00:00,New,"Electronics,Sports,Books",2020-05-11 00:00:00
+73,Nancy Allen,nancy.allen73@example.co.uk,49,Other,Leicester,United Kingdom,2021-09-23 00:00:00,Occasional,"Books,Toys,Automotive",2021-09-23 00:00:00
+74,Betty Gonzalez,betty.gonzalez74@example.co.uk,62,Female,Liverpool,United Kingdom,2023-08-08 00:00:00,Regular,Sports,2023-08-08 00:00:00
+75,Mia Jones,mia.jones75@example.co.uk,45,Prefer not to say,Wolverhampton,United Kingdom,2023-06-03 00:00:00,Regular,"Home & Garden,Books",2023-06-03 00:00:00
+76,Evelyn Smith,evelyn.smith76@example.co.uk,18,Prefer not to say,Wolverhampton,United Kingdom,2022-11-25 00:00:00,New,"Sports,Automotive,Books",2022-11-25 00:00:00
+77,Ashley Williams,ashley.williams77@example.co.uk,21,Prefer not to say,Coventry,United Kingdom,2020-04-16 00:00:00,Occasional,Automotive,2020-04-16 00:00:00
+78,Patricia Thomas,patricia.thomas78@example.co.uk,72,Prefer not to say,Stoke-on-Trent,United Kingdom,2021-11-30 00:00:00,Occasional,Home & Garden,2021-11-30 00:00:00
+79,Margaret Hernandez,margaret.hernandez79@example.co.uk,44,Female,Edinburgh,United Kingdom,2021-05-18 00:00:00,New,"Toys,Beauty",2021-05-18 00:00:00
+80,Andrew Robinson,andrew.robinson80@example.co.uk,70,Female,Birmingham,United Kingdom,2020-05-31 00:00:00,Occasional,"Automotive,Home & Garden",2020-05-31 00:00:00
+81,Amelia Clark,amelia.clark81@example.co.uk,21,Female,Manchester,United Kingdom,2020-10-13 00:00:00,New,"Toys,Automotive",2020-10-13 00:00:00
+82,Sarah Sanchez,sarah.sanchez82@example.co.uk,54,Male,Plymouth,United Kingdom,2023-02-23 00:00:00,New,"Toys,Home & Garden,Automotive",2023-02-23 00:00:00
+83,Mia Moore,mia.moore83@example.co.uk,68,Female,Kingston upon Hull,United Kingdom,2020-08-07 00:00:00,Regular,"Sports,Beauty",2020-08-07 00:00:00
+84,Karen Miller,karen.miller84@example.co.uk,33,Male,Nottingham,United Kingdom,2021-10-14 00:00:00,New,"Automotive,Home & Garden",2021-10-14 00:00:00
+85,Jessica Ramirez,jessica.ramirez85@example.co.uk,51,Other,London,United Kingdom,2023-02-24 00:00:00,Premium,Books,2023-02-24 00:00:00
+86,Richard Davis,richard.davis86@example.co.uk,59,Other,Bristol,United Kingdom,2021-03-11 00:00:00,Premium,Automotive,2021-03-11 00:00:00
+87,Charlotte Lopez,charlotte.lopez87@example.co.uk,31,Other,London,United Kingdom,2023-04-07 00:00:00,Occasional,"Toys,Fashion",2023-04-07 00:00:00
+88,Margaret Scott,margaret.scott88@example.co.uk,56,Female,Manchester,United Kingdom,2021-02-03 00:00:00,Occasional,"Fashion,Beauty,Home & Garden",2021-02-03 00:00:00
+89,Paul King,paul.king89@example.co.uk,32,Female,Stoke-on-Trent,United Kingdom,2023-06-27 00:00:00,New,Automotive,2023-06-27 00:00:00
+90,Elizabeth Ramirez,elizabeth.ramirez90@example.co.uk,61,Male,Cardiff,United Kingdom,2020-04-10 00:00:00,Regular,"Beauty,Books,Electronics",2020-04-10 00:00:00
+91,Donna King,donna.king91@example.co.uk,35,Other,Newcastle,United Kingdom,2020-04-22 00:00:00,Premium,Beauty,2020-04-22 00:00:00
+92,Sarah Martinez,sarah.martinez92@example.co.uk,32,Female,Manchester,United Kingdom,2022-10-18 00:00:00,Premium,"Books,Electronics",2022-10-18 00:00:00
+93,Isabella Hernandez,isabella.hernandez93@example.co.uk,60,Prefer not to say,Manchester,United Kingdom,2022-07-30 00:00:00,Regular,"Fashion,Electronics,Toys",2022-07-30 00:00:00
+94,Betty Sanchez,betty.sanchez94@example.co.uk,62,Other,Newcastle,United Kingdom,2023-11-20 00:00:00,New,"Electronics,Beauty,Sports",2023-11-20 00:00:00
+95,Oliver Torres,oliver.torres95@example.co.uk,44,Prefer not to say,Belfast,United Kingdom,2022-11-10 00:00:00,Premium,Fashion,2022-11-10 00:00:00
+96,David White,david.white96@example.co.uk,43,Other,Belfast,United Kingdom,2023-02-23 00:00:00,Regular,"Beauty,Electronics,Books",2023-02-23 00:00:00
+97,Kimberly Williams,kimberly.williams97@example.co.uk,66,Prefer not to say,Sheffield,United Kingdom,2023-03-14 00:00:00,Regular,"Electronics,Sports",2023-03-14 00:00:00
+98,Charles White,charles.white98@example.co.uk,62,Male,Manchester,United Kingdom,2021-10-15 00:00:00,New,"Toys,Sports",2021-10-15 00:00:00
+99,Jennifer Allen,jennifer.allen99@example.co.uk,62,Female,Wolverhampton,United Kingdom,2023-09-27 00:00:00,Regular,"Toys,Sports,Books",2023-09-27 00:00:00
+100,Mia Harris,mia.harris100@example.co.uk,25,Female,Plymouth,United Kingdom,2021-07-20 00:00:00,Premium,Toys,2021-07-20 00:00:00
+101,Patricia Rodriguez,patricia.rodriguez101@example.co.uk,44,Male,Leeds,United Kingdom,2022-06-30 00:00:00,Occasional,"Sports,Home & Garden",2022-06-30 00:00:00
+102,Margaret Davis,margaret.davis102@example.co.uk,20,Female,Leicester,United Kingdom,2022-03-05 00:00:00,Occasional,"Home & Garden,Fashion,Books",2022-03-05 00:00:00
+103,Nancy Allen,nancy.allen103@example.co.uk,70,Prefer not to say,Bristol,United Kingdom,2020-01-05 00:00:00,Regular,"Fashion,Books,Beauty",2020-01-05 00:00:00
+104,Emily Robinson,emily.robinson104@example.co.uk,40,Female,Coventry,United Kingdom,2020-03-14 00:00:00,Occasional,"Beauty,Books,Home & Garden",2020-03-14 00:00:00
+105,Ava Lee,ava.lee105@example.co.uk,67,Other,Birmingham,United Kingdom,2020-02-18 00:00:00,Premium,"Fashion,Beauty,Electronics",2020-02-18 00:00:00
+106,Sophia King,sophia.king106@example.co.uk,50,Male,Nottingham,United Kingdom,2022-08-08 00:00:00,Premium,"Electronics,Fashion",2022-08-08 00:00:00
+107,Jennifer Martin,jennifer.martin107@example.co.uk,22,Prefer not to say,Bradford,United Kingdom,2022-10-31 00:00:00,Premium,"Books,Sports",2022-10-31 00:00:00
+108,James Smith,james.smith108@example.co.uk,57,Female,London,United Kingdom,2020-12-14 00:00:00,Premium,"Home & Garden,Fashion",2020-12-14 00:00:00
+109,Anthony Brown,anthony.brown109@example.co.uk,52,Other,Wolverhampton,United Kingdom,2023-02-04 00:00:00,Occasional,"Books,Toys,Home & Garden",2023-02-04 00:00:00
+110,Michael Anderson,michael.anderson110@example.co.uk,20,Prefer not to say,Birmingham,United Kingdom,2021-06-05 00:00:00,Occasional,Toys,2021-06-05 00:00:00
+111,Robert Hernandez,robert.hernandez111@example.co.uk,68,Prefer not to say,Edinburgh,United Kingdom,2020-12-19 00:00:00,Occasional,"Fashion,Home & Garden,Electronics",2020-12-19 00:00:00
+112,Evelyn Jones,evelyn.jones112@example.co.uk,43,Female,Edinburgh,United Kingdom,2021-11-16 00:00:00,Occasional,"Toys,Books",2021-11-16 00:00:00
+113,Daniel Wright,daniel.wright113@example.co.uk,70,Female,Stoke-on-Trent,United Kingdom,2020-04-07 00:00:00,Premium,"Sports,Electronics",2020-04-07 00:00:00
+114,Sophia Jones,sophia.jones114@example.co.uk,38,Male,Belfast,United Kingdom,2020-12-19 00:00:00,Regular,"Beauty,Toys",2020-12-19 00:00:00
+115,Sarah Taylor,sarah.taylor115@example.co.uk,74,Prefer not to say,Coventry,United Kingdom,2022-10-07 00:00:00,Premium,Beauty,2022-10-07 00:00:00
+116,Harper Johnson,harper.johnson116@example.co.uk,73,Male,Wolverhampton,United Kingdom,2021-10-24 00:00:00,Occasional,Electronics,2021-10-24 00:00:00
+117,James Ramirez,james.ramirez117@example.co.uk,65,Female,Leicester,United Kingdom,2022-10-19 00:00:00,New,"Fashion,Books",2022-10-19 00:00:00
+118,Joshua Flores,joshua.flores118@example.co.uk,19,Male,Plymouth,United Kingdom,2022-11-30 00:00:00,New,Books,2022-11-30 00:00:00
+119,Matthew Johnson,matthew.johnson119@example.co.uk,65,Female,Plymouth,United Kingdom,2023-02-09 00:00:00,Regular,Fashion,2023-02-09 00:00:00
+120,James Lewis,james.lewis120@example.co.uk,51,Male,Stoke-on-Trent,United Kingdom,2023-12-20 00:00:00,Premium,"Toys,Sports",2023-12-20 00:00:00
+121,Kimberly Garcia,kimberly.garcia121@example.co.uk,53,Prefer not to say,Kingston upon Hull,United Kingdom,2023-11-22 00:00:00,Regular,Books,2023-11-22 00:00:00
+122,Ava Smith,ava.smith122@example.co.uk,41,Other,Edinburgh,United Kingdom,2020-03-21 00:00:00,Occasional,"Electronics,Home & Garden",2020-03-21 00:00:00
+123,Susan Lopez,susan.lopez123@example.co.uk,75,Male,Newcastle,United Kingdom,2020-08-06 00:00:00,Occasional,"Home & Garden,Electronics",2020-08-06 00:00:00
+124,Barbara Clark,barbara.clark124@example.co.uk,45,Male,Stoke-on-Trent,United Kingdom,2023-10-16 00:00:00,Regular,Automotive,2023-10-16 00:00:00
+125,Joshua Thompson,joshua.thompson125@example.co.uk,22,Prefer not to say,Liverpool,United Kingdom,2023-05-19 00:00:00,Regular,"Sports,Automotive",2023-05-19 00:00:00
+126,Joshua Sanchez,joshua.sanchez126@example.co.uk,73,Female,Sheffield,United Kingdom,2021-03-25 00:00:00,New,"Fashion,Electronics,Sports",2021-03-25 00:00:00
+127,Evelyn Smith,evelyn.smith127@example.co.uk,73,Male,Belfast,United Kingdom,2021-01-14 00:00:00,Regular,Automotive,2021-01-14 00:00:00
+128,Evelyn Scott,evelyn.scott128@example.co.uk,70,Prefer not to say,Glasgow,United Kingdom,2022-06-22 00:00:00,New,"Beauty,Home & Garden",2022-06-22 00:00:00
+129,Amelia Clark,amelia.clark129@example.co.uk,34,Male,Glasgow,United Kingdom,2020-01-21 00:00:00,Occasional,"Electronics,Fashion,Home & Garden",2020-01-21 00:00:00
+130,Oliver Torres,oliver.torres130@example.co.uk,62,Male,Manchester,United Kingdom,2020-03-31 00:00:00,Occasional,Electronics,2020-03-31 00:00:00
+131,Susan Ramirez,susan.ramirez131@example.co.uk,69,Male,Leicester,United Kingdom,2023-12-01 00:00:00,Occasional,"Fashion,Toys",2023-12-01 00:00:00
+132,Christopher Clark,christopher.clark132@example.co.uk,70,Prefer not to say,Manchester,United Kingdom,2023-04-30 00:00:00,New,"Automotive,Toys,Books",2023-04-30 00:00:00
+133,Patricia Smith,patricia.smith133@example.co.uk,36,Male,Plymouth,United Kingdom,2022-09-09 00:00:00,Premium,Beauty,2022-09-09 00:00:00
+134,Anthony Moore,anthony.moore134@example.co.uk,58,Prefer not to say,Kingston upon Hull,United Kingdom,2020-08-23 00:00:00,Regular,"Home & Garden,Automotive",2020-08-23 00:00:00
+135,Paul White,paul.white135@example.co.uk,62,Male,Cardiff,United Kingdom,2022-02-16 00:00:00,New,Toys,2022-02-16 00:00:00
+136,John Torres,john.torres136@example.co.uk,61,Prefer not to say,Bristol,United Kingdom,2020-05-25 00:00:00,Premium,"Sports,Fashion",2020-05-25 00:00:00
+137,Elizabeth King,elizabeth.king137@example.co.uk,60,Female,London,United Kingdom,2020-07-18 00:00:00,New,"Sports,Toys",2020-07-18 00:00:00
+138,David Flores,david.flores138@example.co.uk,22,Female,Bradford,United Kingdom,2022-09-17 00:00:00,Premium,"Toys,Home & Garden",2022-09-17 00:00:00
+139,Sophia Garcia,sophia.garcia139@example.co.uk,57,Male,Nottingham,United Kingdom,2021-04-21 00:00:00,New,Beauty,2021-04-21 00:00:00
+140,Paul Johnson,paul.johnson140@example.co.uk,34,Female,Bristol,United Kingdom,2023-04-14 00:00:00,New,"Fashion,Beauty",2023-04-14 00:00:00
+141,Evelyn King,evelyn.king141@example.co.uk,61,Prefer not to say,Liverpool,United Kingdom,2021-11-18 00:00:00,Regular,Fashion,2021-11-18 00:00:00
+142,David Young,david.young142@example.co.uk,43,Other,Nottingham,United Kingdom,2023-02-26 00:00:00,Regular,"Electronics,Fashion",2023-02-26 00:00:00
+143,Lisa Robinson,lisa.robinson143@example.co.uk,25,Other,Stoke-on-Trent,United Kingdom,2023-07-05 00:00:00,Regular,"Automotive,Beauty,Home & Garden",2023-07-05 00:00:00
+144,Ava Clark,ava.clark144@example.co.uk,28,Prefer not to say,Birmingham,United Kingdom,2020-09-14 00:00:00,Regular,"Automotive,Fashion,Sports",2020-09-14 00:00:00
+145,Linda Anderson,linda.anderson145@example.co.uk,32,Prefer not to say,Edinburgh,United Kingdom,2023-10-25 00:00:00,Premium,"Fashion,Beauty,Electronics",2023-10-25 00:00:00
+146,John Walker,john.walker146@example.co.uk,46,Female,Sheffield,United Kingdom,2021-11-02 00:00:00,Regular,"Electronics,Home & Garden",2021-11-02 00:00:00
+147,Charlotte Robinson,charlotte.robinson147@example.co.uk,75,Female,Newcastle,United Kingdom,2021-08-27 00:00:00,Occasional,"Toys,Books",2021-08-27 00:00:00
+148,Daniel Torres,daniel.torres148@example.co.uk,42,Female,Cardiff,United Kingdom,2022-12-19 00:00:00,Occasional,"Electronics,Beauty,Home & Garden",2022-12-19 00:00:00
+149,Lisa Jackson,lisa.jackson149@example.co.uk,72,Prefer not to say,London,United Kingdom,2023-10-07 00:00:00,Occasional,"Automotive,Fashion",2023-10-07 00:00:00
+150,Ava Johnson,ava.johnson150@example.co.uk,24,Other,Bradford,United Kingdom,2021-12-27 00:00:00,Premium,"Home & Garden,Automotive,Electronics",2021-12-27 00:00:00
+151,James Robinson,james.robinson151@example.co.uk,69,Female,Newcastle,United Kingdom,2023-10-17 00:00:00,Regular,"Books,Home & Garden,Fashion",2023-10-17 00:00:00
+152,Mia Nguyen,mia.nguyen152@example.co.uk,61,Prefer not to say,Liverpool,United Kingdom,2023-11-15 00:00:00,Regular,Automotive,2023-11-15 00:00:00
+153,Michelle Johnson,michelle.johnson153@example.co.uk,36,Prefer not to say,Manchester,United Kingdom,2022-06-02 00:00:00,New,"Toys,Home & Garden,Sports",2022-06-02 00:00:00
+154,Andrew Nguyen,andrew.nguyen154@example.co.uk,47,Female,Belfast,United Kingdom,2020-12-18 00:00:00,New,"Electronics,Fashion",2020-12-18 00:00:00
+155,John Gonzalez,john.gonzalez155@example.co.uk,66,Female,Bradford,United Kingdom,2020-03-23 00:00:00,Occasional,Books,2020-03-23 00:00:00
+156,Harper Lee,harper.lee156@example.co.uk,29,Other,Bradford,United Kingdom,2021-05-09 00:00:00,Premium,"Books,Sports",2021-05-09 00:00:00
+157,Andrew Harris,andrew.harris157@example.co.uk,55,Male,Kingston upon Hull,United Kingdom,2020-03-30 00:00:00,New,"Automotive,Electronics",2020-03-30 00:00:00
+158,Richard Sanchez,richard.sanchez158@example.co.uk,42,Other,Cardiff,United Kingdom,2023-07-15 00:00:00,Premium,"Toys,Automotive",2023-07-15 00:00:00
+159,Elizabeth Moore,elizabeth.moore159@example.co.uk,55,Male,London,United Kingdom,2020-02-22 00:00:00,Premium,Toys,2020-02-22 00:00:00
+160,Evelyn Thompson,evelyn.thompson160@example.co.uk,68,Female,London,United Kingdom,2022-11-15 00:00:00,New,"Automotive,Toys",2022-11-15 00:00:00
+161,Amelia King,amelia.king161@example.co.uk,33,Prefer not to say,Sheffield,United Kingdom,2023-01-19 00:00:00,Occasional,"Fashion,Sports",2023-01-19 00:00:00
+162,Mark Perez,mark.perez162@example.co.uk,28,Female,Newcastle,United Kingdom,2022-04-03 00:00:00,New,"Books,Electronics",2022-04-03 00:00:00
+163,Emily Martinez,emily.martinez163@example.co.uk,48,Female,Birmingham,United Kingdom,2023-09-28 00:00:00,Regular,"Electronics,Books,Sports",2023-09-28 00:00:00
+164,Michael Lee,michael.lee164@example.co.uk,46,Male,Sheffield,United Kingdom,2020-05-01 00:00:00,Regular,"Beauty,Automotive,Sports",2020-05-01 00:00:00
+165,Emma Martin,emma.martin165@example.co.uk,51,Prefer not to say,Kingston upon Hull,United Kingdom,2023-01-29 00:00:00,Occasional,Fashion,2023-01-29 00:00:00
+166,Mary Young,mary.young166@example.co.uk,42,Prefer not to say,Leicester,United Kingdom,2021-08-18 00:00:00,Occasional,"Beauty,Books",2021-08-18 00:00:00
+167,Emma Gonzalez,emma.gonzalez167@example.co.uk,35,Other,Coventry,United Kingdom,2020-07-09 00:00:00,New,"Electronics,Automotive,Beauty",2020-07-09 00:00:00
+168,Linda Brown,linda.brown168@example.co.uk,71,Female,Bradford,United Kingdom,2020-04-22 00:00:00,Regular,"Toys,Sports",2020-04-22 00:00:00
+169,Daniel Young,daniel.young169@example.co.uk,28,Other,Stoke-on-Trent,United Kingdom,2022-04-19 00:00:00,Occasional,"Home & Garden,Toys",2022-04-19 00:00:00
+170,Ava Sanchez,ava.sanchez170@example.co.uk,73,Other,Glasgow,United Kingdom,2020-12-14 00:00:00,Occasional,"Books,Electronics,Automotive",2020-12-14 00:00:00
+171,John Allen,john.allen171@example.co.uk,68,Other,Belfast,United Kingdom,2020-09-06 00:00:00,New,"Electronics,Fashion",2020-09-06 00:00:00
+172,Mary Clark,mary.clark172@example.co.uk,49,Female,Wolverhampton,United Kingdom,2022-06-24 00:00:00,Premium,"Beauty,Electronics",2022-06-24 00:00:00
+173,Susan Wilson,susan.wilson173@example.co.uk,49,Male,Coventry,United Kingdom,2020-05-18 00:00:00,Regular,"Fashion,Toys,Electronics",2020-05-18 00:00:00
+174,Lisa Rodriguez,lisa.rodriguez174@example.co.uk,57,Female,Leeds,United Kingdom,2021-01-07 00:00:00,New,"Fashion,Sports,Books",2021-01-07 00:00:00
+175,Isabella Thomas,isabella.thomas175@example.co.uk,67,Male,Wolverhampton,United Kingdom,2021-11-09 00:00:00,New,"Beauty,Electronics",2021-11-09 00:00:00
+176,Anthony Jones,anthony.jones176@example.co.uk,28,Female,Liverpool,United Kingdom,2023-01-05 00:00:00,Occasional,"Home & Garden,Sports",2023-01-05 00:00:00
+177,Anthony Moore,anthony.moore177@example.co.uk,62,Prefer not to say,Wolverhampton,United Kingdom,2020-11-14 00:00:00,New,"Beauty,Electronics,Fashion",2020-11-14 00:00:00
+178,William White,william.white178@example.co.uk,57,Male,Kingston upon Hull,United Kingdom,2021-02-09 00:00:00,Regular,"Toys,Beauty,Fashion",2021-02-09 00:00:00
+179,Amelia Allen,amelia.allen179@example.co.uk,69,Other,Glasgow,United Kingdom,2021-06-01 00:00:00,Regular,"Sports,Automotive",2021-06-01 00:00:00
+180,Michael Allen,michael.allen180@example.co.uk,28,Female,Leeds,United Kingdom,2023-03-23 00:00:00,Premium,"Fashion,Books,Electronics",2023-03-23 00:00:00
+181,Nancy Davis,nancy.davis181@example.co.uk,50,Other,Sheffield,United Kingdom,2022-04-18 00:00:00,New,Electronics,2022-04-18 00:00:00
+182,Patricia Taylor,patricia.taylor182@example.co.uk,70,Female,Liverpool,United Kingdom,2020-09-12 00:00:00,Occasional,"Toys,Home & Garden",2020-09-12 00:00:00
+183,Margaret Wilson,margaret.wilson183@example.co.uk,45,Other,Coventry,United Kingdom,2021-10-04 00:00:00,Occasional,Home & Garden,2021-10-04 00:00:00
+184,Susan Thomas,susan.thomas184@example.co.uk,20,Prefer not to say,Plymouth,United Kingdom,2020-04-05 00:00:00,New,Books,2020-04-05 00:00:00
+185,Lisa Anderson,lisa.anderson185@example.co.uk,73,Prefer not to say,Stoke-on-Trent,United Kingdom,2022-09-09 00:00:00,New,"Toys,Fashion,Automotive",2022-09-09 00:00:00
+186,Ashley Thompson,ashley.thompson186@example.co.uk,43,Male,Leeds,United Kingdom,2023-01-19 00:00:00,Premium,"Automotive,Sports",2023-01-19 00:00:00
+187,Kimberly Scott,kimberly.scott187@example.co.uk,52,Prefer not to say,Cardiff,United Kingdom,2021-07-14 00:00:00,New,"Fashion,Home & Garden,Beauty",2021-07-14 00:00:00
+188,Paul Davis,paul.davis188@example.co.uk,48,Female,Sheffield,United Kingdom,2021-10-06 00:00:00,Regular,"Toys,Beauty,Fashion",2021-10-06 00:00:00
+189,Michael Martin,michael.martin189@example.co.uk,30,Female,Nottingham,United Kingdom,2023-03-25 00:00:00,New,Fashion,2023-03-25 00:00:00
+190,Kimberly Jackson,kimberly.jackson190@example.co.uk,58,Prefer not to say,Bristol,United Kingdom,2020-12-05 00:00:00,Occasional,Home & Garden,2020-12-05 00:00:00
+191,David Perez,david.perez191@example.co.uk,26,Female,Manchester,United Kingdom,2020-03-16 00:00:00,New,"Automotive,Home & Garden,Electronics",2020-03-16 00:00:00
+192,Evelyn Jackson,evelyn.jackson192@example.co.uk,68,Other,Leeds,United Kingdom,2022-05-23 00:00:00,New,"Home & Garden,Beauty,Fashion",2022-05-23 00:00:00
+193,Sandra Garcia,sandra.garcia193@example.co.uk,62,Other,Stoke-on-Trent,United Kingdom,2022-09-07 00:00:00,Premium,"Electronics,Toys",2022-09-07 00:00:00
+194,Jennifer Anderson,jennifer.anderson194@example.co.uk,29,Male,London,United Kingdom,2023-04-06 00:00:00,Regular,"Sports,Books,Automotive",2023-04-06 00:00:00
+195,Sandra Perez,sandra.perez195@example.co.uk,39,Prefer not to say,Edinburgh,United Kingdom,2023-07-12 00:00:00,Regular,"Toys,Sports",2023-07-12 00:00:00
+196,Emily Garcia,emily.garcia196@example.co.uk,20,Male,Belfast,United Kingdom,2021-12-21 00:00:00,Occasional,Sports,2021-12-21 00:00:00
+197,Emma Perez,emma.perez197@example.co.uk,25,Prefer not to say,Coventry,United Kingdom,2023-05-10 00:00:00,Premium,"Automotive,Sports",2023-05-10 00:00:00
+198,Oliver Wilson,oliver.wilson198@example.co.uk,19,Other,Stoke-on-Trent,United Kingdom,2022-06-29 00:00:00,Regular,"Electronics,Sports,Fashion",2022-06-29 00:00:00
+199,Anthony Lopez,anthony.lopez199@example.co.uk,60,Male,Wolverhampton,United Kingdom,2021-05-20 00:00:00,Regular,"Fashion,Sports",2021-05-20 00:00:00
+200,John Young,john.young200@example.co.uk,65,Prefer not to say,Wolverhampton,United Kingdom,2023-10-27 00:00:00,Premium,Books,2023-10-27 00:00:00
+201,Susan Wilson,susan.wilson201@example.co.uk,35,Other,Bristol,United Kingdom,2021-07-16 00:00:00,New,Fashion,2021-07-16 00:00:00
+202,Charlotte Garcia,charlotte.garcia202@example.co.uk,42,Prefer not to say,Nottingham,United Kingdom,2021-10-23 00:00:00,New,Sports,2021-10-23 00:00:00
+203,Sophia Jackson,sophia.jackson203@example.co.uk,40,Male,Cardiff,United Kingdom,2022-09-19 00:00:00,Regular,Fashion,2022-09-19 00:00:00
+204,Joshua Williams,joshua.williams204@example.co.uk,23,Male,Edinburgh,United Kingdom,2022-11-29 00:00:00,Occasional,Sports,2022-11-29 00:00:00
+205,Amelia Garcia,amelia.garcia205@example.co.uk,34,Prefer not to say,Newcastle,United Kingdom,2023-05-03 00:00:00,Occasional,"Automotive,Sports",2023-05-03 00:00:00
+206,Elizabeth Martinez,elizabeth.martinez206@example.co.uk,72,Other,Newcastle,United Kingdom,2023-11-26 00:00:00,Regular,"Sports,Books",2023-11-26 00:00:00
+207,Paul Clark,paul.clark207@example.co.uk,66,Female,Bradford,United Kingdom,2021-10-29 00:00:00,Occasional,"Beauty,Books,Sports",2021-10-29 00:00:00
+208,Jessica Clark,jessica.clark208@example.co.uk,65,Other,Stoke-on-Trent,United Kingdom,2021-12-23 00:00:00,Occasional,"Home & Garden,Fashion,Books",2021-12-23 00:00:00
+209,Richard Davis,richard.davis209@example.co.uk,35,Male,Wolverhampton,United Kingdom,2022-02-08 00:00:00,New,"Beauty,Toys",2022-02-08 00:00:00
+210,Mia Young,mia.young210@example.co.uk,56,Female,Manchester,United Kingdom,2022-04-29 00:00:00,Regular,Books,2022-04-29 00:00:00
+211,Matthew Brown,matthew.brown211@example.co.uk,66,Other,Wolverhampton,United Kingdom,2022-06-03 00:00:00,New,"Beauty,Home & Garden,Electronics",2022-06-03 00:00:00
+212,Karen Wright,karen.wright212@example.co.uk,68,Prefer not to say,Leicester,United Kingdom,2021-02-19 00:00:00,Regular,"Beauty,Electronics",2021-02-19 00:00:00
+213,David Williams,david.williams213@example.co.uk,36,Other,Edinburgh,United Kingdom,2021-10-03 00:00:00,New,"Electronics,Automotive",2021-10-03 00:00:00
+214,Linda Lee,linda.lee214@example.co.uk,42,Female,Plymouth,United Kingdom,2021-10-18 00:00:00,Regular,"Fashion,Home & Garden",2021-10-18 00:00:00
+215,Mia Martin,mia.martin215@example.co.uk,29,Other,Cardiff,United Kingdom,2020-04-05 00:00:00,Regular,"Electronics,Books,Home & Garden",2020-04-05 00:00:00
+216,Daniel Lewis,daniel.lewis216@example.co.uk,47,Female,Cardiff,United Kingdom,2023-09-10 00:00:00,Premium,"Home & Garden,Sports",2023-09-10 00:00:00
+217,Ava Lopez,ava.lopez217@example.co.uk,50,Prefer not to say,Cardiff,United Kingdom,2021-11-22 00:00:00,Premium,Fashion,2021-11-22 00:00:00
+218,Kimberly Taylor,kimberly.taylor218@example.co.uk,58,Other,Bradford,United Kingdom,2020-03-13 00:00:00,New,"Books,Sports,Beauty",2020-03-13 00:00:00
+219,Joseph Nguyen,joseph.nguyen219@example.co.uk,24,Male,Leeds,United Kingdom,2021-01-20 00:00:00,New,"Toys,Automotive,Home & Garden",2021-01-20 00:00:00
+220,Joseph Clark,joseph.clark220@example.co.uk,48,Female,Belfast,United Kingdom,2023-06-17 00:00:00,Occasional,"Automotive,Toys",2023-06-17 00:00:00
+221,Sarah Hernandez,sarah.hernandez221@example.co.uk,50,Prefer not to say,London,United Kingdom,2022-09-28 00:00:00,Regular,"Automotive,Toys,Fashion",2022-09-28 00:00:00
+222,Andrew Taylor,andrew.taylor222@example.co.uk,66,Other,Leicester,United Kingdom,2022-05-05 00:00:00,Regular,Fashion,2022-05-05 00:00:00
+223,Joshua Clark,joshua.clark223@example.co.uk,62,Other,Birmingham,United Kingdom,2022-01-14 00:00:00,New,"Home & Garden,Books",2022-01-14 00:00:00
+224,Nancy Harris,nancy.harris224@example.co.uk,33,Prefer not to say,Kingston upon Hull,United Kingdom,2021-05-13 00:00:00,Regular,"Fashion,Home & Garden",2021-05-13 00:00:00
+225,Joseph Allen,joseph.allen225@example.co.uk,35,Prefer not to say,Newcastle,United Kingdom,2020-03-16 00:00:00,New,Home & Garden,2020-03-16 00:00:00
+226,Joseph Wright,joseph.wright226@example.co.uk,49,Male,Manchester,United Kingdom,2021-09-09 00:00:00,Premium,Automotive,2021-09-09 00:00:00
+227,Linda Allen,linda.allen227@example.co.uk,38,Female,Glasgow,United Kingdom,2022-02-18 00:00:00,Regular,Toys,2022-02-18 00:00:00
+228,Paul Rodriguez,paul.rodriguez228@example.co.uk,74,Other,Cardiff,United Kingdom,2020-06-07 00:00:00,Occasional,Toys,2020-06-07 00:00:00
+229,Donald Lopez,donald.lopez229@example.co.uk,37,Prefer not to say,Bristol,United Kingdom,2023-04-06 00:00:00,New,Beauty,2023-04-06 00:00:00
+230,Nancy Wright,nancy.wright230@example.co.uk,51,Female,Wolverhampton,United Kingdom,2021-08-26 00:00:00,Regular,"Beauty,Fashion",2021-08-26 00:00:00
+231,Jennifer Flores,jennifer.flores231@example.co.uk,25,Female,Bristol,United Kingdom,2020-04-27 00:00:00,Occasional,"Electronics,Fashion",2020-04-27 00:00:00
+232,Emily King,emily.king232@example.co.uk,24,Prefer not to say,Cardiff,United Kingdom,2020-06-09 00:00:00,Occasional,"Automotive,Sports",2020-06-09 00:00:00
+233,Susan Torres,susan.torres233@example.co.uk,27,Prefer not to say,Manchester,United Kingdom,2022-06-30 00:00:00,New,"Home & Garden,Fashion",2022-06-30 00:00:00
+234,Lisa Allen,lisa.allen234@example.co.uk,33,Female,Bristol,United Kingdom,2022-04-29 00:00:00,Premium,Toys,2022-04-29 00:00:00
+235,Isabella Taylor,isabella.taylor235@example.co.uk,30,Prefer not to say,Bristol,United Kingdom,2020-03-08 00:00:00,New,Automotive,2020-03-08 00:00:00
+236,Joseph Allen,joseph.allen236@example.co.uk,44,Prefer not to say,Coventry,United Kingdom,2023-06-05 00:00:00,Premium,"Books,Toys,Home & Garden",2023-06-05 00:00:00
+237,Ashley Moore,ashley.moore237@example.co.uk,49,Prefer not to say,Stoke-on-Trent,United Kingdom,2022-08-11 00:00:00,Regular,"Books,Sports",2022-08-11 00:00:00
+238,Sandra Nguyen,sandra.nguyen238@example.co.uk,23,Female,Coventry,United Kingdom,2022-12-23 00:00:00,Regular,"Beauty,Fashion",2022-12-23 00:00:00
+239,Susan Hill,susan.hill239@example.co.uk,53,Female,Newcastle,United Kingdom,2021-06-07 00:00:00,Premium,"Beauty,Toys,Automotive",2021-06-07 00:00:00
+240,Sandra King,sandra.king240@example.co.uk,41,Other,Birmingham,United Kingdom,2023-10-08 00:00:00,New,"Automotive,Electronics,Fashion",2023-10-08 00:00:00
+241,Amelia Clark,amelia.clark241@example.co.uk,20,Female,Bristol,United Kingdom,2021-12-20 00:00:00,Premium,"Books,Home & Garden,Automotive",2021-12-20 00:00:00
+242,Michael Harris,michael.harris242@example.co.uk,25,Female,Stoke-on-Trent,United Kingdom,2021-08-01 00:00:00,Premium,Beauty,2021-08-01 00:00:00
+243,James Martin,james.martin243@example.co.uk,44,Other,Wolverhampton,United Kingdom,2022-01-17 00:00:00,Premium,"Toys,Sports,Automotive",2022-01-17 00:00:00
+244,Barbara Taylor,barbara.taylor244@example.co.uk,38,Female,Kingston upon Hull,United Kingdom,2022-08-15 00:00:00,Premium,Home & Garden,2022-08-15 00:00:00
+245,Lisa Lewis,lisa.lewis245@example.co.uk,37,Prefer not to say,Leeds,United Kingdom,2021-03-10 00:00:00,Occasional,"Books,Automotive,Sports",2021-03-10 00:00:00
+246,Robert Williams,robert.williams246@example.co.uk,51,Other,Cardiff,United Kingdom,2022-07-05 00:00:00,Regular,Toys,2022-07-05 00:00:00
+247,Michael Anderson,michael.anderson247@example.co.uk,44,Prefer not to say,Leeds,United Kingdom,2020-10-02 00:00:00,Premium,"Books,Beauty",2020-10-02 00:00:00
+248,Steven Lopez,steven.lopez248@example.co.uk,30,Other,Edinburgh,United Kingdom,2023-08-22 00:00:00,Regular,"Toys,Fashion",2023-08-22 00:00:00
+249,Sarah King,sarah.king249@example.co.uk,64,Prefer not to say,Birmingham,United Kingdom,2020-10-10 00:00:00,Occasional,Toys,2020-10-10 00:00:00
+250,Ava Ramirez,ava.ramirez250@example.co.uk,21,Male,Leeds,United Kingdom,2021-11-25 00:00:00,New,Sports,2021-11-25 00:00:00
+251,Sarah Thomas,sarah.thomas251@example.co.uk,36,Prefer not to say,Birmingham,United Kingdom,2022-07-29 00:00:00,New,Beauty,2022-07-29 00:00:00
+252,Kimberly King,kimberly.king252@example.co.uk,25,Female,Nottingham,United Kingdom,2021-06-24 00:00:00,Regular,"Sports,Fashion",2021-06-24 00:00:00
+253,Thomas Lee,thomas.lee253@example.co.uk,55,Female,Newcastle,United Kingdom,2020-12-05 00:00:00,Occasional,Sports,2020-12-05 00:00:00
+254,Ava Thomas,ava.thomas254@example.co.uk,42,Female,Plymouth,United Kingdom,2021-04-16 00:00:00,Occasional,"Beauty,Fashion,Automotive",2021-04-16 00:00:00
+255,Michelle Garcia,michelle.garcia255@example.co.uk,18,Female,Edinburgh,United Kingdom,2022-09-16 00:00:00,New,Electronics,2022-09-16 00:00:00
+256,John Moore,john.moore256@example.co.uk,74,Other,Coventry,United Kingdom,2022-09-06 00:00:00,Premium,Fashion,2022-09-06 00:00:00
+257,Sarah Flores,sarah.flores257@example.co.uk,53,Male,Sheffield,United Kingdom,2021-08-17 00:00:00,Premium,Sports,2021-08-17 00:00:00
+258,Oliver Perez,oliver.perez258@example.co.uk,24,Male,Bristol,United Kingdom,2023-02-24 00:00:00,Premium,"Beauty,Fashion",2023-02-24 00:00:00
+259,Evelyn Lopez,evelyn.lopez259@example.co.uk,68,Male,Liverpool,United Kingdom,2021-04-28 00:00:00,Premium,Sports,2021-04-28 00:00:00
+260,Margaret Thomas,margaret.thomas260@example.co.uk,27,Male,Kingston upon Hull,United Kingdom,2022-06-10 00:00:00,Occasional,"Sports,Home & Garden,Books",2022-06-10 00:00:00
+261,Emma Gonzalez,emma.gonzalez261@example.co.uk,39,Other,Sheffield,United Kingdom,2022-11-17 00:00:00,Regular,"Beauty,Books,Electronics",2022-11-17 00:00:00
+262,Elizabeth Allen,elizabeth.allen262@example.co.uk,48,Other,Glasgow,United Kingdom,2021-03-27 00:00:00,Premium,"Fashion,Home & Garden",2021-03-27 00:00:00
+263,John Walker,john.walker263@example.co.uk,75,Male,Plymouth,United Kingdom,2020-02-05 00:00:00,Occasional,"Automotive,Home & Garden",2020-02-05 00:00:00
+264,Charles Taylor,charles.taylor264@example.co.uk,59,Other,London,United Kingdom,2021-12-04 00:00:00,Occasional,"Toys,Books,Fashion",2021-12-04 00:00:00
+265,Paul Robinson,paul.robinson265@example.co.uk,36,Female,Stoke-on-Trent,United Kingdom,2020-01-22 00:00:00,Regular,"Home & Garden,Beauty,Electronics",2020-01-22 00:00:00
+266,Jessica Harris,jessica.harris266@example.co.uk,43,Female,Nottingham,United Kingdom,2020-03-20 00:00:00,Premium,"Fashion,Home & Garden,Toys",2020-03-20 00:00:00
+267,Charles Hill,charles.hill267@example.co.uk,45,Prefer not to say,Belfast,United Kingdom,2022-06-18 00:00:00,New,"Fashion,Automotive",2022-06-18 00:00:00
+268,Evelyn Taylor,evelyn.taylor268@example.co.uk,65,Male,Glasgow,United Kingdom,2023-10-27 00:00:00,Premium,"Beauty,Home & Garden",2023-10-27 00:00:00
+269,Mary Martinez,mary.martinez269@example.co.uk,31,Male,Edinburgh,United Kingdom,2023-11-28 00:00:00,New,"Books,Sports",2023-11-28 00:00:00
+270,Robert Lee,robert.lee270@example.co.uk,62,Prefer not to say,Belfast,United Kingdom,2020-07-01 00:00:00,Regular,Sports,2020-07-01 00:00:00
+271,William Flores,william.flores271@example.co.uk,74,Female,Bristol,United Kingdom,2021-06-06 00:00:00,Premium,"Electronics,Automotive",2021-06-06 00:00:00
+272,Kimberly Thomas,kimberly.thomas272@example.co.uk,30,Other,Cardiff,United Kingdom,2022-03-18 00:00:00,Premium,"Fashion,Home & Garden,Automotive",2022-03-18 00:00:00
+273,Charlotte Taylor,charlotte.taylor273@example.co.uk,29,Prefer not to say,Sheffield,United Kingdom,2022-02-21 00:00:00,New,Sports,2022-02-21 00:00:00
+274,Jessica Jones,jessica.jones274@example.co.uk,18,Other,Kingston upon Hull,United Kingdom,2020-02-28 00:00:00,Occasional,"Beauty,Sports",2020-02-28 00:00:00
+275,Charlotte White,charlotte.white275@example.co.uk,64,Prefer not to say,Leeds,United Kingdom,2020-11-19 00:00:00,Regular,"Home & Garden,Automotive",2020-11-19 00:00:00
+276,Michael Davis,michael.davis276@example.co.uk,38,Female,Birmingham,United Kingdom,2022-06-16 00:00:00,New,Toys,2022-06-16 00:00:00
+277,Emma Lee,emma.lee277@example.co.uk,67,Male,Nottingham,United Kingdom,2023-12-24 00:00:00,Regular,"Home & Garden,Beauty,Automotive",2023-12-24 00:00:00
+278,Steven Martin,steven.martin278@example.co.uk,64,Prefer not to say,Coventry,United Kingdom,2021-09-23 00:00:00,New,Fashion,2021-09-23 00:00:00
+279,Elizabeth Scott,elizabeth.scott279@example.co.uk,39,Female,Coventry,United Kingdom,2022-01-23 00:00:00,Occasional,"Fashion,Automotive",2022-01-23 00:00:00
+280,Harper Martin,harper.martin280@example.co.uk,66,Female,Coventry,United Kingdom,2023-05-27 00:00:00,Premium,"Sports,Fashion",2023-05-27 00:00:00
+281,Emily Lewis,emily.lewis281@example.co.uk,57,Prefer not to say,Coventry,United Kingdom,2021-12-03 00:00:00,Regular,"Fashion,Books",2021-12-03 00:00:00
+282,Susan Wright,susan.wright282@example.co.uk,60,Male,Bradford,United Kingdom,2022-09-06 00:00:00,Occasional,"Sports,Home & Garden,Electronics",2022-09-06 00:00:00
+283,Mark Smith,mark.smith283@example.co.uk,52,Prefer not to say,Leeds,United Kingdom,2021-04-04 00:00:00,Occasional,Fashion,2021-04-04 00:00:00
+284,Mary Williams,mary.williams284@example.co.uk,72,Female,Kingston upon Hull,United Kingdom,2022-01-14 00:00:00,New,"Beauty,Home & Garden",2022-01-14 00:00:00
+285,Anthony Rodriguez,anthony.rodriguez285@example.co.uk,44,Male,Bradford,United Kingdom,2022-02-02 00:00:00,Occasional,"Home & Garden,Books",2022-02-02 00:00:00
+286,Jessica Robinson,jessica.robinson286@example.co.uk,64,Other,Newcastle,United Kingdom,2023-09-29 00:00:00,Premium,"Electronics,Books,Sports",2023-09-29 00:00:00
+287,Donald Harris,donald.harris287@example.co.uk,64,Male,Leicester,United Kingdom,2023-07-01 00:00:00,Premium,"Automotive,Home & Garden",2023-07-01 00:00:00
+288,James Rodriguez,james.rodriguez288@example.co.uk,19,Prefer not to say,Leicester,United Kingdom,2023-07-03 00:00:00,New,"Fashion,Home & Garden,Sports",2023-07-03 00:00:00
+289,Patricia Wright,patricia.wright289@example.co.uk,74,Female,Stoke-on-Trent,United Kingdom,2021-08-12 00:00:00,Premium,Books,2021-08-12 00:00:00
+290,Jessica Johnson,jessica.johnson290@example.co.uk,53,Female,Belfast,United Kingdom,2020-02-20 00:00:00,Occasional,Beauty,2020-02-20 00:00:00
+291,Susan Thomas,susan.thomas291@example.co.uk,69,Prefer not to say,Bradford,United Kingdom,2022-10-10 00:00:00,Occasional,"Sports,Electronics",2022-10-10 00:00:00
+292,Sandra Nguyen,sandra.nguyen292@example.co.uk,38,Prefer not to say,Glasgow,United Kingdom,2020-12-22 00:00:00,New,"Books,Sports,Beauty",2020-12-22 00:00:00
+293,Oliver Brown,oliver.brown293@example.co.uk,72,Female,Manchester,United Kingdom,2023-05-29 00:00:00,Occasional,"Fashion,Beauty,Automotive",2023-05-29 00:00:00
+294,Joshua Lewis,joshua.lewis294@example.co.uk,60,Male,Leeds,United Kingdom,2023-12-29 00:00:00,Occasional,"Fashion,Toys",2023-12-29 00:00:00
+295,Karen Torres,karen.torres295@example.co.uk,73,Female,Bradford,United Kingdom,2023-05-29 00:00:00,Occasional,"Books,Toys",2023-05-29 00:00:00
+296,Margaret Torres,margaret.torres296@example.co.uk,54,Female,Sheffield,United Kingdom,2023-03-15 00:00:00,Premium,"Home & Garden,Fashion,Books",2023-03-15 00:00:00
+297,Emily Anderson,emily.anderson297@example.co.uk,34,Male,Edinburgh,United Kingdom,2022-01-23 00:00:00,Premium,"Fashion,Electronics",2022-01-23 00:00:00
+298,Margaret Gonzalez,margaret.gonzalez298@example.co.uk,32,Female,Bradford,United Kingdom,2021-06-20 00:00:00,Premium,"Automotive,Books",2021-06-20 00:00:00
+299,Barbara Hernandez,barbara.hernandez299@example.co.uk,19,Male,Plymouth,United Kingdom,2020-07-25 00:00:00,Occasional,Sports,2020-07-25 00:00:00
+300,Mia Robinson,mia.robinson300@example.co.uk,29,Prefer not to say,Newcastle,United Kingdom,2023-05-09 00:00:00,Premium,Home & Garden,2023-05-09 00:00:00
+301,Margaret Davis,margaret.davis301@example.co.uk,18,Male,Stoke-on-Trent,United Kingdom,2021-06-17 00:00:00,Regular,"Automotive,Books",2021-06-17 00:00:00
+302,Emily Lewis,emily.lewis302@example.co.uk,39,Other,Nottingham,United Kingdom,2022-07-07 00:00:00,Regular,Fashion,2022-07-07 00:00:00
+303,Steven Lopez,steven.lopez303@example.co.uk,27,Other,Wolverhampton,United Kingdom,2023-07-04 00:00:00,New,"Toys,Home & Garden",2023-07-04 00:00:00
+304,Robert Jones,robert.jones304@example.co.uk,70,Prefer not to say,Edinburgh,United Kingdom,2021-11-22 00:00:00,Premium,Sports,2021-11-22 00:00:00
+305,Emma Martin,emma.martin305@example.co.uk,63,Male,Nottingham,United Kingdom,2023-08-30 00:00:00,Regular,"Home & Garden,Beauty,Electronics",2023-08-30 00:00:00
+306,Mia Johnson,mia.johnson306@example.co.uk,44,Female,Bristol,United Kingdom,2021-09-26 00:00:00,New,Books,2021-09-26 00:00:00
+307,Mark Smith,mark.smith307@example.co.uk,49,Other,London,United Kingdom,2021-11-10 00:00:00,Regular,"Fashion,Toys",2021-11-10 00:00:00
+308,Barbara Harris,barbara.harris308@example.co.uk,68,Prefer not to say,Coventry,United Kingdom,2023-12-15 00:00:00,Premium,"Fashion,Automotive,Beauty",2023-12-15 00:00:00
+309,Oliver Miller,oliver.miller309@example.co.uk,58,Other,Kingston upon Hull,United Kingdom,2021-06-29 00:00:00,New,"Books,Toys,Sports",2021-06-29 00:00:00
+310,Thomas White,thomas.white310@example.co.uk,33,Female,Bradford,United Kingdom,2020-12-17 00:00:00,Occasional,Sports,2020-12-17 00:00:00
+311,Andrew Ramirez,andrew.ramirez311@example.co.uk,65,Male,Leeds,United Kingdom,2023-02-21 00:00:00,Occasional,Fashion,2023-02-21 00:00:00
+312,Robert Martinez,robert.martinez312@example.co.uk,32,Prefer not to say,Wolverhampton,United Kingdom,2021-11-06 00:00:00,New,"Books,Fashion",2021-11-06 00:00:00
+313,Jennifer Jackson,jennifer.jackson313@example.co.uk,65,Female,London,United Kingdom,2022-01-18 00:00:00,Occasional,"Sports,Electronics,Books",2022-01-18 00:00:00
+314,Charles Allen,charles.allen314@example.co.uk,72,Other,Bristol,United Kingdom,2023-12-08 00:00:00,Occasional,"Sports,Toys",2023-12-08 00:00:00
+315,Jennifer Jones,jennifer.jones315@example.co.uk,57,Other,Sheffield,United Kingdom,2022-06-27 00:00:00,Regular,Toys,2022-06-27 00:00:00
+316,Karen Thomas,karen.thomas316@example.co.uk,53,Other,Belfast,United Kingdom,2020-06-17 00:00:00,Premium,"Beauty,Toys,Fashion",2020-06-17 00:00:00
+317,Michelle Gonzalez,michelle.gonzalez317@example.co.uk,47,Other,Bristol,United Kingdom,2023-03-27 00:00:00,Occasional,"Toys,Beauty,Fashion",2023-03-27 00:00:00
+318,Paul Wilson,paul.wilson318@example.co.uk,50,Female,Nottingham,United Kingdom,2021-10-07 00:00:00,Premium,"Beauty,Books,Automotive",2021-10-07 00:00:00
+319,Linda Robinson,linda.robinson319@example.co.uk,45,Other,Nottingham,United Kingdom,2023-08-02 00:00:00,New,"Fashion,Books",2023-08-02 00:00:00
+320,Harper Torres,harper.torres320@example.co.uk,71,Male,Coventry,United Kingdom,2020-01-08 00:00:00,Regular,"Electronics,Beauty",2020-01-08 00:00:00
+321,James Jackson,james.jackson321@example.co.uk,31,Female,Wolverhampton,United Kingdom,2022-03-28 00:00:00,New,"Beauty,Automotive",2022-03-28 00:00:00
+322,Barbara Thomas,barbara.thomas322@example.co.uk,64,Male,Wolverhampton,United Kingdom,2022-09-11 00:00:00,New,Fashion,2022-09-11 00:00:00
+323,Mary Thomas,mary.thomas323@example.co.uk,39,Other,Sheffield,United Kingdom,2022-01-08 00:00:00,Occasional,"Books,Automotive",2022-01-08 00:00:00
+324,Betty Garcia,betty.garcia324@example.co.uk,59,Prefer not to say,Sheffield,United Kingdom,2020-03-08 00:00:00,Premium,"Books,Automotive",2020-03-08 00:00:00
+325,James Garcia,james.garcia325@example.co.uk,27,Other,Bristol,United Kingdom,2023-08-09 00:00:00,Regular,Electronics,2023-08-09 00:00:00
+326,Donna Ramirez,donna.ramirez326@example.co.uk,36,Female,Bristol,United Kingdom,2022-04-23 00:00:00,Premium,"Sports,Books,Electronics",2022-04-23 00:00:00
+327,Mia Torres,mia.torres327@example.co.uk,30,Male,Manchester,United Kingdom,2020-04-29 00:00:00,Occasional,"Books,Sports,Beauty",2020-04-29 00:00:00
+328,Linda Hernandez,linda.hernandez328@example.co.uk,61,Female,Edinburgh,United Kingdom,2023-10-14 00:00:00,Regular,"Books,Automotive",2023-10-14 00:00:00
+329,Andrew Johnson,andrew.johnson329@example.co.uk,53,Female,Birmingham,United Kingdom,2020-06-12 00:00:00,Regular,"Automotive,Sports,Books",2020-06-12 00:00:00
+330,Sandra Jackson,sandra.jackson330@example.co.uk,61,Other,Belfast,United Kingdom,2020-06-10 00:00:00,Occasional,"Beauty,Fashion",2020-06-10 00:00:00
+331,Oliver Clark,oliver.clark331@example.co.uk,25,Male,Kingston upon Hull,United Kingdom,2023-04-09 00:00:00,Premium,"Home & Garden,Electronics,Toys",2023-04-09 00:00:00
+332,Elizabeth Jones,elizabeth.jones332@example.co.uk,43,Male,Belfast,United Kingdom,2020-04-14 00:00:00,Regular,"Automotive,Sports",2020-04-14 00:00:00
+333,Margaret Hill,margaret.hill333@example.co.uk,63,Prefer not to say,Wolverhampton,United Kingdom,2023-10-05 00:00:00,Occasional,"Fashion,Automotive,Electronics",2023-10-05 00:00:00
+334,Karen Jackson,karen.jackson334@example.co.uk,35,Prefer not to say,Leeds,United Kingdom,2022-03-18 00:00:00,Premium,Automotive,2022-03-18 00:00:00
+335,Charles Smith,charles.smith335@example.co.uk,73,Prefer not to say,Leeds,United Kingdom,2020-08-21 00:00:00,Premium,Automotive,2020-08-21 00:00:00
+336,James Hernandez,james.hernandez336@example.co.uk,33,Female,Leicester,United Kingdom,2021-09-25 00:00:00,Regular,"Fashion,Automotive",2021-09-25 00:00:00
+337,Mia Scott,mia.scott337@example.co.uk,70,Prefer not to say,Liverpool,United Kingdom,2021-07-17 00:00:00,Premium,Automotive,2021-07-17 00:00:00
+338,Steven Clark,steven.clark338@example.co.uk,68,Female,Coventry,United Kingdom,2022-03-29 00:00:00,Premium,"Automotive,Toys,Electronics",2022-03-29 00:00:00
+339,Emily Clark,emily.clark339@example.co.uk,27,Prefer not to say,Wolverhampton,United Kingdom,2022-12-14 00:00:00,Premium,Beauty,2022-12-14 00:00:00
+340,Nancy White,nancy.white340@example.co.uk,45,Prefer not to say,Leeds,United Kingdom,2022-07-30 00:00:00,Occasional,"Books,Fashion,Toys",2022-07-30 00:00:00
+341,Barbara Jones,barbara.jones341@example.co.uk,44,Prefer not to say,Sheffield,United Kingdom,2022-12-31 00:00:00,New,Toys,2022-12-31 00:00:00
+342,Richard Torres,richard.torres342@example.co.uk,70,Prefer not to say,Wolverhampton,United Kingdom,2022-02-26 00:00:00,New,"Beauty,Automotive",2022-02-26 00:00:00
+343,Steven Thompson,steven.thompson343@example.co.uk,35,Male,Bristol,United Kingdom,2023-01-06 00:00:00,New,"Fashion,Home & Garden",2023-01-06 00:00:00
+344,Mark Moore,mark.moore344@example.co.uk,31,Female,Newcastle,United Kingdom,2020-01-24 00:00:00,Occasional,"Home & Garden,Automotive,Books",2020-01-24 00:00:00
+345,Michael Martin,michael.martin345@example.co.uk,69,Female,Bristol,United Kingdom,2022-04-13 00:00:00,Regular,"Electronics,Fashion,Home & Garden",2022-04-13 00:00:00
+346,Mark Wilson,mark.wilson346@example.co.uk,42,Female,Coventry,United Kingdom,2023-02-20 00:00:00,Occasional,Automotive,2023-02-20 00:00:00
+347,Sophia King,sophia.king347@example.co.uk,53,Other,Leeds,United Kingdom,2021-01-08 00:00:00,Occasional,"Sports,Automotive",2021-01-08 00:00:00
+348,Mary Thompson,mary.thompson348@example.co.uk,36,Male,Newcastle,United Kingdom,2021-12-21 00:00:00,Occasional,Electronics,2021-12-21 00:00:00
+349,Michelle Martinez,michelle.martinez349@example.co.uk,54,Prefer not to say,Bristol,United Kingdom,2023-05-26 00:00:00,Regular,"Toys,Fashion",2023-05-26 00:00:00
+350,Michelle Hill,michelle.hill350@example.co.uk,22,Female,Stoke-on-Trent,United Kingdom,2023-11-21 00:00:00,New,"Automotive,Books",2023-11-21 00:00:00
+351,Oliver Hill,oliver.hill351@example.co.uk,21,Female,Bradford,United Kingdom,2021-12-15 00:00:00,Premium,"Beauty,Electronics",2021-12-15 00:00:00
+352,Ava Jones,ava.jones352@example.co.uk,24,Other,Leicester,United Kingdom,2020-02-02 00:00:00,Occasional,"Beauty,Books,Electronics",2020-02-02 00:00:00
+353,Emma Sanchez,emma.sanchez353@example.co.uk,21,Female,Glasgow,United Kingdom,2023-11-29 00:00:00,New,"Electronics,Sports",2023-11-29 00:00:00
+354,Jennifer Scott,jennifer.scott354@example.co.uk,68,Female,Nottingham,United Kingdom,2023-08-27 00:00:00,Premium,"Home & Garden,Fashion",2023-08-27 00:00:00
+355,Steven Smith,steven.smith355@example.co.uk,20,Prefer not to say,Coventry,United Kingdom,2021-04-04 00:00:00,New,"Toys,Home & Garden,Beauty",2021-04-04 00:00:00
+356,Betty Williams,betty.williams356@example.co.uk,22,Prefer not to say,Newcastle,United Kingdom,2020-06-03 00:00:00,Premium,"Beauty,Automotive,Sports",2020-06-03 00:00:00
+357,Isabella Gonzalez,isabella.gonzalez357@example.co.uk,53,Male,Stoke-on-Trent,United Kingdom,2021-12-05 00:00:00,Occasional,"Books,Automotive",2021-12-05 00:00:00
+358,Ava Moore,ava.moore358@example.co.uk,33,Prefer not to say,Liverpool,United Kingdom,2020-01-13 00:00:00,Premium,"Fashion,Beauty,Home & Garden",2020-01-13 00:00:00
+359,Mark Lopez,mark.lopez359@example.co.uk,22,Prefer not to say,Newcastle,United Kingdom,2022-08-01 00:00:00,Regular,"Toys,Home & Garden,Electronics",2022-08-01 00:00:00
+360,Mark King,mark.king360@example.co.uk,39,Male,Cardiff,United Kingdom,2023-04-22 00:00:00,Regular,"Automotive,Home & Garden,Beauty",2023-04-22 00:00:00
+361,James Robinson,james.robinson361@example.co.uk,33,Female,Stoke-on-Trent,United Kingdom,2023-07-04 00:00:00,Occasional,"Sports,Home & Garden,Fashion",2023-07-04 00:00:00
+362,Isabella Nguyen,isabella.nguyen362@example.co.uk,25,Female,Leeds,United Kingdom,2022-01-04 00:00:00,Regular,Toys,2022-01-04 00:00:00
+363,Andrew Moore,andrew.moore363@example.co.uk,68,Female,Sheffield,United Kingdom,2021-01-09 00:00:00,New,"Toys,Fashion",2021-01-09 00:00:00
+364,Joseph Lopez,joseph.lopez364@example.co.uk,43,Male,Wolverhampton,United Kingdom,2021-03-23 00:00:00,New,Fashion,2021-03-23 00:00:00
+365,Jennifer Martinez,jennifer.martinez365@example.co.uk,55,Female,Stoke-on-Trent,United Kingdom,2022-02-12 00:00:00,Occasional,"Electronics,Toys",2022-02-12 00:00:00
+366,Emily Moore,emily.moore366@example.co.uk,22,Female,Bristol,United Kingdom,2020-04-15 00:00:00,Occasional,Home & Garden,2020-04-15 00:00:00
+367,Margaret Torres,margaret.torres367@example.co.uk,70,Prefer not to say,Stoke-on-Trent,United Kingdom,2021-08-29 00:00:00,Regular,"Sports,Toys,Fashion",2021-08-29 00:00:00
+368,Elizabeth Smith,elizabeth.smith368@example.co.uk,38,Other,Edinburgh,United Kingdom,2020-05-27 00:00:00,Occasional,"Toys,Automotive,Fashion",2020-05-27 00:00:00
+369,Nancy Lee,nancy.lee369@example.co.uk,34,Other,Glasgow,United Kingdom,2023-07-29 00:00:00,New,"Fashion,Automotive,Books",2023-07-29 00:00:00
+370,Michael Perez,michael.perez370@example.co.uk,43,Other,Sheffield,United Kingdom,2020-01-03 00:00:00,Regular,Sports,2020-01-03 00:00:00
+371,Mary Johnson,mary.johnson371@example.co.uk,29,Female,Glasgow,United Kingdom,2020-02-20 00:00:00,Occasional,Electronics,2020-02-20 00:00:00
+372,Sophia Martin,sophia.martin372@example.co.uk,66,Female,Liverpool,United Kingdom,2023-07-07 00:00:00,New,"Fashion,Automotive",2023-07-07 00:00:00
+373,Michael Moore,michael.moore373@example.co.uk,26,Other,Leicester,United Kingdom,2023-05-01 00:00:00,Occasional,"Books,Toys,Automotive",2023-05-01 00:00:00
+374,Joseph White,joseph.white374@example.co.uk,63,Male,Cardiff,United Kingdom,2021-01-10 00:00:00,Occasional,"Electronics,Sports,Home & Garden",2021-01-10 00:00:00
+375,Thomas Davis,thomas.davis375@example.co.uk,60,Prefer not to say,Coventry,United Kingdom,2020-12-24 00:00:00,Regular,"Fashion,Automotive,Books",2020-12-24 00:00:00
+376,Betty Robinson,betty.robinson376@example.co.uk,19,Female,Bradford,United Kingdom,2022-05-04 00:00:00,Regular,"Electronics,Sports",2022-05-04 00:00:00
+377,Daniel Smith,daniel.smith377@example.co.uk,65,Prefer not to say,Plymouth,United Kingdom,2023-11-12 00:00:00,New,"Sports,Beauty",2023-11-12 00:00:00
+378,Emily Rodriguez,emily.rodriguez378@example.co.uk,39,Other,Birmingham,United Kingdom,2022-09-11 00:00:00,Premium,"Sports,Home & Garden",2022-09-11 00:00:00
+379,Michelle Perez,michelle.perez379@example.co.uk,19,Male,Stoke-on-Trent,United Kingdom,2021-11-06 00:00:00,Regular,"Fashion,Home & Garden",2021-11-06 00:00:00
+380,Sandra Taylor,sandra.taylor380@example.co.uk,37,Other,Belfast,United Kingdom,2021-07-23 00:00:00,Premium,"Automotive,Fashion,Beauty",2021-07-23 00:00:00
+381,Margaret Ramirez,margaret.ramirez381@example.co.uk,27,Prefer not to say,Coventry,United Kingdom,2020-07-19 00:00:00,Premium,Electronics,2020-07-19 00:00:00
+382,Joshua Wright,joshua.wright382@example.co.uk,57,Male,Plymouth,United Kingdom,2022-10-24 00:00:00,Regular,"Toys,Electronics",2022-10-24 00:00:00
+383,Anthony Davis,anthony.davis383@example.co.uk,19,Prefer not to say,Newcastle,United Kingdom,2020-09-29 00:00:00,New,"Automotive,Home & Garden",2020-09-29 00:00:00
+384,Michael Lee,michael.lee384@example.co.uk,68,Male,Manchester,United Kingdom,2020-08-29 00:00:00,Regular,"Toys,Sports",2020-08-29 00:00:00
+385,Steven Flores,steven.flores385@example.co.uk,36,Other,Edinburgh,United Kingdom,2020-07-22 00:00:00,Regular,"Electronics,Sports",2020-07-22 00:00:00
+386,Amelia Lopez,amelia.lopez386@example.co.uk,62,Male,Birmingham,United Kingdom,2022-04-12 00:00:00,Occasional,"Beauty,Books,Fashion",2022-04-12 00:00:00
+387,Paul Allen,paul.allen387@example.co.uk,30,Male,Edinburgh,United Kingdom,2023-09-18 00:00:00,Premium,Fashion,2023-09-18 00:00:00
+388,David White,david.white388@example.co.uk,37,Male,Belfast,United Kingdom,2022-08-30 00:00:00,Occasional,"Books,Automotive,Fashion",2022-08-30 00:00:00
+389,Mark Brown,mark.brown389@example.co.uk,21,Female,Birmingham,United Kingdom,2021-07-03 00:00:00,New,Home & Garden,2021-07-03 00:00:00
+390,Mark King,mark.king390@example.co.uk,63,Prefer not to say,Stoke-on-Trent,United Kingdom,2022-03-29 00:00:00,New,"Toys,Home & Garden",2022-03-29 00:00:00
+391,Oliver Walker,oliver.walker391@example.co.uk,43,Female,Manchester,United Kingdom,2023-11-08 00:00:00,Occasional,"Electronics,Fashion",2023-11-08 00:00:00
+392,Sarah Perez,sarah.perez392@example.co.uk,38,Female,Liverpool,United Kingdom,2020-05-21 00:00:00,Occasional,Automotive,2020-05-21 00:00:00
+393,William Garcia,william.garcia393@example.co.uk,68,Male,Newcastle,United Kingdom,2022-03-09 00:00:00,Regular,"Fashion,Toys,Sports",2022-03-09 00:00:00
+394,Michelle Nguyen,michelle.nguyen394@example.co.uk,50,Other,Glasgow,United Kingdom,2022-12-16 00:00:00,New,"Fashion,Beauty,Automotive",2022-12-16 00:00:00
+395,Paul Thomas,paul.thomas395@example.co.uk,40,Prefer not to say,Belfast,United Kingdom,2023-08-24 00:00:00,Premium,"Automotive,Home & Garden",2023-08-24 00:00:00
+396,James Gonzalez,james.gonzalez396@example.co.uk,21,Prefer not to say,Bristol,United Kingdom,2023-09-10 00:00:00,Premium,"Beauty,Automotive,Home & Garden",2023-09-10 00:00:00
+397,Nancy Martinez,nancy.martinez397@example.co.uk,66,Female,Leeds,United Kingdom,2023-01-29 00:00:00,Regular,"Sports,Electronics,Books",2023-01-29 00:00:00
+398,Barbara Miller,barbara.miller398@example.co.uk,69,Prefer not to say,Birmingham,United Kingdom,2020-04-30 00:00:00,New,Books,2020-04-30 00:00:00
+399,Richard Jackson,richard.jackson399@example.co.uk,49,Other,Wolverhampton,United Kingdom,2022-10-19 00:00:00,Regular,"Fashion,Toys",2022-10-19 00:00:00
+400,Sophia Walker,sophia.walker400@example.co.uk,46,Female,Manchester,United Kingdom,2022-08-26 00:00:00,Premium,Fashion,2022-08-26 00:00:00
+401,John Miller,john.miller401@example.co.uk,34,Male,Bradford,United Kingdom,2023-03-10 00:00:00,New,"Beauty,Fashion",2023-03-10 00:00:00
+402,John King,john.king402@example.co.uk,61,Female,Nottingham,United Kingdom,2023-09-27 00:00:00,Premium,Toys,2023-09-27 00:00:00
+403,Barbara Hill,barbara.hill403@example.co.uk,35,Male,Cardiff,United Kingdom,2021-09-27 00:00:00,New,"Electronics,Books",2021-09-27 00:00:00
+404,Linda Taylor,linda.taylor404@example.co.uk,21,Prefer not to say,Stoke-on-Trent,United Kingdom,2020-08-23 00:00:00,New,"Automotive,Toys",2020-08-23 00:00:00
+405,Paul Lee,paul.lee405@example.co.uk,70,Other,Manchester,United Kingdom,2021-04-02 00:00:00,Regular,"Beauty,Electronics,Automotive",2021-04-02 00:00:00
+406,Joshua Jones,joshua.jones406@example.co.uk,72,Female,Glasgow,United Kingdom,2023-04-28 00:00:00,Occasional,"Automotive,Toys",2023-04-28 00:00:00
+407,Joshua Hill,joshua.hill407@example.co.uk,22,Female,Wolverhampton,United Kingdom,2020-12-04 00:00:00,Occasional,"Sports,Books",2020-12-04 00:00:00
+408,Sandra Davis,sandra.davis408@example.co.uk,23,Female,Coventry,United Kingdom,2023-12-21 00:00:00,Occasional,"Electronics,Home & Garden",2023-12-21 00:00:00
+409,Steven Lewis,steven.lewis409@example.co.uk,69,Prefer not to say,Nottingham,United Kingdom,2021-07-19 00:00:00,Occasional,"Automotive,Sports,Toys",2021-07-19 00:00:00
+410,Evelyn Thomas,evelyn.thomas410@example.co.uk,62,Prefer not to say,Bristol,United Kingdom,2021-11-27 00:00:00,Premium,"Automotive,Books,Beauty",2021-11-27 00:00:00
+411,Andrew Rodriguez,andrew.rodriguez411@example.co.uk,33,Other,Cardiff,United Kingdom,2020-05-12 00:00:00,Regular,"Electronics,Fashion,Automotive",2020-05-12 00:00:00
+412,James Brown,james.brown412@example.co.uk,56,Prefer not to say,London,United Kingdom,2021-12-11 00:00:00,Regular,Automotive,2021-12-11 00:00:00
+413,Elizabeth Allen,elizabeth.allen413@example.co.uk,51,Male,London,United Kingdom,2022-05-18 00:00:00,Occasional,Automotive,2022-05-18 00:00:00
+414,Emma Moore,emma.moore414@example.co.uk,28,Prefer not to say,Nottingham,United Kingdom,2022-04-30 00:00:00,Regular,Automotive,2022-04-30 00:00:00
+415,Mary Jones,mary.jones415@example.co.uk,59,Male,Nottingham,United Kingdom,2022-03-02 00:00:00,Premium,"Beauty,Home & Garden",2022-03-02 00:00:00
+416,Matthew Miller,matthew.miller416@example.co.uk,63,Male,Belfast,United Kingdom,2022-12-13 00:00:00,Occasional,"Fashion,Electronics",2022-12-13 00:00:00
+417,Patricia Ramirez,patricia.ramirez417@example.co.uk,24,Other,Cardiff,United Kingdom,2021-06-01 00:00:00,Occasional,Electronics,2021-06-01 00:00:00
+418,Lisa Clark,lisa.clark418@example.co.uk,65,Prefer not to say,Belfast,United Kingdom,2023-01-25 00:00:00,New,Sports,2023-01-25 00:00:00
+419,Sarah Sanchez,sarah.sanchez419@example.co.uk,33,Other,Coventry,United Kingdom,2023-05-24 00:00:00,Regular,"Toys,Electronics",2023-05-24 00:00:00
+420,Thomas Wright,thomas.wright420@example.co.uk,34,Male,Edinburgh,United Kingdom,2023-06-25 00:00:00,Occasional,"Beauty,Toys,Automotive",2023-06-25 00:00:00
+421,Margaret King,margaret.king421@example.co.uk,59,Male,Manchester,United Kingdom,2020-10-24 00:00:00,New,Automotive,2020-10-24 00:00:00
+422,Emily Brown,emily.brown422@example.co.uk,19,Prefer not to say,Edinburgh,United Kingdom,2020-03-11 00:00:00,Regular,"Books,Electronics,Beauty",2020-03-11 00:00:00
+423,Barbara Young,barbara.young423@example.co.uk,22,Other,Leeds,United Kingdom,2022-04-25 00:00:00,New,"Fashion,Toys,Home & Garden",2022-04-25 00:00:00
+424,Andrew King,andrew.king424@example.co.uk,49,Other,Wolverhampton,United Kingdom,2022-01-19 00:00:00,Premium,"Electronics,Toys",2022-01-19 00:00:00
+425,Steven Harris,steven.harris425@example.co.uk,24,Prefer not to say,Leeds,United Kingdom,2023-12-26 00:00:00,Occasional,"Electronics,Home & Garden",2023-12-26 00:00:00
+426,David Hill,david.hill426@example.co.uk,59,Male,Bradford,United Kingdom,2021-12-25 00:00:00,Occasional,"Beauty,Home & Garden,Sports",2021-12-25 00:00:00
+427,Harper Walker,harper.walker427@example.co.uk,68,Female,Coventry,United Kingdom,2021-04-07 00:00:00,Regular,"Automotive,Books,Fashion",2021-04-07 00:00:00
+428,Christopher Martinez,christopher.martinez428@example.co.uk,28,Other,Birmingham,United Kingdom,2023-11-02 00:00:00,Premium,"Fashion,Automotive,Sports",2023-11-02 00:00:00
+429,Isabella Wright,isabella.wright429@example.co.uk,24,Prefer not to say,Leicester,United Kingdom,2020-08-10 00:00:00,Occasional,"Beauty,Books",2020-08-10 00:00:00
+430,Robert Moore,robert.moore430@example.co.uk,57,Prefer not to say,Nottingham,United Kingdom,2023-07-24 00:00:00,Regular,Sports,2023-07-24 00:00:00
+431,Daniel Sanchez,daniel.sanchez431@example.co.uk,25,Other,Liverpool,United Kingdom,2023-06-22 00:00:00,Regular,"Electronics,Books",2023-06-22 00:00:00
+432,Oliver King,oliver.king432@example.co.uk,18,Male,Bristol,United Kingdom,2022-06-09 00:00:00,Regular,Automotive,2022-06-09 00:00:00
+433,Anthony Nguyen,anthony.nguyen433@example.co.uk,58,Prefer not to say,Edinburgh,United Kingdom,2020-06-12 00:00:00,Premium,Automotive,2020-06-12 00:00:00
+434,Joshua Anderson,joshua.anderson434@example.co.uk,47,Male,Kingston upon Hull,United Kingdom,2020-02-25 00:00:00,New,"Fashion,Electronics,Home & Garden",2020-02-25 00:00:00
+435,Emily Ramirez,emily.ramirez435@example.co.uk,73,Prefer not to say,Nottingham,United Kingdom,2021-01-13 00:00:00,New,"Beauty,Fashion",2021-01-13 00:00:00
+436,Margaret Jones,margaret.jones436@example.co.uk,37,Other,Wolverhampton,United Kingdom,2021-05-14 00:00:00,Regular,"Toys,Home & Garden,Fashion",2021-05-14 00:00:00
+437,Robert Lewis,robert.lewis437@example.co.uk,55,Male,Cardiff,United Kingdom,2021-05-03 00:00:00,Premium,"Sports,Books",2021-05-03 00:00:00
+438,Oliver Nguyen,oliver.nguyen438@example.co.uk,61,Other,Cardiff,United Kingdom,2022-03-06 00:00:00,Regular,"Sports,Beauty,Fashion",2022-03-06 00:00:00
+439,Ashley Williams,ashley.williams439@example.co.uk,70,Prefer not to say,Belfast,United Kingdom,2022-10-01 00:00:00,Occasional,"Sports,Automotive,Books",2022-10-01 00:00:00
+440,Barbara Hill,barbara.hill440@example.co.uk,62,Female,Nottingham,United Kingdom,2023-07-12 00:00:00,Regular,Toys,2023-07-12 00:00:00
+441,Michelle Jackson,michelle.jackson441@example.co.uk,49,Other,Liverpool,United Kingdom,2022-10-28 00:00:00,Premium,Electronics,2022-10-28 00:00:00
+442,Jessica Rodriguez,jessica.rodriguez442@example.co.uk,60,Male,Nottingham,United Kingdom,2022-07-17 00:00:00,Premium,"Books,Fashion",2022-07-17 00:00:00
+443,Emma Lopez,emma.lopez443@example.co.uk,53,Other,Bristol,United Kingdom,2023-03-11 00:00:00,Occasional,"Automotive,Toys,Fashion",2023-03-11 00:00:00
+444,Michael Perez,michael.perez444@example.co.uk,49,Female,Birmingham,United Kingdom,2022-03-19 00:00:00,Regular,"Books,Sports,Fashion",2022-03-19 00:00:00
+445,Betty Jackson,betty.jackson445@example.co.uk,21,Male,Leeds,United Kingdom,2020-08-16 00:00:00,New,"Fashion,Automotive",2020-08-16 00:00:00
+446,Daniel Ramirez,daniel.ramirez446@example.co.uk,74,Male,Glasgow,United Kingdom,2021-11-02 00:00:00,Premium,"Home & Garden,Sports",2021-11-02 00:00:00
+447,Kimberly Lee,kimberly.lee447@example.co.uk,57,Male,Glasgow,United Kingdom,2020-05-24 00:00:00,Premium,"Home & Garden,Fashion,Books",2020-05-24 00:00:00
+448,Lisa Lopez,lisa.lopez448@example.co.uk,44,Other,Birmingham,United Kingdom,2022-08-16 00:00:00,Regular,"Electronics,Home & Garden,Beauty",2022-08-16 00:00:00
+449,William Ramirez,william.ramirez449@example.co.uk,45,Prefer not to say,Nottingham,United Kingdom,2022-02-14 00:00:00,Premium,"Books,Beauty,Toys",2022-02-14 00:00:00
+450,Isabella Smith,isabella.smith450@example.co.uk,71,Male,Sheffield,United Kingdom,2021-09-10 00:00:00,Regular,"Automotive,Toys,Sports",2021-09-10 00:00:00
+451,Sandra Davis,sandra.davis451@example.co.uk,65,Other,Leicester,United Kingdom,2022-06-12 00:00:00,Regular,"Automotive,Beauty,Electronics",2022-06-12 00:00:00
+452,Donald Ramirez,donald.ramirez452@example.co.uk,66,Prefer not to say,Birmingham,United Kingdom,2023-11-11 00:00:00,Regular,"Home & Garden,Toys",2023-11-11 00:00:00
+453,Sandra King,sandra.king453@example.co.uk,61,Female,Bradford,United Kingdom,2023-04-18 00:00:00,New,"Electronics,Books,Fashion",2023-04-18 00:00:00
+454,Sophia Lewis,sophia.lewis454@example.co.uk,69,Male,Manchester,United Kingdom,2020-08-03 00:00:00,Occasional,Home & Garden,2020-08-03 00:00:00
+455,Michael Moore,michael.moore455@example.co.uk,55,Female,Birmingham,United Kingdom,2021-08-16 00:00:00,Occasional,"Fashion,Automotive,Beauty",2021-08-16 00:00:00
+456,Robert Walker,robert.walker456@example.co.uk,69,Prefer not to say,Newcastle,United Kingdom,2021-08-16 00:00:00,New,"Beauty,Sports,Automotive",2021-08-16 00:00:00
+457,Lisa Thompson,lisa.thompson457@example.co.uk,43,Other,Bradford,United Kingdom,2023-01-10 00:00:00,Premium,Books,2023-01-10 00:00:00
+458,Ava Flores,ava.flores458@example.co.uk,67,Female,Sheffield,United Kingdom,2021-12-12 00:00:00,Premium,"Home & Garden,Toys",2021-12-12 00:00:00
+459,Amelia Nguyen,amelia.nguyen459@example.co.uk,33,Other,Sheffield,United Kingdom,2022-02-21 00:00:00,Occasional,Toys,2022-02-21 00:00:00
+460,Matthew Perez,matthew.perez460@example.co.uk,69,Female,Kingston upon Hull,United Kingdom,2021-09-19 00:00:00,Regular,"Toys,Beauty",2021-09-19 00:00:00
+461,Donald Taylor,donald.taylor461@example.co.uk,68,Prefer not to say,Plymouth,United Kingdom,2020-01-29 00:00:00,Premium,"Books,Toys",2020-01-29 00:00:00
+462,Emma Moore,emma.moore462@example.co.uk,69,Male,Manchester,United Kingdom,2021-05-14 00:00:00,Premium,"Fashion,Books",2021-05-14 00:00:00
+463,Christopher Wright,christopher.wright463@example.co.uk,61,Male,Leicester,United Kingdom,2022-03-08 00:00:00,New,"Beauty,Fashion,Sports",2022-03-08 00:00:00
+464,Emma Scott,emma.scott464@example.co.uk,59,Male,Leicester,United Kingdom,2021-01-06 00:00:00,New,Toys,2021-01-06 00:00:00
+465,Joshua Torres,joshua.torres465@example.co.uk,25,Male,Stoke-on-Trent,United Kingdom,2021-12-05 00:00:00,Premium,"Automotive,Home & Garden",2021-12-05 00:00:00
+466,Charles Lee,charles.lee466@example.co.uk,66,Female,Liverpool,United Kingdom,2021-03-16 00:00:00,Occasional,"Electronics,Automotive,Books",2021-03-16 00:00:00
+467,Charlotte Wilson,charlotte.wilson467@example.co.uk,18,Male,Edinburgh,United Kingdom,2021-10-01 00:00:00,New,"Toys,Home & Garden,Sports",2021-10-01 00:00:00
+468,William Flores,william.flores468@example.co.uk,47,Other,Leicester,United Kingdom,2023-06-05 00:00:00,Regular,"Electronics,Sports",2023-06-05 00:00:00
+469,Jennifer Robinson,jennifer.robinson469@example.co.uk,47,Female,Cardiff,United Kingdom,2023-02-16 00:00:00,New,Automotive,2023-02-16 00:00:00
+470,Lisa Allen,lisa.allen470@example.co.uk,71,Prefer not to say,Birmingham,United Kingdom,2022-09-25 00:00:00,Regular,"Home & Garden,Toys",2022-09-25 00:00:00
+471,Donna Flores,donna.flores471@example.co.uk,56,Male,Liverpool,United Kingdom,2023-07-22 00:00:00,Occasional,Electronics,2023-07-22 00:00:00
+472,Thomas Johnson,thomas.johnson472@example.co.uk,44,Male,Sheffield,United Kingdom,2020-09-20 00:00:00,Premium,Home & Garden,2020-09-20 00:00:00
+473,Mary Nguyen,mary.nguyen473@example.co.uk,74,Female,Nottingham,United Kingdom,2021-04-28 00:00:00,Regular,"Beauty,Fashion,Sports",2021-04-28 00:00:00
+474,Linda Miller,linda.miller474@example.co.uk,62,Prefer not to say,Bristol,United Kingdom,2023-02-07 00:00:00,New,Fashion,2023-02-07 00:00:00
+475,Emma Hernandez,emma.hernandez475@example.co.uk,60,Other,Wolverhampton,United Kingdom,2022-11-27 00:00:00,Occasional,"Beauty,Toys",2022-11-27 00:00:00
+476,Daniel Lee,daniel.lee476@example.co.uk,68,Prefer not to say,Coventry,United Kingdom,2020-10-27 00:00:00,New,"Beauty,Sports,Electronics",2020-10-27 00:00:00
+477,Steven Lee,steven.lee477@example.co.uk,19,Female,Bristol,United Kingdom,2021-10-24 00:00:00,Regular,"Beauty,Home & Garden,Books",2021-10-24 00:00:00
+478,Lisa Davis,lisa.davis478@example.co.uk,29,Female,Sheffield,United Kingdom,2022-09-28 00:00:00,Premium,Automotive,2022-09-28 00:00:00
+479,Donald Young,donald.young479@example.co.uk,71,Other,Kingston upon Hull,United Kingdom,2020-03-02 00:00:00,Premium,"Electronics,Automotive",2020-03-02 00:00:00
+480,Ashley Wright,ashley.wright480@example.co.uk,72,Other,Plymouth,United Kingdom,2021-06-21 00:00:00,Occasional,"Toys,Automotive,Books",2021-06-21 00:00:00
+481,Joseph Jackson,joseph.jackson481@example.co.uk,61,Prefer not to say,Edinburgh,United Kingdom,2021-10-16 00:00:00,Premium,Beauty,2021-10-16 00:00:00
+482,Lisa Lewis,lisa.lewis482@example.co.uk,20,Other,Plymouth,United Kingdom,2020-01-11 00:00:00,Premium,Beauty,2020-01-11 00:00:00
+483,Charles Martin,charles.martin483@example.co.uk,46,Male,Leicester,United Kingdom,2021-09-18 00:00:00,New,"Electronics,Books",2021-09-18 00:00:00
+484,Emma Perez,emma.perez484@example.co.uk,39,Female,Leeds,United Kingdom,2022-03-01 00:00:00,Premium,Home & Garden,2022-03-01 00:00:00
+485,Oliver Wright,oliver.wright485@example.co.uk,36,Other,Glasgow,United Kingdom,2023-05-24 00:00:00,Regular,"Electronics,Books",2023-05-24 00:00:00
+486,Evelyn Anderson,evelyn.anderson486@example.co.uk,23,Other,Cardiff,United Kingdom,2023-02-26 00:00:00,New,Sports,2023-02-26 00:00:00
+487,Charlotte Harris,charlotte.harris487@example.co.uk,55,Female,Leicester,United Kingdom,2020-05-24 00:00:00,Occasional,"Toys,Home & Garden",2020-05-24 00:00:00
+488,Donna King,donna.king488@example.co.uk,22,Female,Plymouth,United Kingdom,2022-06-17 00:00:00,New,"Electronics,Home & Garden",2022-06-17 00:00:00
+489,Ava Walker,ava.walker489@example.co.uk,44,Male,Plymouth,United Kingdom,2022-11-24 00:00:00,Occasional,"Home & Garden,Fashion",2022-11-24 00:00:00
+490,Ava Martinez,ava.martinez490@example.co.uk,50,Female,London,United Kingdom,2022-01-07 00:00:00,New,Beauty,2022-01-07 00:00:00
+491,Joseph Jackson,joseph.jackson491@example.co.uk,59,Female,Cardiff,United Kingdom,2022-03-03 00:00:00,Occasional,"Books,Toys",2022-03-03 00:00:00
+492,Ashley Nguyen,ashley.nguyen492@example.co.uk,47,Other,London,United Kingdom,2023-05-03 00:00:00,Occasional,"Books,Toys",2023-05-03 00:00:00
+493,Emma Nguyen,emma.nguyen493@example.co.uk,55,Prefer not to say,Coventry,United Kingdom,2022-12-16 00:00:00,Occasional,"Home & Garden,Automotive",2022-12-16 00:00:00
+494,Sophia Martin,sophia.martin494@example.co.uk,70,Female,London,United Kingdom,2021-03-08 00:00:00,Occasional,"Sports,Electronics,Home & Garden",2021-03-08 00:00:00
+495,Emily Jones,emily.jones495@example.co.uk,19,Female,Stoke-on-Trent,United Kingdom,2020-09-17 00:00:00,New,"Home & Garden,Sports,Electronics",2020-09-17 00:00:00
+496,Sandra Williams,sandra.williams496@example.co.uk,38,Other,Kingston upon Hull,United Kingdom,2023-07-09 00:00:00,Premium,Home & Garden,2023-07-09 00:00:00
+497,Daniel Wright,daniel.wright497@example.co.uk,38,Prefer not to say,Stoke-on-Trent,United Kingdom,2021-12-18 00:00:00,Occasional,"Fashion,Toys,Beauty",2021-12-18 00:00:00
+498,Sandra Allen,sandra.allen498@example.co.uk,69,Other,Belfast,United Kingdom,2020-06-26 00:00:00,Regular,"Home & Garden,Beauty,Books",2020-06-26 00:00:00
+499,Mary White,mary.white499@example.co.uk,71,Female,Coventry,United Kingdom,2020-03-23 00:00:00,Occasional,"Home & Garden,Beauty,Fashion",2020-03-23 00:00:00
+500,Richard Robinson,richard.robinson500@example.co.uk,40,Male,Newcastle,United Kingdom,2022-07-30 00:00:00,Occasional,"Automotive,Toys",2022-07-30 00:00:00
+501,Charlotte Robinson,charlotte.robinson501@example.co.uk,21,Prefer not to say,Plymouth,United Kingdom,2023-08-18 00:00:00,Regular,"Books,Fashion,Sports",2023-08-18 00:00:00
+502,Margaret Robinson,margaret.robinson502@example.co.uk,41,Male,Leeds,United Kingdom,2021-06-24 00:00:00,Occasional,"Sports,Automotive,Fashion",2021-06-24 00:00:00
+503,Betty King,betty.king503@example.co.uk,26,Other,Liverpool,United Kingdom,2022-06-04 00:00:00,Premium,"Fashion,Books,Toys",2022-06-04 00:00:00
+504,Susan Smith,susan.smith504@example.co.uk,69,Other,Bradford,United Kingdom,2020-03-25 00:00:00,New,"Books,Toys",2020-03-25 00:00:00
+505,Matthew Torres,matthew.torres505@example.co.uk,52,Prefer not to say,Kingston upon Hull,United Kingdom,2020-07-21 00:00:00,Occasional,"Home & Garden,Books,Fashion",2020-07-21 00:00:00
+506,Mark Lewis,mark.lewis506@example.co.uk,28,Other,Glasgow,United Kingdom,2021-01-30 00:00:00,Premium,"Toys,Home & Garden",2021-01-30 00:00:00
+507,James Miller,james.miller507@example.co.uk,74,Prefer not to say,Manchester,United Kingdom,2023-06-13 00:00:00,Occasional,"Sports,Home & Garden",2023-06-13 00:00:00
+508,Mark Lopez,mark.lopez508@example.co.uk,61,Other,Plymouth,United Kingdom,2023-09-28 00:00:00,Occasional,"Toys,Fashion,Sports",2023-09-28 00:00:00
+509,Paul Jones,paul.jones509@example.co.uk,58,Female,Leeds,United Kingdom,2021-02-18 00:00:00,Regular,Books,2021-02-18 00:00:00
+510,Patricia Martin,patricia.martin510@example.co.uk,30,Prefer not to say,Liverpool,United Kingdom,2023-08-24 00:00:00,Premium,"Electronics,Books",2023-08-24 00:00:00
+511,Michael Scott,michael.scott511@example.co.uk,54,Male,Belfast,United Kingdom,2023-02-09 00:00:00,New,"Electronics,Sports",2023-02-09 00:00:00
+512,Donald Allen,donald.allen512@example.co.uk,74,Prefer not to say,Cardiff,United Kingdom,2020-08-31 00:00:00,Occasional,"Home & Garden,Beauty,Electronics",2020-08-31 00:00:00
+513,James Lewis,james.lewis513@example.co.uk,49,Male,London,United Kingdom,2021-10-12 00:00:00,Occasional,"Home & Garden,Electronics",2021-10-12 00:00:00
+514,William Martinez,william.martinez514@example.co.uk,54,Male,Glasgow,United Kingdom,2022-11-06 00:00:00,Premium,Fashion,2022-11-06 00:00:00
+515,Mia Hernandez,mia.hernandez515@example.co.uk,67,Female,Nottingham,United Kingdom,2022-05-13 00:00:00,Occasional,"Sports,Books",2022-05-13 00:00:00
+516,Margaret Miller,margaret.miller516@example.co.uk,42,Prefer not to say,Manchester,United Kingdom,2021-09-20 00:00:00,Premium,Beauty,2021-09-20 00:00:00
+517,Evelyn Allen,evelyn.allen517@example.co.uk,53,Other,Manchester,United Kingdom,2023-09-08 00:00:00,New,"Beauty,Books,Sports",2023-09-08 00:00:00
+518,Sophia Martinez,sophia.martinez518@example.co.uk,19,Prefer not to say,Sheffield,United Kingdom,2020-05-16 00:00:00,Premium,"Automotive,Sports,Beauty",2020-05-16 00:00:00
+519,Mark White,mark.white519@example.co.uk,18,Female,Edinburgh,United Kingdom,2021-01-07 00:00:00,New,"Beauty,Toys,Sports",2021-01-07 00:00:00
+520,Ava Flores,ava.flores520@example.co.uk,19,Prefer not to say,Cardiff,United Kingdom,2020-09-22 00:00:00,Occasional,Books,2020-09-22 00:00:00
+521,Joshua Johnson,joshua.johnson521@example.co.uk,35,Prefer not to say,Cardiff,United Kingdom,2022-11-12 00:00:00,Regular,"Fashion,Electronics,Home & Garden",2022-11-12 00:00:00
+522,Barbara Davis,barbara.davis522@example.co.uk,67,Male,Nottingham,United Kingdom,2020-04-29 00:00:00,New,"Home & Garden,Toys,Electronics",2020-04-29 00:00:00
+523,Charles Ramirez,charles.ramirez523@example.co.uk,72,Male,Bristol,United Kingdom,2021-06-26 00:00:00,Premium,Fashion,2021-06-26 00:00:00
+524,Barbara Lee,barbara.lee524@example.co.uk,51,Female,Kingston upon Hull,United Kingdom,2022-10-15 00:00:00,Premium,Automotive,2022-10-15 00:00:00
+525,Evelyn Young,evelyn.young525@example.co.uk,65,Male,Plymouth,United Kingdom,2022-06-20 00:00:00,New,"Books,Beauty",2022-06-20 00:00:00
+526,Daniel Ramirez,daniel.ramirez526@example.co.uk,74,Prefer not to say,Belfast,United Kingdom,2022-05-20 00:00:00,Occasional,Fashion,2022-05-20 00:00:00
+527,Joshua Hernandez,joshua.hernandez527@example.co.uk,34,Prefer not to say,Wolverhampton,United Kingdom,2021-06-01 00:00:00,Regular,"Sports,Beauty,Electronics",2021-06-01 00:00:00
+528,Amelia Williams,amelia.williams528@example.co.uk,65,Male,Manchester,United Kingdom,2020-02-25 00:00:00,Premium,Electronics,2020-02-25 00:00:00
+529,Charles Flores,charles.flores529@example.co.uk,58,Other,Stoke-on-Trent,United Kingdom,2023-11-03 00:00:00,Regular,"Fashion,Toys,Automotive",2023-11-03 00:00:00
+530,Oliver King,oliver.king530@example.co.uk,43,Male,Coventry,United Kingdom,2022-07-25 00:00:00,Occasional,"Beauty,Automotive,Sports",2022-07-25 00:00:00
+531,Betty Taylor,betty.taylor531@example.co.uk,19,Prefer not to say,Nottingham,United Kingdom,2020-10-28 00:00:00,Regular,"Electronics,Home & Garden",2020-10-28 00:00:00
+532,Donald Young,donald.young532@example.co.uk,51,Prefer not to say,Leicester,United Kingdom,2020-03-28 00:00:00,Regular,Toys,2020-03-28 00:00:00
+533,Betty Taylor,betty.taylor533@example.co.uk,36,Prefer not to say,Edinburgh,United Kingdom,2022-12-04 00:00:00,Occasional,"Sports,Automotive,Toys",2022-12-04 00:00:00
+534,Charlotte Sanchez,charlotte.sanchez534@example.co.uk,44,Female,Liverpool,United Kingdom,2020-11-06 00:00:00,Occasional,"Home & Garden,Books,Electronics",2020-11-06 00:00:00
+535,Amelia Torres,amelia.torres535@example.co.uk,47,Other,Bristol,United Kingdom,2020-10-06 00:00:00,New,"Fashion,Sports,Toys",2020-10-06 00:00:00
+536,Jessica White,jessica.white536@example.co.uk,53,Prefer not to say,Leeds,United Kingdom,2022-02-18 00:00:00,Regular,"Books,Home & Garden,Fashion",2022-02-18 00:00:00
+537,Paul Lopez,paul.lopez537@example.co.uk,39,Prefer not to say,Edinburgh,United Kingdom,2023-01-17 00:00:00,Regular,Automotive,2023-01-17 00:00:00
+538,Emily Allen,emily.allen538@example.co.uk,41,Prefer not to say,Newcastle,United Kingdom,2023-03-09 00:00:00,New,"Automotive,Toys",2023-03-09 00:00:00
+539,Jennifer Brown,jennifer.brown539@example.co.uk,72,Male,Cardiff,United Kingdom,2022-01-24 00:00:00,Regular,Books,2022-01-24 00:00:00
+540,Sarah Rodriguez,sarah.rodriguez540@example.co.uk,57,Female,Leicester,United Kingdom,2023-03-20 00:00:00,Premium,"Automotive,Beauty,Sports",2023-03-20 00:00:00
+541,Patricia Ramirez,patricia.ramirez541@example.co.uk,60,Prefer not to say,Bristol,United Kingdom,2022-05-26 00:00:00,New,"Electronics,Sports",2022-05-26 00:00:00
+542,Sophia Scott,sophia.scott542@example.co.uk,20,Prefer not to say,Coventry,United Kingdom,2023-12-15 00:00:00,Occasional,"Sports,Beauty",2023-12-15 00:00:00
+543,Paul Taylor,paul.taylor543@example.co.uk,41,Other,Leeds,United Kingdom,2022-07-15 00:00:00,New,"Automotive,Electronics",2022-07-15 00:00:00
+544,David White,david.white544@example.co.uk,43,Prefer not to say,Wolverhampton,United Kingdom,2020-08-31 00:00:00,Premium,"Automotive,Books,Home & Garden",2020-08-31 00:00:00
+545,Patricia Thomas,patricia.thomas545@example.co.uk,26,Female,London,United Kingdom,2022-10-12 00:00:00,Premium,"Beauty,Toys,Home & Garden",2022-10-12 00:00:00
+546,Lisa Lopez,lisa.lopez546@example.co.uk,31,Other,Edinburgh,United Kingdom,2023-09-24 00:00:00,Premium,Electronics,2023-09-24 00:00:00
+547,Joseph Sanchez,joseph.sanchez547@example.co.uk,40,Other,Belfast,United Kingdom,2023-12-20 00:00:00,New,Automotive,2023-12-20 00:00:00
+548,Patricia Thompson,patricia.thompson548@example.co.uk,20,Male,Stoke-on-Trent,United Kingdom,2023-04-17 00:00:00,Regular,"Sports,Fashion,Electronics",2023-04-17 00:00:00
+549,Matthew Wilson,matthew.wilson549@example.co.uk,46,Other,Bradford,United Kingdom,2020-12-12 00:00:00,Premium,"Toys,Fashion,Books",2020-12-12 00:00:00
+550,Donald Miller,donald.miller550@example.co.uk,37,Female,Plymouth,United Kingdom,2023-09-02 00:00:00,Regular,Toys,2023-09-02 00:00:00
+551,Susan Gonzalez,susan.gonzalez551@example.co.uk,36,Female,Sheffield,United Kingdom,2021-12-10 00:00:00,Regular,"Beauty,Home & Garden,Toys",2021-12-10 00:00:00
+552,James Taylor,james.taylor552@example.co.uk,71,Male,Manchester,United Kingdom,2022-02-06 00:00:00,Occasional,"Fashion,Toys",2022-02-06 00:00:00
+553,Charlotte Clark,charlotte.clark553@example.co.uk,40,Male,Edinburgh,United Kingdom,2020-12-11 00:00:00,New,Beauty,2020-12-11 00:00:00
+554,Karen Robinson,karen.robinson554@example.co.uk,40,Other,Belfast,United Kingdom,2022-05-25 00:00:00,Premium,Beauty,2022-05-25 00:00:00
+555,Robert Thompson,robert.thompson555@example.co.uk,67,Male,Sheffield,United Kingdom,2023-11-04 00:00:00,Occasional,"Automotive,Sports",2023-11-04 00:00:00
+556,David Harris,david.harris556@example.co.uk,72,Female,Birmingham,United Kingdom,2022-05-28 00:00:00,Premium,"Books,Beauty",2022-05-28 00:00:00
+557,James King,james.king557@example.co.uk,58,Male,Sheffield,United Kingdom,2020-07-20 00:00:00,Premium,"Books,Automotive,Home & Garden",2020-07-20 00:00:00
+558,John Young,john.young558@example.co.uk,72,Other,Edinburgh,United Kingdom,2020-07-25 00:00:00,Premium,"Electronics,Automotive,Toys",2020-07-25 00:00:00
+559,Sophia Taylor,sophia.taylor559@example.co.uk,31,Male,Newcastle,United Kingdom,2021-01-05 00:00:00,Regular,"Fashion,Beauty",2021-01-05 00:00:00
+560,Kimberly Anderson,kimberly.anderson560@example.co.uk,26,Female,Wolverhampton,United Kingdom,2022-12-11 00:00:00,Premium,Toys,2022-12-11 00:00:00
+561,Donald Lee,donald.lee561@example.co.uk,37,Prefer not to say,Coventry,United Kingdom,2022-08-13 00:00:00,Regular,"Automotive,Beauty",2022-08-13 00:00:00
+562,Elizabeth Thompson,elizabeth.thompson562@example.co.uk,49,Female,Leicester,United Kingdom,2022-01-23 00:00:00,New,"Books,Automotive,Home & Garden",2022-01-23 00:00:00
+563,William Garcia,william.garcia563@example.co.uk,23,Prefer not to say,Belfast,United Kingdom,2021-08-18 00:00:00,Occasional,"Automotive,Beauty",2021-08-18 00:00:00
+564,Mary Robinson,mary.robinson564@example.co.uk,52,Male,Sheffield,United Kingdom,2023-09-18 00:00:00,Premium,Toys,2023-09-18 00:00:00
+565,Thomas Davis,thomas.davis565@example.co.uk,27,Other,Manchester,United Kingdom,2020-10-02 00:00:00,New,"Books,Sports,Automotive",2020-10-02 00:00:00
+566,Evelyn Walker,evelyn.walker566@example.co.uk,19,Other,Kingston upon Hull,United Kingdom,2023-09-06 00:00:00,New,"Beauty,Automotive,Sports",2023-09-06 00:00:00
+567,Elizabeth Davis,elizabeth.davis567@example.co.uk,44,Prefer not to say,Nottingham,United Kingdom,2022-01-22 00:00:00,Occasional,"Sports,Books",2022-01-22 00:00:00
+568,Jennifer Thompson,jennifer.thompson568@example.co.uk,36,Other,Birmingham,United Kingdom,2022-02-07 00:00:00,New,"Beauty,Electronics,Books",2022-02-07 00:00:00
+569,Patricia Rodriguez,patricia.rodriguez569@example.co.uk,53,Female,Newcastle,United Kingdom,2020-03-29 00:00:00,Occasional,"Beauty,Electronics,Fashion",2020-03-29 00:00:00
+570,Joshua Davis,joshua.davis570@example.co.uk,39,Female,Bristol,United Kingdom,2021-04-15 00:00:00,Premium,"Automotive,Books",2021-04-15 00:00:00
+571,Charles Clark,charles.clark571@example.co.uk,57,Prefer not to say,Liverpool,United Kingdom,2021-11-18 00:00:00,Regular,Electronics,2021-11-18 00:00:00
+572,Barbara Hernandez,barbara.hernandez572@example.co.uk,35,Prefer not to say,Nottingham,United Kingdom,2020-09-19 00:00:00,Regular,Sports,2020-09-19 00:00:00
+573,Jennifer Taylor,jennifer.taylor573@example.co.uk,73,Female,Sheffield,United Kingdom,2020-09-05 00:00:00,New,"Sports,Electronics,Automotive",2020-09-05 00:00:00
+574,Barbara Lopez,barbara.lopez574@example.co.uk,46,Prefer not to say,Glasgow,United Kingdom,2020-02-04 00:00:00,Occasional,"Sports,Books",2020-02-04 00:00:00
+575,Harper Moore,harper.moore575@example.co.uk,48,Other,Leeds,United Kingdom,2023-05-26 00:00:00,New,"Home & Garden,Toys",2023-05-26 00:00:00
+576,Sophia Martin,sophia.martin576@example.co.uk,60,Female,Nottingham,United Kingdom,2022-12-20 00:00:00,Regular,Automotive,2022-12-20 00:00:00
+577,Amelia Hill,amelia.hill577@example.co.uk,52,Male,Glasgow,United Kingdom,2021-07-22 00:00:00,Regular,"Sports,Electronics,Beauty",2021-07-22 00:00:00
+578,Robert Allen,robert.allen578@example.co.uk,68,Male,Edinburgh,United Kingdom,2021-02-05 00:00:00,Occasional,Home & Garden,2021-02-05 00:00:00
+579,Donna Allen,donna.allen579@example.co.uk,68,Female,Cardiff,United Kingdom,2023-08-26 00:00:00,Premium,"Toys,Beauty",2023-08-26 00:00:00
+580,Andrew Young,andrew.young580@example.co.uk,60,Male,Glasgow,United Kingdom,2021-03-16 00:00:00,Occasional,"Home & Garden,Toys",2021-03-16 00:00:00
+581,Susan Robinson,susan.robinson581@example.co.uk,40,Male,Coventry,United Kingdom,2022-04-13 00:00:00,New,"Electronics,Toys,Beauty",2022-04-13 00:00:00
+582,Emily Perez,emily.perez582@example.co.uk,24,Female,Edinburgh,United Kingdom,2023-10-07 00:00:00,Occasional,Books,2023-10-07 00:00:00
+583,Betty Rodriguez,betty.rodriguez583@example.co.uk,45,Female,Coventry,United Kingdom,2020-09-29 00:00:00,Occasional,"Beauty,Electronics,Sports",2020-09-29 00:00:00
+584,Mia Brown,mia.brown584@example.co.uk,21,Female,Coventry,United Kingdom,2023-08-08 00:00:00,Occasional,Automotive,2023-08-08 00:00:00
+585,William Moore,william.moore585@example.co.uk,20,Prefer not to say,London,United Kingdom,2022-07-21 00:00:00,New,"Home & Garden,Fashion,Books",2022-07-21 00:00:00
+586,Daniel Nguyen,daniel.nguyen586@example.co.uk,56,Prefer not to say,Stoke-on-Trent,United Kingdom,2023-05-25 00:00:00,New,"Fashion,Home & Garden",2023-05-25 00:00:00
+587,Ava Brown,ava.brown587@example.co.uk,44,Prefer not to say,Kingston upon Hull,United Kingdom,2020-08-24 00:00:00,Regular,"Electronics,Books,Fashion",2020-08-24 00:00:00
+588,Sophia Johnson,sophia.johnson588@example.co.uk,53,Male,Glasgow,United Kingdom,2022-01-11 00:00:00,Occasional,Beauty,2022-01-11 00:00:00
+589,Harper Scott,harper.scott589@example.co.uk,45,Female,Stoke-on-Trent,United Kingdom,2020-09-04 00:00:00,New,"Sports,Electronics",2020-09-04 00:00:00
+590,Emma Lopez,emma.lopez590@example.co.uk,38,Female,Manchester,United Kingdom,2020-10-21 00:00:00,New,Automotive,2020-10-21 00:00:00
+591,Betty Thomas,betty.thomas591@example.co.uk,37,Female,Glasgow,United Kingdom,2022-01-26 00:00:00,Premium,"Fashion,Toys",2022-01-26 00:00:00
+592,Harper Jones,harper.jones592@example.co.uk,72,Prefer not to say,Manchester,United Kingdom,2021-06-08 00:00:00,Occasional,Beauty,2021-06-08 00:00:00
+593,Mary Ramirez,mary.ramirez593@example.co.uk,50,Female,Leicester,United Kingdom,2021-01-23 00:00:00,New,"Automotive,Beauty,Toys",2021-01-23 00:00:00
+594,Joseph Ramirez,joseph.ramirez594@example.co.uk,28,Male,Liverpool,United Kingdom,2022-07-16 00:00:00,Regular,"Toys,Beauty",2022-07-16 00:00:00
+595,James Jackson,james.jackson595@example.co.uk,60,Other,London,United Kingdom,2022-06-09 00:00:00,New,"Beauty,Fashion",2022-06-09 00:00:00
+596,Patricia Martin,patricia.martin596@example.co.uk,66,Male,London,United Kingdom,2022-04-06 00:00:00,Occasional,"Fashion,Home & Garden,Books",2022-04-06 00:00:00
+597,Amelia Hernandez,amelia.hernandez597@example.co.uk,49,Female,Bristol,United Kingdom,2022-10-25 00:00:00,Occasional,Toys,2022-10-25 00:00:00
+598,Kimberly Gonzalez,kimberly.gonzalez598@example.co.uk,67,Female,Stoke-on-Trent,United Kingdom,2021-05-05 00:00:00,Regular,"Toys,Sports,Books",2021-05-05 00:00:00
+599,Jennifer Thompson,jennifer.thompson599@example.co.uk,69,Other,Coventry,United Kingdom,2023-08-14 00:00:00,Regular,Home & Garden,2023-08-14 00:00:00
+600,Patricia Anderson,patricia.anderson600@example.co.uk,63,Male,Manchester,United Kingdom,2023-01-14 00:00:00,Occasional,"Beauty,Sports",2023-01-14 00:00:00
+601,Isabella White,isabella.white601@example.co.uk,48,Other,London,United Kingdom,2023-11-21 00:00:00,New,Home & Garden,2023-11-21 00:00:00
+602,Susan Rodriguez,susan.rodriguez602@example.co.uk,44,Prefer not to say,Wolverhampton,United Kingdom,2021-07-19 00:00:00,New,"Beauty,Automotive",2021-07-19 00:00:00
+603,Donald Jones,donald.jones603@example.co.uk,37,Female,Birmingham,United Kingdom,2021-03-18 00:00:00,Occasional,"Sports,Beauty,Fashion",2021-03-18 00:00:00
+604,Oliver Scott,oliver.scott604@example.co.uk,33,Male,Liverpool,United Kingdom,2020-05-04 00:00:00,New,"Sports,Books,Home & Garden",2020-05-04 00:00:00
+605,Harper Wilson,harper.wilson605@example.co.uk,48,Prefer not to say,Newcastle,United Kingdom,2023-09-04 00:00:00,Regular,"Books,Beauty,Home & Garden",2023-09-04 00:00:00
+606,Sarah Young,sarah.young606@example.co.uk,63,Prefer not to say,Liverpool,United Kingdom,2020-09-25 00:00:00,Regular,"Home & Garden,Sports",2020-09-25 00:00:00
+607,Ava Thomas,ava.thomas607@example.co.uk,32,Female,London,United Kingdom,2020-12-16 00:00:00,Regular,Automotive,2020-12-16 00:00:00
+608,Thomas Johnson,thomas.johnson608@example.co.uk,75,Other,Manchester,United Kingdom,2020-09-16 00:00:00,Premium,"Electronics,Toys,Books",2020-09-16 00:00:00
+609,Anthony Perez,anthony.perez609@example.co.uk,57,Female,Newcastle,United Kingdom,2020-04-23 00:00:00,New,"Fashion,Books,Automotive",2020-04-23 00:00:00
+610,Joseph Flores,joseph.flores610@example.co.uk,26,Prefer not to say,Bristol,United Kingdom,2020-11-01 00:00:00,Regular,"Books,Fashion,Home & Garden",2020-11-01 00:00:00
+611,Amelia Nguyen,amelia.nguyen611@example.co.uk,34,Other,Leicester,United Kingdom,2023-12-06 00:00:00,Occasional,"Toys,Sports",2023-12-06 00:00:00
+612,Emma Martinez,emma.martinez612@example.co.uk,61,Other,Birmingham,United Kingdom,2021-09-18 00:00:00,Occasional,"Electronics,Beauty,Home & Garden",2021-09-18 00:00:00
+613,Sophia King,sophia.king613@example.co.uk,69,Prefer not to say,Coventry,United Kingdom,2021-07-07 00:00:00,Premium,"Automotive,Beauty,Toys",2021-07-07 00:00:00
+614,Paul Lee,paul.lee614@example.co.uk,46,Male,Newcastle,United Kingdom,2021-11-18 00:00:00,Occasional,"Automotive,Home & Garden",2021-11-18 00:00:00
+615,Jennifer Martinez,jennifer.martinez615@example.co.uk,45,Male,Wolverhampton,United Kingdom,2023-09-19 00:00:00,Premium,Home & Garden,2023-09-19 00:00:00
+616,Charles Moore,charles.moore616@example.co.uk,35,Male,Leeds,United Kingdom,2023-01-20 00:00:00,Regular,"Automotive,Fashion,Electronics",2023-01-20 00:00:00
+617,Ava Allen,ava.allen617@example.co.uk,37,Other,Kingston upon Hull,United Kingdom,2023-03-22 00:00:00,New,"Automotive,Books",2023-03-22 00:00:00
+618,Jennifer Moore,jennifer.moore618@example.co.uk,18,Other,Glasgow,United Kingdom,2023-05-14 00:00:00,Premium,"Books,Sports,Fashion",2023-05-14 00:00:00
+619,Mia Walker,mia.walker619@example.co.uk,45,Prefer not to say,Cardiff,United Kingdom,2021-06-05 00:00:00,Premium,Sports,2021-06-05 00:00:00
+620,Emma Hill,emma.hill620@example.co.uk,21,Male,Glasgow,United Kingdom,2023-05-09 00:00:00,Premium,"Fashion,Electronics",2023-05-09 00:00:00
+621,Isabella Scott,isabella.scott621@example.co.uk,36,Male,Coventry,United Kingdom,2021-02-09 00:00:00,Occasional,Fashion,2021-02-09 00:00:00
+622,Linda Johnson,linda.johnson622@example.co.uk,21,Male,Wolverhampton,United Kingdom,2023-04-17 00:00:00,Regular,"Beauty,Fashion",2023-04-17 00:00:00
+623,Elizabeth Taylor,elizabeth.taylor623@example.co.uk,56,Prefer not to say,Cardiff,United Kingdom,2020-12-28 00:00:00,Occasional,"Automotive,Sports,Fashion",2020-12-28 00:00:00
+624,Michelle Jackson,michelle.jackson624@example.co.uk,36,Prefer not to say,Birmingham,United Kingdom,2022-09-15 00:00:00,New,"Automotive,Toys,Sports",2022-09-15 00:00:00
+625,Linda Martin,linda.martin625@example.co.uk,39,Prefer not to say,Bristol,United Kingdom,2020-02-06 00:00:00,New,"Books,Beauty,Toys",2020-02-06 00:00:00
+626,Mark Wilson,mark.wilson626@example.co.uk,52,Prefer not to say,Stoke-on-Trent,United Kingdom,2023-03-29 00:00:00,Regular,"Fashion,Electronics",2023-03-29 00:00:00
+627,Margaret Moore,margaret.moore627@example.co.uk,34,Other,Belfast,United Kingdom,2023-10-06 00:00:00,Occasional,Books,2023-10-06 00:00:00
+628,Steven Flores,steven.flores628@example.co.uk,53,Female,Leeds,United Kingdom,2022-07-18 00:00:00,Regular,Toys,2022-07-18 00:00:00
+629,David Davis,david.davis629@example.co.uk,27,Other,Coventry,United Kingdom,2022-10-17 00:00:00,Regular,"Beauty,Home & Garden",2022-10-17 00:00:00
+630,Donna Lewis,donna.lewis630@example.co.uk,22,Prefer not to say,Bristol,United Kingdom,2022-06-29 00:00:00,New,"Fashion,Automotive,Electronics",2022-06-29 00:00:00
+631,Richard Taylor,richard.taylor631@example.co.uk,64,Female,Stoke-on-Trent,United Kingdom,2022-01-07 00:00:00,New,Beauty,2022-01-07 00:00:00
+632,Donald Thomas,donald.thomas632@example.co.uk,30,Other,Bristol,United Kingdom,2020-06-01 00:00:00,New,"Sports,Home & Garden,Fashion",2020-06-01 00:00:00
+633,Elizabeth Lopez,elizabeth.lopez633@example.co.uk,39,Female,Newcastle,United Kingdom,2021-06-26 00:00:00,New,"Fashion,Toys",2021-06-26 00:00:00
+634,Barbara Brown,barbara.brown634@example.co.uk,38,Other,Wolverhampton,United Kingdom,2021-10-28 00:00:00,Occasional,Toys,2021-10-28 00:00:00
+635,Steven Thompson,steven.thompson635@example.co.uk,55,Prefer not to say,Manchester,United Kingdom,2022-10-07 00:00:00,New,"Sports,Fashion,Toys",2022-10-07 00:00:00
+636,Mark Ramirez,mark.ramirez636@example.co.uk,30,Prefer not to say,Leicester,United Kingdom,2023-07-03 00:00:00,Premium,"Automotive,Fashion,Toys",2023-07-03 00:00:00
+637,Charlotte Lewis,charlotte.lewis637@example.co.uk,27,Prefer not to say,Cardiff,United Kingdom,2022-11-16 00:00:00,Occasional,Beauty,2022-11-16 00:00:00
+638,Mia Wilson,mia.wilson638@example.co.uk,42,Prefer not to say,Liverpool,United Kingdom,2022-09-23 00:00:00,Premium,Sports,2022-09-23 00:00:00
+639,Nancy Sanchez,nancy.sanchez639@example.co.uk,36,Female,Manchester,United Kingdom,2023-10-05 00:00:00,Regular,Beauty,2023-10-05 00:00:00
+640,Patricia Rodriguez,patricia.rodriguez640@example.co.uk,55,Prefer not to say,Liverpool,United Kingdom,2022-12-05 00:00:00,Premium,"Electronics,Beauty",2022-12-05 00:00:00
+641,Michelle Hill,michelle.hill641@example.co.uk,27,Female,London,United Kingdom,2021-12-05 00:00:00,Regular,"Sports,Home & Garden,Books",2021-12-05 00:00:00
+642,Jessica Brown,jessica.brown642@example.co.uk,33,Female,Coventry,United Kingdom,2021-02-10 00:00:00,New,Fashion,2021-02-10 00:00:00
+643,James Lewis,james.lewis643@example.co.uk,57,Female,Newcastle,United Kingdom,2022-07-02 00:00:00,Regular,"Toys,Home & Garden,Sports",2022-07-02 00:00:00
+644,Sophia Williams,sophia.williams644@example.co.uk,39,Male,London,United Kingdom,2020-05-11 00:00:00,Regular,"Beauty,Toys",2020-05-11 00:00:00
+645,Mia Clark,mia.clark645@example.co.uk,28,Prefer not to say,Belfast,United Kingdom,2023-10-02 00:00:00,New,"Toys,Books",2023-10-02 00:00:00
+646,Barbara Lopez,barbara.lopez646@example.co.uk,52,Male,Liverpool,United Kingdom,2020-05-16 00:00:00,Premium,"Automotive,Electronics,Sports",2020-05-16 00:00:00
+647,David Torres,david.torres647@example.co.uk,44,Prefer not to say,Cardiff,United Kingdom,2021-09-21 00:00:00,New,"Electronics,Home & Garden",2021-09-21 00:00:00
+648,Harper Clark,harper.clark648@example.co.uk,28,Female,Nottingham,United Kingdom,2020-05-05 00:00:00,New,Sports,2020-05-05 00:00:00
+649,Elizabeth Wright,elizabeth.wright649@example.co.uk,25,Male,London,United Kingdom,2022-12-08 00:00:00,Occasional,"Electronics,Fashion",2022-12-08 00:00:00
+650,Barbara Martin,barbara.martin650@example.co.uk,68,Other,Manchester,United Kingdom,2020-10-10 00:00:00,Premium,"Beauty,Automotive,Home & Garden",2020-10-10 00:00:00
+651,Paul Torres,paul.torres651@example.co.uk,25,Other,Leeds,United Kingdom,2022-02-06 00:00:00,New,"Toys,Home & Garden,Sports",2022-02-06 00:00:00
+652,Joshua Robinson,joshua.robinson652@example.co.uk,55,Prefer not to say,Edinburgh,United Kingdom,2021-12-13 00:00:00,Occasional,Sports,2021-12-13 00:00:00
+653,Emma Nguyen,emma.nguyen653@example.co.uk,30,Other,Plymouth,United Kingdom,2020-11-01 00:00:00,Regular,"Automotive,Fashion",2020-11-01 00:00:00
+654,Betty Martinez,betty.martinez654@example.co.uk,46,Male,Sheffield,United Kingdom,2020-06-30 00:00:00,Premium,"Automotive,Beauty",2020-06-30 00:00:00
+655,Donald Thomas,donald.thomas655@example.co.uk,22,Male,Bristol,United Kingdom,2021-01-16 00:00:00,New,Sports,2021-01-16 00:00:00
+656,Linda Garcia,linda.garcia656@example.co.uk,72,Female,Newcastle,United Kingdom,2021-02-12 00:00:00,Regular,"Electronics,Automotive",2021-02-12 00:00:00
+657,Joshua Torres,joshua.torres657@example.co.uk,73,Other,Coventry,United Kingdom,2021-02-27 00:00:00,New,Beauty,2021-02-27 00:00:00
+658,Donald Wilson,donald.wilson658@example.co.uk,35,Female,Belfast,United Kingdom,2023-09-17 00:00:00,Occasional,Books,2023-09-17 00:00:00
+659,Joshua Martin,joshua.martin659@example.co.uk,45,Other,Stoke-on-Trent,United Kingdom,2020-06-26 00:00:00,New,"Automotive,Toys,Sports",2020-06-26 00:00:00
+660,Steven Young,steven.young660@example.co.uk,36,Other,Liverpool,United Kingdom,2022-06-03 00:00:00,Premium,Electronics,2022-06-03 00:00:00
+661,Lisa Harris,lisa.harris661@example.co.uk,64,Prefer not to say,Cardiff,United Kingdom,2020-07-12 00:00:00,Regular,"Fashion,Home & Garden",2020-07-12 00:00:00
+662,Patricia Young,patricia.young662@example.co.uk,55,Prefer not to say,Coventry,United Kingdom,2023-05-24 00:00:00,Premium,"Fashion,Beauty",2023-05-24 00:00:00
+663,Matthew Davis,matthew.davis663@example.co.uk,22,Female,Liverpool,United Kingdom,2021-11-18 00:00:00,Regular,Automotive,2021-11-18 00:00:00
+664,Mary Jackson,mary.jackson664@example.co.uk,32,Prefer not to say,Edinburgh,United Kingdom,2023-04-08 00:00:00,Occasional,"Automotive,Books,Sports",2023-04-08 00:00:00
+665,Christopher Lopez,christopher.lopez665@example.co.uk,69,Prefer not to say,Stoke-on-Trent,United Kingdom,2020-07-01 00:00:00,Regular,"Sports,Books",2020-07-01 00:00:00
+666,Daniel White,daniel.white666@example.co.uk,49,Prefer not to say,Leicester,United Kingdom,2023-06-07 00:00:00,Occasional,"Electronics,Beauty",2023-06-07 00:00:00
+667,Thomas Sanchez,thomas.sanchez667@example.co.uk,52,Other,Glasgow,United Kingdom,2020-06-21 00:00:00,Regular,"Home & Garden,Books,Toys",2020-06-21 00:00:00
+668,Thomas Smith,thomas.smith668@example.co.uk,51,Prefer not to say,Coventry,United Kingdom,2021-03-12 00:00:00,New,Automotive,2021-03-12 00:00:00
+669,Michael Hernandez,michael.hernandez669@example.co.uk,22,Female,Kingston upon Hull,United Kingdom,2023-06-27 00:00:00,New,Automotive,2023-06-27 00:00:00
+670,Ava Jones,ava.jones670@example.co.uk,38,Prefer not to say,Leicester,United Kingdom,2021-05-02 00:00:00,Occasional,"Sports,Automotive",2021-05-02 00:00:00
+671,Daniel Allen,daniel.allen671@example.co.uk,58,Female,Wolverhampton,United Kingdom,2023-06-01 00:00:00,New,"Home & Garden,Electronics",2023-06-01 00:00:00
+672,Charles Clark,charles.clark672@example.co.uk,25,Female,Edinburgh,United Kingdom,2020-10-09 00:00:00,New,"Books,Electronics,Sports",2020-10-09 00:00:00
+673,Paul Young,paul.young673@example.co.uk,37,Male,Liverpool,United Kingdom,2023-05-12 00:00:00,Premium,Books,2023-05-12 00:00:00
+674,Daniel Robinson,daniel.robinson674@example.co.uk,41,Other,Manchester,United Kingdom,2023-11-20 00:00:00,Regular,"Toys,Beauty,Fashion",2023-11-20 00:00:00
+675,Sandra Moore,sandra.moore675@example.co.uk,74,Prefer not to say,Newcastle,United Kingdom,2023-06-28 00:00:00,Premium,"Home & Garden,Fashion,Electronics",2023-06-28 00:00:00
+676,Karen Jones,karen.jones676@example.co.uk,68,Female,Leeds,United Kingdom,2022-11-23 00:00:00,Occasional,"Sports,Electronics,Toys",2022-11-23 00:00:00
+677,Susan Thompson,susan.thompson677@example.co.uk,44,Other,Coventry,United Kingdom,2022-10-31 00:00:00,Premium,"Electronics,Toys,Beauty",2022-10-31 00:00:00
+678,David Harris,david.harris678@example.co.uk,51,Prefer not to say,Wolverhampton,United Kingdom,2022-06-11 00:00:00,New,"Beauty,Toys,Home & Garden",2022-06-11 00:00:00
+679,Charles Martinez,charles.martinez679@example.co.uk,63,Male,Belfast,United Kingdom,2023-12-29 00:00:00,Premium,"Books,Electronics",2023-12-29 00:00:00
+680,Matthew Wright,matthew.wright680@example.co.uk,74,Male,London,United Kingdom,2023-12-12 00:00:00,Premium,"Electronics,Sports,Automotive",2023-12-12 00:00:00
+681,Charlotte Ramirez,charlotte.ramirez681@example.co.uk,64,Other,Newcastle,United Kingdom,2023-09-16 00:00:00,Regular,Sports,2023-09-16 00:00:00
+682,Betty Moore,betty.moore682@example.co.uk,31,Other,Kingston upon Hull,United Kingdom,2021-08-03 00:00:00,Premium,"Books,Beauty",2021-08-03 00:00:00
+683,Charlotte Davis,charlotte.davis683@example.co.uk,20,Other,Manchester,United Kingdom,2022-12-10 00:00:00,Occasional,"Toys,Electronics",2022-12-10 00:00:00
+684,Isabella Hill,isabella.hill684@example.co.uk,56,Prefer not to say,Liverpool,United Kingdom,2023-01-02 00:00:00,New,Beauty,2023-01-02 00:00:00
+685,Sophia Perez,sophia.perez685@example.co.uk,29,Male,Liverpool,United Kingdom,2022-08-13 00:00:00,New,"Toys,Electronics",2022-08-13 00:00:00
+686,Anthony Scott,anthony.scott686@example.co.uk,44,Female,Manchester,United Kingdom,2020-02-04 00:00:00,Premium,"Toys,Sports",2020-02-04 00:00:00
+687,Michelle Wright,michelle.wright687@example.co.uk,62,Prefer not to say,Leeds,United Kingdom,2021-10-04 00:00:00,New,Home & Garden,2021-10-04 00:00:00
+688,Isabella Smith,isabella.smith688@example.co.uk,35,Male,Bristol,United Kingdom,2023-10-13 00:00:00,Occasional,Fashion,2023-10-13 00:00:00
+689,Susan Walker,susan.walker689@example.co.uk,48,Female,Newcastle,United Kingdom,2022-01-18 00:00:00,Premium,"Sports,Toys",2022-01-18 00:00:00
+690,Christopher Perez,christopher.perez690@example.co.uk,61,Female,Bristol,United Kingdom,2021-10-28 00:00:00,New,Automotive,2021-10-28 00:00:00
+691,Nancy Robinson,nancy.robinson691@example.co.uk,44,Other,Nottingham,United Kingdom,2020-04-15 00:00:00,New,Fashion,2020-04-15 00:00:00
+692,Karen Brown,karen.brown692@example.co.uk,25,Other,Belfast,United Kingdom,2023-09-27 00:00:00,Occasional,"Books,Fashion,Automotive",2023-09-27 00:00:00
+693,Matthew Moore,matthew.moore693@example.co.uk,68,Male,Manchester,United Kingdom,2022-09-25 00:00:00,Premium,Electronics,2022-09-25 00:00:00
+694,Ashley Thomas,ashley.thomas694@example.co.uk,24,Prefer not to say,Liverpool,United Kingdom,2020-03-07 00:00:00,Premium,"Automotive,Beauty,Electronics",2020-03-07 00:00:00
+695,John Thomas,john.thomas695@example.co.uk,18,Female,London,United Kingdom,2020-05-24 00:00:00,Premium,"Sports,Automotive,Toys",2020-05-24 00:00:00
+696,Michelle Torres,michelle.torres696@example.co.uk,23,Prefer not to say,Sheffield,United Kingdom,2021-03-20 00:00:00,New,"Automotive,Home & Garden",2021-03-20 00:00:00
+697,Patricia Scott,patricia.scott697@example.co.uk,21,Prefer not to say,Plymouth,United Kingdom,2020-11-08 00:00:00,Premium,"Beauty,Books,Sports",2020-11-08 00:00:00
+698,Sarah Taylor,sarah.taylor698@example.co.uk,70,Male,Leicester,United Kingdom,2023-05-08 00:00:00,Regular,"Beauty,Books,Fashion",2023-05-08 00:00:00
+699,Charles Nguyen,charles.nguyen699@example.co.uk,46,Prefer not to say,Glasgow,United Kingdom,2020-08-15 00:00:00,Occasional,Home & Garden,2020-08-15 00:00:00
+700,Michelle Thomas,michelle.thomas700@example.co.uk,59,Prefer not to say,Plymouth,United Kingdom,2021-10-06 00:00:00,New,"Electronics,Toys",2021-10-06 00:00:00
+701,Steven Hernandez,steven.hernandez701@example.co.uk,23,Prefer not to say,Sheffield,United Kingdom,2020-02-11 00:00:00,Premium,"Books,Electronics",2020-02-11 00:00:00
+702,Karen Nguyen,karen.nguyen702@example.co.uk,46,Female,Wolverhampton,United Kingdom,2020-01-27 00:00:00,Regular,"Home & Garden,Toys,Electronics",2020-01-27 00:00:00
+703,Harper Perez,harper.perez703@example.co.uk,46,Male,Manchester,United Kingdom,2023-10-28 00:00:00,Regular,"Books,Beauty,Automotive",2023-10-28 00:00:00
+704,Matthew Jones,matthew.jones704@example.co.uk,37,Prefer not to say,Wolverhampton,United Kingdom,2023-01-30 00:00:00,Premium,Toys,2023-01-30 00:00:00
+705,Amelia Allen,amelia.allen705@example.co.uk,28,Male,Bristol,United Kingdom,2022-02-22 00:00:00,Occasional,"Sports,Automotive,Electronics",2022-02-22 00:00:00
+706,John Sanchez,john.sanchez706@example.co.uk,54,Male,Edinburgh,United Kingdom,2020-10-04 00:00:00,Premium,"Toys,Sports,Automotive",2020-10-04 00:00:00
+707,Barbara White,barbara.white707@example.co.uk,54,Male,Birmingham,United Kingdom,2021-03-19 00:00:00,Regular,"Beauty,Toys,Electronics",2021-03-19 00:00:00
+708,Patricia Young,patricia.young708@example.co.uk,47,Female,Cardiff,United Kingdom,2022-09-04 00:00:00,Occasional,Beauty,2022-09-04 00:00:00
+709,Evelyn Perez,evelyn.perez709@example.co.uk,43,Other,Nottingham,United Kingdom,2023-10-31 00:00:00,New,"Beauty,Books",2023-10-31 00:00:00
+710,Linda Smith,linda.smith710@example.co.uk,22,Male,Bradford,United Kingdom,2022-08-01 00:00:00,Occasional,Home & Garden,2022-08-01 00:00:00
+711,Daniel Martinez,daniel.martinez711@example.co.uk,59,Female,Bristol,United Kingdom,2021-04-23 00:00:00,Occasional,"Sports,Beauty,Home & Garden",2021-04-23 00:00:00
+712,Charles Scott,charles.scott712@example.co.uk,48,Female,Bradford,United Kingdom,2023-06-03 00:00:00,Occasional,"Electronics,Toys,Sports",2023-06-03 00:00:00
+713,Steven Jackson,steven.jackson713@example.co.uk,74,Male,Bristol,United Kingdom,2023-01-17 00:00:00,Regular,Automotive,2023-01-17 00:00:00
+714,Isabella Jackson,isabella.jackson714@example.co.uk,32,Prefer not to say,Wolverhampton,United Kingdom,2021-04-06 00:00:00,New,Electronics,2021-04-06 00:00:00
+715,Ashley Wright,ashley.wright715@example.co.uk,67,Female,Sheffield,United Kingdom,2020-06-22 00:00:00,Premium,"Automotive,Beauty,Toys",2020-06-22 00:00:00
+716,Joshua Lopez,joshua.lopez716@example.co.uk,49,Other,Plymouth,United Kingdom,2022-01-07 00:00:00,Regular,"Toys,Books,Beauty",2022-01-07 00:00:00
+717,Emily Harris,emily.harris717@example.co.uk,32,Other,Cardiff,United Kingdom,2023-03-16 00:00:00,Regular,"Sports,Books",2023-03-16 00:00:00
+718,Jessica Moore,jessica.moore718@example.co.uk,39,Female,Manchester,United Kingdom,2020-07-13 00:00:00,New,"Electronics,Automotive",2020-07-13 00:00:00
+719,Sarah Perez,sarah.perez719@example.co.uk,27,Female,Bradford,United Kingdom,2021-04-29 00:00:00,Premium,"Beauty,Electronics",2021-04-29 00:00:00
+720,Harper Sanchez,harper.sanchez720@example.co.uk,55,Other,Bristol,United Kingdom,2021-11-01 00:00:00,Occasional,"Books,Sports",2021-11-01 00:00:00
+721,Joseph Thomas,joseph.thomas721@example.co.uk,18,Male,Glasgow,United Kingdom,2022-05-28 00:00:00,New,"Home & Garden,Beauty,Fashion",2022-05-28 00:00:00
+722,Mary Thomas,mary.thomas722@example.co.uk,20,Female,Bristol,United Kingdom,2023-07-22 00:00:00,Occasional,"Electronics,Automotive",2023-07-22 00:00:00
+723,Donna Sanchez,donna.sanchez723@example.co.uk,19,Male,Cardiff,United Kingdom,2020-11-04 00:00:00,Occasional,"Fashion,Toys,Beauty",2020-11-04 00:00:00
+724,Sarah Lee,sarah.lee724@example.co.uk,27,Prefer not to say,Cardiff,United Kingdom,2022-04-02 00:00:00,Premium,"Electronics,Fashion",2022-04-02 00:00:00
+725,Evelyn Lee,evelyn.lee725@example.co.uk,72,Female,Nottingham,United Kingdom,2022-03-27 00:00:00,Regular,Automotive,2022-03-27 00:00:00
+726,Christopher Wright,christopher.wright726@example.co.uk,61,Female,London,United Kingdom,2021-01-25 00:00:00,Premium,"Automotive,Home & Garden,Books",2021-01-25 00:00:00
+727,Oliver Robinson,oliver.robinson727@example.co.uk,36,Male,Leicester,United Kingdom,2022-03-12 00:00:00,Regular,"Books,Home & Garden,Sports",2022-03-12 00:00:00
+728,Michelle Jones,michelle.jones728@example.co.uk,40,Other,Coventry,United Kingdom,2023-07-29 00:00:00,Regular,"Books,Toys",2023-07-29 00:00:00
+729,Donald Moore,donald.moore729@example.co.uk,25,Female,Leeds,United Kingdom,2020-06-06 00:00:00,Regular,"Electronics,Home & Garden",2020-06-06 00:00:00
+730,Michael Williams,michael.williams730@example.co.uk,68,Other,Leeds,United Kingdom,2023-09-14 00:00:00,Regular,Electronics,2023-09-14 00:00:00
+731,Emma Martinez,emma.martinez731@example.co.uk,18,Prefer not to say,Bradford,United Kingdom,2022-07-02 00:00:00,Regular,Toys,2022-07-02 00:00:00
+732,David Miller,david.miller732@example.co.uk,47,Prefer not to say,Leicester,United Kingdom,2023-01-10 00:00:00,Regular,"Electronics,Home & Garden",2023-01-10 00:00:00
+733,Mia Allen,mia.allen733@example.co.uk,62,Female,Leeds,United Kingdom,2020-03-14 00:00:00,Regular,Fashion,2020-03-14 00:00:00
+734,Michelle Garcia,michelle.garcia734@example.co.uk,35,Female,Bradford,United Kingdom,2020-07-07 00:00:00,New,Sports,2020-07-07 00:00:00
+735,Michelle Taylor,michelle.taylor735@example.co.uk,35,Female,Coventry,United Kingdom,2022-04-18 00:00:00,Premium,"Books,Automotive",2022-04-18 00:00:00
+736,Steven Thompson,steven.thompson736@example.co.uk,23,Male,Nottingham,United Kingdom,2022-04-16 00:00:00,Occasional,"Sports,Beauty",2022-04-16 00:00:00
+737,Sandra Torres,sandra.torres737@example.co.uk,44,Male,Bristol,United Kingdom,2021-11-25 00:00:00,Occasional,"Sports,Toys,Beauty",2021-11-25 00:00:00
+738,Ashley White,ashley.white738@example.co.uk,31,Female,Glasgow,United Kingdom,2023-07-06 00:00:00,Regular,"Toys,Automotive,Sports",2023-07-06 00:00:00
+739,Donna Ramirez,donna.ramirez739@example.co.uk,45,Male,Edinburgh,United Kingdom,2023-06-01 00:00:00,Regular,"Books,Fashion,Home & Garden",2023-06-01 00:00:00
+740,Amelia Lewis,amelia.lewis740@example.co.uk,70,Male,Stoke-on-Trent,United Kingdom,2022-09-13 00:00:00,New,"Toys,Electronics,Beauty",2022-09-13 00:00:00
+741,Andrew Wright,andrew.wright741@example.co.uk,41,Male,Bristol,United Kingdom,2020-11-23 00:00:00,New,"Electronics,Home & Garden",2020-11-23 00:00:00
+742,Andrew Miller,andrew.miller742@example.co.uk,28,Male,Stoke-on-Trent,United Kingdom,2021-01-11 00:00:00,Regular,"Beauty,Sports",2021-01-11 00:00:00
+743,Karen Thomas,karen.thomas743@example.co.uk,19,Prefer not to say,Stoke-on-Trent,United Kingdom,2022-01-07 00:00:00,Premium,Electronics,2022-01-07 00:00:00
+744,James Martin,james.martin744@example.co.uk,54,Other,Leicester,United Kingdom,2020-10-26 00:00:00,Occasional,Sports,2020-10-26 00:00:00
+745,Paul Lewis,paul.lewis745@example.co.uk,54,Male,Bradford,United Kingdom,2022-01-15 00:00:00,New,"Toys,Fashion",2022-01-15 00:00:00
+746,Daniel Martinez,daniel.martinez746@example.co.uk,28,Male,London,United Kingdom,2022-04-16 00:00:00,Occasional,"Sports,Toys",2022-04-16 00:00:00
+747,Mark Ramirez,mark.ramirez747@example.co.uk,71,Female,Leeds,United Kingdom,2020-05-11 00:00:00,New,Fashion,2020-05-11 00:00:00
+748,Charlotte Gonzalez,charlotte.gonzalez748@example.co.uk,58,Other,Nottingham,United Kingdom,2020-12-19 00:00:00,Occasional,"Beauty,Sports,Electronics",2020-12-19 00:00:00
+749,Joshua Sanchez,joshua.sanchez749@example.co.uk,53,Prefer not to say,Cardiff,United Kingdom,2023-01-14 00:00:00,Occasional,"Beauty,Fashion",2023-01-14 00:00:00
+750,William Wilson,william.wilson750@example.co.uk,52,Female,Leeds,United Kingdom,2021-05-13 00:00:00,Premium,"Electronics,Beauty,Fashion",2021-05-13 00:00:00
+751,Oliver Allen,oliver.allen751@example.co.uk,36,Other,Coventry,United Kingdom,2023-08-31 00:00:00,Premium,"Books,Automotive",2023-08-31 00:00:00
+752,Christopher White,christopher.white752@example.co.uk,42,Male,Cardiff,United Kingdom,2022-06-30 00:00:00,Premium,"Automotive,Sports",2022-06-30 00:00:00
+753,Susan Taylor,susan.taylor753@example.co.uk,19,Other,Kingston upon Hull,United Kingdom,2022-05-08 00:00:00,Regular,"Toys,Electronics,Sports",2022-05-08 00:00:00
+754,Robert Williams,robert.williams754@example.co.uk,39,Prefer not to say,Cardiff,United Kingdom,2023-09-11 00:00:00,Premium,"Toys,Beauty,Automotive",2023-09-11 00:00:00
+755,Amelia Allen,amelia.allen755@example.co.uk,24,Prefer not to say,Bristol,United Kingdom,2020-10-18 00:00:00,Regular,"Sports,Books",2020-10-18 00:00:00
+756,Mark Thompson,mark.thompson756@example.co.uk,50,Female,Liverpool,United Kingdom,2022-05-02 00:00:00,Premium,"Automotive,Beauty",2022-05-02 00:00:00
+757,Jessica Thompson,jessica.thompson757@example.co.uk,63,Prefer not to say,Bradford,United Kingdom,2021-10-09 00:00:00,Regular,"Toys,Fashion",2021-10-09 00:00:00
+758,Paul Brown,paul.brown758@example.co.uk,75,Female,Edinburgh,United Kingdom,2023-04-12 00:00:00,Regular,"Automotive,Toys",2023-04-12 00:00:00
+759,Mia King,mia.king759@example.co.uk,18,Other,Nottingham,United Kingdom,2023-09-14 00:00:00,Occasional,"Beauty,Sports",2023-09-14 00:00:00
+760,Paul Thomas,paul.thomas760@example.co.uk,44,Other,Edinburgh,United Kingdom,2023-07-28 00:00:00,Premium,"Home & Garden,Fashion",2023-07-28 00:00:00
+761,Emily Lee,emily.lee761@example.co.uk,49,Prefer not to say,Belfast,United Kingdom,2023-11-16 00:00:00,Regular,"Sports,Automotive,Books",2023-11-16 00:00:00
+762,Donna Martinez,donna.martinez762@example.co.uk,70,Male,Bradford,United Kingdom,2022-11-10 00:00:00,New,"Electronics,Home & Garden",2022-11-10 00:00:00
+763,Charles Anderson,charles.anderson763@example.co.uk,69,Other,Cardiff,United Kingdom,2021-03-19 00:00:00,Occasional,"Automotive,Home & Garden,Beauty",2021-03-19 00:00:00
+764,David Walker,david.walker764@example.co.uk,57,Male,Liverpool,United Kingdom,2021-11-28 00:00:00,Premium,"Automotive,Toys,Fashion",2021-11-28 00:00:00
+765,Jessica Allen,jessica.allen765@example.co.uk,75,Prefer not to say,Glasgow,United Kingdom,2020-10-28 00:00:00,Occasional,"Automotive,Beauty,Home & Garden",2020-10-28 00:00:00
+766,Christopher Hill,christopher.hill766@example.co.uk,36,Female,Belfast,United Kingdom,2022-05-20 00:00:00,Premium,"Home & Garden,Books",2022-05-20 00:00:00
+767,Sandra Taylor,sandra.taylor767@example.co.uk,71,Prefer not to say,Stoke-on-Trent,United Kingdom,2020-09-22 00:00:00,Occasional,Electronics,2020-09-22 00:00:00
+768,Charlotte Perez,charlotte.perez768@example.co.uk,55,Female,Bristol,United Kingdom,2020-04-15 00:00:00,Occasional,Beauty,2020-04-15 00:00:00
+769,Sarah Jackson,sarah.jackson769@example.co.uk,55,Prefer not to say,Birmingham,United Kingdom,2022-06-01 00:00:00,Regular,"Fashion,Automotive,Toys",2022-06-01 00:00:00
+770,Ava White,ava.white770@example.co.uk,19,Male,Leeds,United Kingdom,2023-02-07 00:00:00,Occasional,"Toys,Automotive,Sports",2023-02-07 00:00:00
+771,Steven Smith,steven.smith771@example.co.uk,57,Other,Wolverhampton,United Kingdom,2023-06-28 00:00:00,Occasional,"Fashion,Toys",2023-06-28 00:00:00
+772,Margaret Taylor,margaret.taylor772@example.co.uk,40,Prefer not to say,Wolverhampton,United Kingdom,2023-07-01 00:00:00,Premium,Sports,2023-07-01 00:00:00
+773,Charlotte King,charlotte.king773@example.co.uk,22,Other,Edinburgh,United Kingdom,2022-04-22 00:00:00,New,Electronics,2022-04-22 00:00:00
+774,Jessica Rodriguez,jessica.rodriguez774@example.co.uk,23,Male,Coventry,United Kingdom,2020-10-27 00:00:00,Premium,"Electronics,Automotive,Sports",2020-10-27 00:00:00
+775,Elizabeth Johnson,elizabeth.johnson775@example.co.uk,40,Male,Kingston upon Hull,United Kingdom,2021-11-03 00:00:00,Occasional,"Books,Electronics,Automotive",2021-11-03 00:00:00
+776,James Perez,james.perez776@example.co.uk,67,Other,Plymouth,United Kingdom,2021-04-11 00:00:00,Occasional,"Automotive,Fashion,Sports",2021-04-11 00:00:00
+777,Paul Gonzalez,paul.gonzalez777@example.co.uk,61,Female,Wolverhampton,United Kingdom,2020-10-28 00:00:00,Regular,Beauty,2020-10-28 00:00:00
+778,Daniel Hill,daniel.hill778@example.co.uk,32,Prefer not to say,Leicester,United Kingdom,2021-03-19 00:00:00,Premium,"Sports,Home & Garden",2021-03-19 00:00:00
+779,Mary Taylor,mary.taylor779@example.co.uk,47,Prefer not to say,Edinburgh,United Kingdom,2021-06-17 00:00:00,Regular,"Electronics,Beauty",2021-06-17 00:00:00
+780,Andrew Scott,andrew.scott780@example.co.uk,69,Female,Newcastle,United Kingdom,2020-12-04 00:00:00,Occasional,"Toys,Automotive",2020-12-04 00:00:00
+781,Ava Torres,ava.torres781@example.co.uk,58,Male,Liverpool,United Kingdom,2022-08-18 00:00:00,New,Beauty,2022-08-18 00:00:00
+782,Joshua Johnson,joshua.johnson782@example.co.uk,65,Other,Liverpool,United Kingdom,2023-06-20 00:00:00,Occasional,"Electronics,Beauty,Books",2023-06-20 00:00:00
+783,Mary Nguyen,mary.nguyen783@example.co.uk,50,Prefer not to say,Edinburgh,United Kingdom,2022-03-19 00:00:00,Premium,"Home & Garden,Sports",2022-03-19 00:00:00
+784,Susan Scott,susan.scott784@example.co.uk,25,Prefer not to say,Coventry,United Kingdom,2021-03-21 00:00:00,Premium,Books,2021-03-21 00:00:00
+785,Sarah Williams,sarah.williams785@example.co.uk,38,Male,Leicester,United Kingdom,2023-01-29 00:00:00,New,"Home & Garden,Beauty",2023-01-29 00:00:00
+786,Betty Clark,betty.clark786@example.co.uk,41,Prefer not to say,Plymouth,United Kingdom,2022-05-09 00:00:00,Regular,"Beauty,Home & Garden",2022-05-09 00:00:00
+787,Ava Rodriguez,ava.rodriguez787@example.co.uk,55,Other,Birmingham,United Kingdom,2023-06-27 00:00:00,Regular,"Automotive,Electronics",2023-06-27 00:00:00
+788,Elizabeth Clark,elizabeth.clark788@example.co.uk,42,Prefer not to say,Bristol,United Kingdom,2022-06-03 00:00:00,Regular,"Books,Home & Garden,Beauty",2022-06-03 00:00:00
+789,James Johnson,james.johnson789@example.co.uk,50,Other,Nottingham,United Kingdom,2022-06-17 00:00:00,Occasional,"Books,Fashion,Home & Garden",2022-06-17 00:00:00
+790,Linda Taylor,linda.taylor790@example.co.uk,27,Male,Coventry,United Kingdom,2022-02-06 00:00:00,Premium,Sports,2022-02-06 00:00:00
+791,Richard Thompson,richard.thompson791@example.co.uk,46,Other,Coventry,United Kingdom,2023-03-01 00:00:00,Regular,"Toys,Automotive,Books",2023-03-01 00:00:00
+792,Harper Taylor,harper.taylor792@example.co.uk,22,Prefer not to say,Leeds,United Kingdom,2020-08-25 00:00:00,Premium,"Home & Garden,Fashion",2020-08-25 00:00:00
+793,Susan Anderson,susan.anderson793@example.co.uk,56,Female,Coventry,United Kingdom,2023-01-27 00:00:00,Premium,"Automotive,Books,Beauty",2023-01-27 00:00:00
+794,Joshua Sanchez,joshua.sanchez794@example.co.uk,22,Other,Plymouth,United Kingdom,2022-12-28 00:00:00,Regular,Home & Garden,2022-12-28 00:00:00
+795,Thomas Williams,thomas.williams795@example.co.uk,48,Female,Birmingham,United Kingdom,2020-12-05 00:00:00,New,Books,2020-12-05 00:00:00
+796,Jennifer Thompson,jennifer.thompson796@example.co.uk,57,Female,Newcastle,United Kingdom,2021-06-23 00:00:00,Occasional,"Books,Toys",2021-06-23 00:00:00
+797,Betty Scott,betty.scott797@example.co.uk,25,Female,Bristol,United Kingdom,2022-02-22 00:00:00,Premium,Home & Garden,2022-02-22 00:00:00
+798,James Lewis,james.lewis798@example.co.uk,45,Male,Cardiff,United Kingdom,2022-05-20 00:00:00,Premium,"Beauty,Fashion",2022-05-20 00:00:00
+799,Charlotte Anderson,charlotte.anderson799@example.co.uk,54,Male,Edinburgh,United Kingdom,2020-07-17 00:00:00,Premium,Fashion,2020-07-17 00:00:00
+800,Steven Johnson,steven.johnson800@example.co.uk,32,Other,Manchester,United Kingdom,2022-11-23 00:00:00,Regular,"Electronics,Home & Garden,Books",2022-11-23 00:00:00
+801,Michelle Gonzalez,michelle.gonzalez801@example.co.uk,22,Male,Edinburgh,United Kingdom,2021-12-26 00:00:00,New,Sports,2021-12-26 00:00:00
+802,Evelyn Martinez,evelyn.martinez802@example.co.uk,55,Prefer not to say,Coventry,United Kingdom,2023-04-13 00:00:00,Occasional,"Sports,Electronics",2023-04-13 00:00:00
+803,Michael Taylor,michael.taylor803@example.co.uk,31,Other,Edinburgh,United Kingdom,2021-06-01 00:00:00,New,Beauty,2021-06-01 00:00:00
+804,Emily Gonzalez,emily.gonzalez804@example.co.uk,71,Other,Sheffield,United Kingdom,2020-12-25 00:00:00,Regular,"Sports,Home & Garden",2020-12-25 00:00:00
+805,Sarah Nguyen,sarah.nguyen805@example.co.uk,28,Male,Manchester,United Kingdom,2022-01-22 00:00:00,Occasional,Sports,2022-01-22 00:00:00
+806,Ava White,ava.white806@example.co.uk,70,Male,Edinburgh,United Kingdom,2021-12-10 00:00:00,Premium,"Beauty,Electronics,Books",2021-12-10 00:00:00
+807,Mia Lopez,mia.lopez807@example.co.uk,71,Prefer not to say,Birmingham,United Kingdom,2020-07-19 00:00:00,Occasional,"Home & Garden,Books,Sports",2020-07-19 00:00:00
+808,Ashley Lee,ashley.lee808@example.co.uk,73,Male,Birmingham,United Kingdom,2022-01-13 00:00:00,Premium,"Sports,Books,Electronics",2022-01-13 00:00:00
+809,Steven Smith,steven.smith809@example.co.uk,30,Female,Belfast,United Kingdom,2020-04-04 00:00:00,Regular,"Home & Garden,Automotive",2020-04-04 00:00:00
+810,Nancy Rodriguez,nancy.rodriguez810@example.co.uk,57,Other,Coventry,United Kingdom,2021-04-01 00:00:00,New,"Toys,Automotive",2021-04-01 00:00:00
+811,Jessica Scott,jessica.scott811@example.co.uk,40,Prefer not to say,Bristol,United Kingdom,2022-10-29 00:00:00,Premium,Toys,2022-10-29 00:00:00
+812,Jennifer Nguyen,jennifer.nguyen812@example.co.uk,42,Prefer not to say,Edinburgh,United Kingdom,2020-12-18 00:00:00,Occasional,"Fashion,Automotive,Beauty",2020-12-18 00:00:00
+813,Harper Nguyen,harper.nguyen813@example.co.uk,63,Other,Sheffield,United Kingdom,2023-06-05 00:00:00,Occasional,"Sports,Home & Garden",2023-06-05 00:00:00
+814,Michelle Smith,michelle.smith814@example.co.uk,62,Prefer not to say,Nottingham,United Kingdom,2020-05-29 00:00:00,New,"Beauty,Automotive,Sports",2020-05-29 00:00:00
+815,Linda Lopez,linda.lopez815@example.co.uk,57,Prefer not to say,Wolverhampton,United Kingdom,2022-11-28 00:00:00,Regular,"Sports,Electronics,Books",2022-11-28 00:00:00
+816,Sophia Gonzalez,sophia.gonzalez816@example.co.uk,55,Other,London,United Kingdom,2022-09-03 00:00:00,Regular,"Sports,Toys",2022-09-03 00:00:00
+817,Robert Moore,robert.moore817@example.co.uk,72,Prefer not to say,Coventry,United Kingdom,2020-06-30 00:00:00,Occasional,"Home & Garden,Fashion",2020-06-30 00:00:00
+818,Mia Perez,mia.perez818@example.co.uk,55,Prefer not to say,London,United Kingdom,2023-01-24 00:00:00,Premium,"Fashion,Sports",2023-01-24 00:00:00
+819,Donna Sanchez,donna.sanchez819@example.co.uk,41,Male,Leeds,United Kingdom,2020-04-22 00:00:00,Premium,"Fashion,Home & Garden,Sports",2020-04-22 00:00:00
+820,Andrew Thompson,andrew.thompson820@example.co.uk,69,Prefer not to say,Bradford,United Kingdom,2023-03-26 00:00:00,Occasional,"Toys,Electronics",2023-03-26 00:00:00
+821,Karen Young,karen.young821@example.co.uk,21,Prefer not to say,Edinburgh,United Kingdom,2020-03-27 00:00:00,Premium,"Books,Automotive,Home & Garden",2020-03-27 00:00:00
+822,Paul Thomas,paul.thomas822@example.co.uk,69,Other,Glasgow,United Kingdom,2022-02-20 00:00:00,Occasional,Sports,2022-02-20 00:00:00
+823,Thomas King,thomas.king823@example.co.uk,47,Female,Wolverhampton,United Kingdom,2021-05-06 00:00:00,Premium,"Sports,Fashion,Beauty",2021-05-06 00:00:00
+824,David Davis,david.davis824@example.co.uk,57,Male,Leeds,United Kingdom,2021-10-09 00:00:00,Regular,"Automotive,Fashion",2021-10-09 00:00:00
+825,Susan King,susan.king825@example.co.uk,68,Other,Stoke-on-Trent,United Kingdom,2021-03-14 00:00:00,New,"Home & Garden,Toys",2021-03-14 00:00:00
+826,Ashley Perez,ashley.perez826@example.co.uk,29,Other,London,United Kingdom,2023-07-08 00:00:00,Regular,"Automotive,Books",2023-07-08 00:00:00
+827,Matthew Smith,matthew.smith827@example.co.uk,27,Female,Plymouth,United Kingdom,2020-06-03 00:00:00,Occasional,"Automotive,Books",2020-06-03 00:00:00
+828,James Flores,james.flores828@example.co.uk,41,Other,Nottingham,United Kingdom,2022-09-19 00:00:00,Occasional,Toys,2022-09-19 00:00:00
+829,James Clark,james.clark829@example.co.uk,53,Other,Plymouth,United Kingdom,2021-07-25 00:00:00,Regular,"Sports,Electronics,Fashion",2021-07-25 00:00:00
+830,Charles Allen,charles.allen830@example.co.uk,39,Prefer not to say,Stoke-on-Trent,United Kingdom,2022-11-14 00:00:00,Regular,Electronics,2022-11-14 00:00:00
+831,Oliver Robinson,oliver.robinson831@example.co.uk,39,Female,Bristol,United Kingdom,2023-05-29 00:00:00,Regular,Sports,2023-05-29 00:00:00
+832,Mark White,mark.white832@example.co.uk,25,Female,Coventry,United Kingdom,2021-07-12 00:00:00,Regular,Automotive,2021-07-12 00:00:00
+833,Andrew White,andrew.white833@example.co.uk,73,Female,Bristol,United Kingdom,2021-09-14 00:00:00,Premium,"Books,Beauty",2021-09-14 00:00:00
+834,Joseph Garcia,joseph.garcia834@example.co.uk,41,Prefer not to say,Nottingham,United Kingdom,2023-02-19 00:00:00,Regular,Sports,2023-02-19 00:00:00
+835,Mark Nguyen,mark.nguyen835@example.co.uk,70,Female,Plymouth,United Kingdom,2020-10-25 00:00:00,Regular,"Beauty,Electronics,Toys",2020-10-25 00:00:00
+836,Anthony Thompson,anthony.thompson836@example.co.uk,29,Other,Nottingham,United Kingdom,2023-07-01 00:00:00,Premium,"Fashion,Sports,Toys",2023-07-01 00:00:00
+837,Jennifer Lopez,jennifer.lopez837@example.co.uk,58,Prefer not to say,Bradford,United Kingdom,2020-07-14 00:00:00,New,"Toys,Sports",2020-07-14 00:00:00
+838,Sophia Nguyen,sophia.nguyen838@example.co.uk,26,Prefer not to say,Manchester,United Kingdom,2020-07-31 00:00:00,New,Fashion,2020-07-31 00:00:00
+839,Susan Williams,susan.williams839@example.co.uk,63,Male,Wolverhampton,United Kingdom,2020-08-04 00:00:00,Premium,"Fashion,Beauty",2020-08-04 00:00:00
+840,Betty Taylor,betty.taylor840@example.co.uk,65,Male,Belfast,United Kingdom,2023-03-29 00:00:00,Premium,"Beauty,Fashion,Sports",2023-03-29 00:00:00
+841,Patricia Williams,patricia.williams841@example.co.uk,39,Other,Sheffield,United Kingdom,2020-09-20 00:00:00,Regular,"Automotive,Books",2020-09-20 00:00:00
+842,Elizabeth Martin,elizabeth.martin842@example.co.uk,49,Female,Birmingham,United Kingdom,2020-01-03 00:00:00,New,Automotive,2020-01-03 00:00:00
+843,Nancy Nguyen,nancy.nguyen843@example.co.uk,54,Other,Bristol,United Kingdom,2020-05-23 00:00:00,New,"Books,Electronics",2020-05-23 00:00:00
+844,Sophia Garcia,sophia.garcia844@example.co.uk,27,Male,Glasgow,United Kingdom,2020-08-09 00:00:00,Occasional,"Automotive,Fashion,Toys",2020-08-09 00:00:00
+845,Michael Martinez,michael.martinez845@example.co.uk,48,Other,Bradford,United Kingdom,2022-05-01 00:00:00,Occasional,Automotive,2022-05-01 00:00:00
+846,Kimberly Jones,kimberly.jones846@example.co.uk,67,Female,Plymouth,United Kingdom,2021-09-15 00:00:00,Regular,"Beauty,Books,Automotive",2021-09-15 00:00:00
+847,Paul Gonzalez,paul.gonzalez847@example.co.uk,23,Prefer not to say,Birmingham,United Kingdom,2021-04-13 00:00:00,Occasional,"Automotive,Toys,Beauty",2021-04-13 00:00:00
+848,Harper Johnson,harper.johnson848@example.co.uk,61,Prefer not to say,Glasgow,United Kingdom,2023-11-26 00:00:00,Occasional,"Sports,Electronics",2023-11-26 00:00:00
+849,Anthony Taylor,anthony.taylor849@example.co.uk,43,Prefer not to say,Leicester,United Kingdom,2022-06-24 00:00:00,Regular,Sports,2022-06-24 00:00:00
+850,Ashley Lee,ashley.lee850@example.co.uk,24,Male,Edinburgh,United Kingdom,2022-06-04 00:00:00,Occasional,Electronics,2022-06-04 00:00:00
+851,James King,james.king851@example.co.uk,42,Female,Bristol,United Kingdom,2021-03-17 00:00:00,Premium,"Automotive,Beauty",2021-03-17 00:00:00
+852,Donna Johnson,donna.johnson852@example.co.uk,39,Other,Liverpool,United Kingdom,2020-04-08 00:00:00,New,Electronics,2020-04-08 00:00:00
+853,James Young,james.young853@example.co.uk,37,Other,Newcastle,United Kingdom,2020-01-23 00:00:00,Premium,Toys,2020-01-23 00:00:00
+854,Sophia Walker,sophia.walker854@example.co.uk,70,Male,Sheffield,United Kingdom,2023-03-17 00:00:00,Regular,"Fashion,Toys",2023-03-17 00:00:00
+855,Donald Robinson,donald.robinson855@example.co.uk,66,Female,Sheffield,United Kingdom,2023-07-18 00:00:00,Premium,Electronics,2023-07-18 00:00:00
+856,Sarah Smith,sarah.smith856@example.co.uk,54,Male,Coventry,United Kingdom,2022-02-28 00:00:00,Occasional,"Toys,Electronics,Home & Garden",2022-02-28 00:00:00
+857,Donna Wilson,donna.wilson857@example.co.uk,46,Prefer not to say,Cardiff,United Kingdom,2022-06-15 00:00:00,Regular,Fashion,2022-06-15 00:00:00
+858,William Davis,william.davis858@example.co.uk,52,Other,Plymouth,United Kingdom,2020-09-11 00:00:00,Regular,"Toys,Books,Beauty",2020-09-11 00:00:00
+859,Isabella Hernandez,isabella.hernandez859@example.co.uk,45,Male,Bristol,United Kingdom,2023-02-19 00:00:00,Premium,"Fashion,Home & Garden,Beauty",2023-02-19 00:00:00
+860,Linda Young,linda.young860@example.co.uk,60,Male,Newcastle,United Kingdom,2023-08-31 00:00:00,Regular,"Toys,Electronics,Automotive",2023-08-31 00:00:00
+861,Sarah Rodriguez,sarah.rodriguez861@example.co.uk,66,Prefer not to say,Manchester,United Kingdom,2022-08-07 00:00:00,Regular,"Toys,Sports",2022-08-07 00:00:00
+862,Joshua Nguyen,joshua.nguyen862@example.co.uk,51,Prefer not to say,Edinburgh,United Kingdom,2022-02-28 00:00:00,Regular,Electronics,2022-02-28 00:00:00
+863,Sandra Gonzalez,sandra.gonzalez863@example.co.uk,69,Male,Bristol,United Kingdom,2020-05-08 00:00:00,Occasional,"Home & Garden,Books",2020-05-08 00:00:00
+864,Emma Jones,emma.jones864@example.co.uk,25,Female,Edinburgh,United Kingdom,2022-10-28 00:00:00,Regular,"Sports,Automotive",2022-10-28 00:00:00
+865,Michelle Clark,michelle.clark865@example.co.uk,67,Female,Leeds,United Kingdom,2021-09-03 00:00:00,Regular,"Home & Garden,Electronics",2021-09-03 00:00:00
+866,Anthony Perez,anthony.perez866@example.co.uk,55,Other,Nottingham,United Kingdom,2020-05-29 00:00:00,Regular,Beauty,2020-05-29 00:00:00
+867,Susan Rodriguez,susan.rodriguez867@example.co.uk,54,Male,Stoke-on-Trent,United Kingdom,2022-11-25 00:00:00,Occasional,Books,2022-11-25 00:00:00
+868,Elizabeth Smith,elizabeth.smith868@example.co.uk,28,Female,Leicester,United Kingdom,2022-11-12 00:00:00,Regular,"Toys,Home & Garden",2022-11-12 00:00:00
+869,Daniel Thomas,daniel.thomas869@example.co.uk,19,Female,Stoke-on-Trent,United Kingdom,2020-01-08 00:00:00,Regular,"Books,Beauty",2020-01-08 00:00:00
+870,Harper Allen,harper.allen870@example.co.uk,27,Prefer not to say,Kingston upon Hull,United Kingdom,2021-01-15 00:00:00,Regular,"Beauty,Books,Toys",2021-01-15 00:00:00
+871,Harper Rodriguez,harper.rodriguez871@example.co.uk,75,Other,Birmingham,United Kingdom,2021-02-11 00:00:00,Regular,"Home & Garden,Automotive",2021-02-11 00:00:00
+872,Joseph King,joseph.king872@example.co.uk,25,Prefer not to say,Stoke-on-Trent,United Kingdom,2022-11-18 00:00:00,Regular,Fashion,2022-11-18 00:00:00
+873,Mia Scott,mia.scott873@example.co.uk,63,Other,Cardiff,United Kingdom,2020-05-15 00:00:00,Premium,Electronics,2020-05-15 00:00:00
+874,Donald Nguyen,donald.nguyen874@example.co.uk,19,Male,Wolverhampton,United Kingdom,2023-08-13 00:00:00,Regular,"Books,Sports",2023-08-13 00:00:00
+875,James Gonzalez,james.gonzalez875@example.co.uk,61,Prefer not to say,Sheffield,United Kingdom,2021-11-26 00:00:00,New,"Toys,Automotive",2021-11-26 00:00:00
+876,Daniel Torres,daniel.torres876@example.co.uk,18,Other,Coventry,United Kingdom,2023-12-09 00:00:00,New,Toys,2023-12-09 00:00:00
+877,John White,john.white877@example.co.uk,43,Prefer not to say,Leeds,United Kingdom,2021-06-16 00:00:00,Premium,"Home & Garden,Toys,Fashion",2021-06-16 00:00:00
+878,Matthew Torres,matthew.torres878@example.co.uk,25,Female,Manchester,United Kingdom,2023-01-06 00:00:00,Occasional,Electronics,2023-01-06 00:00:00
+879,Susan Thompson,susan.thompson879@example.co.uk,62,Prefer not to say,Wolverhampton,United Kingdom,2023-02-08 00:00:00,Premium,"Automotive,Beauty,Sports",2023-02-08 00:00:00
+880,Karen Rodriguez,karen.rodriguez880@example.co.uk,62,Male,Stoke-on-Trent,United Kingdom,2020-11-01 00:00:00,Premium,"Fashion,Sports",2020-11-01 00:00:00
+881,Sandra Ramirez,sandra.ramirez881@example.co.uk,42,Prefer not to say,Belfast,United Kingdom,2022-03-18 00:00:00,Occasional,Books,2022-03-18 00:00:00
+882,Margaret Walker,margaret.walker882@example.co.uk,41,Other,Liverpool,United Kingdom,2020-06-13 00:00:00,Premium,"Automotive,Toys,Sports",2020-06-13 00:00:00
+883,Michelle Smith,michelle.smith883@example.co.uk,55,Female,Cardiff,United Kingdom,2023-12-19 00:00:00,New,"Toys,Sports,Electronics",2023-12-19 00:00:00
+884,Margaret Johnson,margaret.johnson884@example.co.uk,26,Female,Newcastle,United Kingdom,2022-10-09 00:00:00,New,"Books,Beauty,Fashion",2022-10-09 00:00:00
+885,Anthony Thompson,anthony.thompson885@example.co.uk,28,Other,Edinburgh,United Kingdom,2020-06-09 00:00:00,Occasional,Sports,2020-06-09 00:00:00
+886,Richard King,richard.king886@example.co.uk,41,Other,Glasgow,United Kingdom,2021-11-11 00:00:00,New,"Electronics,Toys",2021-11-11 00:00:00
+887,Sandra Hernandez,sandra.hernandez887@example.co.uk,36,Other,Kingston upon Hull,United Kingdom,2020-09-29 00:00:00,Premium,Automotive,2020-09-29 00:00:00
+888,Joshua Davis,joshua.davis888@example.co.uk,26,Male,Nottingham,United Kingdom,2021-02-11 00:00:00,New,"Electronics,Fashion,Home & Garden",2021-02-11 00:00:00
+889,Robert Walker,robert.walker889@example.co.uk,49,Male,Manchester,United Kingdom,2023-06-24 00:00:00,New,"Automotive,Sports,Home & Garden",2023-06-24 00:00:00
+890,Mark Wright,mark.wright890@example.co.uk,61,Male,Plymouth,United Kingdom,2021-02-16 00:00:00,Occasional,"Beauty,Sports,Books",2021-02-16 00:00:00
+891,Charlotte Hill,charlotte.hill891@example.co.uk,26,Prefer not to say,Kingston upon Hull,United Kingdom,2023-02-21 00:00:00,Regular,Sports,2023-02-21 00:00:00
+892,Steven Johnson,steven.johnson892@example.co.uk,48,Prefer not to say,Stoke-on-Trent,United Kingdom,2020-10-01 00:00:00,Occasional,"Automotive,Toys",2020-10-01 00:00:00
+893,Nancy Lee,nancy.lee893@example.co.uk,19,Other,Plymouth,United Kingdom,2022-02-13 00:00:00,Premium,Toys,2022-02-13 00:00:00
+894,Matthew Davis,matthew.davis894@example.co.uk,40,Female,Belfast,United Kingdom,2022-10-24 00:00:00,Regular,"Electronics,Beauty",2022-10-24 00:00:00
+895,Margaret Taylor,margaret.taylor895@example.co.uk,70,Male,Sheffield,United Kingdom,2021-04-16 00:00:00,Premium,Toys,2021-04-16 00:00:00
+896,Thomas Jones,thomas.jones896@example.co.uk,28,Female,Leeds,United Kingdom,2021-07-14 00:00:00,Premium,"Fashion,Books,Electronics",2021-07-14 00:00:00
+897,Emma Scott,emma.scott897@example.co.uk,69,Other,Nottingham,United Kingdom,2020-05-06 00:00:00,Premium,"Electronics,Fashion",2020-05-06 00:00:00
+898,Mark Walker,mark.walker898@example.co.uk,30,Male,Cardiff,United Kingdom,2023-07-01 00:00:00,Premium,"Automotive,Toys",2023-07-01 00:00:00
+899,Sarah Gonzalez,sarah.gonzalez899@example.co.uk,44,Female,Kingston upon Hull,United Kingdom,2020-09-29 00:00:00,Occasional,Electronics,2020-09-29 00:00:00
+900,Charlotte Garcia,charlotte.garcia900@example.co.uk,37,Female,Kingston upon Hull,United Kingdom,2023-02-12 00:00:00,Occasional,"Automotive,Toys",2023-02-12 00:00:00
+901,Margaret Hill,margaret.hill901@example.co.uk,62,Male,Glasgow,United Kingdom,2022-11-02 00:00:00,New,Fashion,2022-11-02 00:00:00
+902,Mia Allen,mia.allen902@example.co.uk,65,Male,Leeds,United Kingdom,2022-01-07 00:00:00,Occasional,"Toys,Books",2022-01-07 00:00:00
+903,Donald Wright,donald.wright903@example.co.uk,31,Prefer not to say,Sheffield,United Kingdom,2023-06-30 00:00:00,Premium,Books,2023-06-30 00:00:00
+904,Michael Nguyen,michael.nguyen904@example.co.uk,59,Other,Plymouth,United Kingdom,2021-01-06 00:00:00,New,"Toys,Electronics,Fashion",2021-01-06 00:00:00
+905,Michael Williams,michael.williams905@example.co.uk,40,Other,Kingston upon Hull,United Kingdom,2020-10-07 00:00:00,Occasional,Toys,2020-10-07 00:00:00
+906,Anthony Williams,anthony.williams906@example.co.uk,24,Other,Liverpool,United Kingdom,2022-06-10 00:00:00,Occasional,Toys,2022-06-10 00:00:00
+907,James Harris,james.harris907@example.co.uk,75,Male,London,United Kingdom,2021-12-25 00:00:00,Occasional,Books,2021-12-25 00:00:00
+908,Elizabeth Torres,elizabeth.torres908@example.co.uk,20,Female,Birmingham,United Kingdom,2023-02-20 00:00:00,Occasional,"Automotive,Toys",2023-02-20 00:00:00
+909,Ashley Taylor,ashley.taylor909@example.co.uk,54,Male,Bradford,United Kingdom,2023-10-03 00:00:00,Occasional,"Electronics,Home & Garden",2023-10-03 00:00:00
+910,Oliver Lopez,oliver.lopez910@example.co.uk,22,Prefer not to say,Bristol,United Kingdom,2021-06-20 00:00:00,Regular,"Beauty,Toys,Home & Garden",2021-06-20 00:00:00
+911,Michelle Harris,michelle.harris911@example.co.uk,19,Other,Leeds,United Kingdom,2023-12-18 00:00:00,Occasional,"Beauty,Toys",2023-12-18 00:00:00
+912,Mary Martinez,mary.martinez912@example.co.uk,23,Female,Coventry,United Kingdom,2023-07-23 00:00:00,Occasional,Books,2023-07-23 00:00:00
+913,Robert Jones,robert.jones913@example.co.uk,75,Other,Manchester,United Kingdom,2022-11-28 00:00:00,Premium,"Books,Electronics,Home & Garden",2022-11-28 00:00:00
+914,Emily Anderson,emily.anderson914@example.co.uk,27,Male,Bradford,United Kingdom,2020-09-25 00:00:00,Occasional,"Toys,Sports",2020-09-25 00:00:00
+915,Charlotte Garcia,charlotte.garcia915@example.co.uk,61,Other,Newcastle,United Kingdom,2022-06-21 00:00:00,Premium,Electronics,2022-06-21 00:00:00
+916,Karen Martin,karen.martin916@example.co.uk,72,Male,Glasgow,United Kingdom,2023-01-21 00:00:00,Regular,"Toys,Automotive,Home & Garden",2023-01-21 00:00:00
+917,John Davis,john.davis917@example.co.uk,62,Prefer not to say,Bradford,United Kingdom,2021-02-04 00:00:00,New,"Electronics,Fashion,Sports",2021-02-04 00:00:00
+918,Margaret Lewis,margaret.lewis918@example.co.uk,75,Other,London,United Kingdom,2023-11-07 00:00:00,Occasional,"Electronics,Beauty",2023-11-07 00:00:00
+919,Mark Martin,mark.martin919@example.co.uk,22,Male,Nottingham,United Kingdom,2022-06-08 00:00:00,Premium,"Sports,Toys,Automotive",2022-06-08 00:00:00
+920,Michael Hill,michael.hill920@example.co.uk,19,Prefer not to say,Bradford,United Kingdom,2023-04-05 00:00:00,New,"Sports,Automotive,Fashion",2023-04-05 00:00:00
+921,Karen Flores,karen.flores921@example.co.uk,41,Male,Stoke-on-Trent,United Kingdom,2022-07-09 00:00:00,Regular,"Sports,Beauty",2022-07-09 00:00:00
+922,Michelle Ramirez,michelle.ramirez922@example.co.uk,21,Female,Plymouth,United Kingdom,2022-02-09 00:00:00,Occasional,"Electronics,Automotive,Beauty",2022-02-09 00:00:00
+923,Donna King,donna.king923@example.co.uk,38,Other,Wolverhampton,United Kingdom,2023-01-23 00:00:00,Premium,"Beauty,Sports",2023-01-23 00:00:00
+924,William Harris,william.harris924@example.co.uk,75,Female,Bristol,United Kingdom,2022-06-19 00:00:00,Regular,Electronics,2022-06-19 00:00:00
+925,Andrew Perez,andrew.perez925@example.co.uk,49,Prefer not to say,Belfast,United Kingdom,2022-09-07 00:00:00,Occasional,"Home & Garden,Beauty,Toys",2022-09-07 00:00:00
+926,Charles Johnson,charles.johnson926@example.co.uk,38,Other,Cardiff,United Kingdom,2021-06-19 00:00:00,Premium,Electronics,2021-06-19 00:00:00
+927,Amelia Taylor,amelia.taylor927@example.co.uk,37,Other,Bradford,United Kingdom,2021-02-26 00:00:00,Regular,Fashion,2021-02-26 00:00:00
+928,Joshua Perez,joshua.perez928@example.co.uk,48,Prefer not to say,Kingston upon Hull,United Kingdom,2020-10-22 00:00:00,Occasional,"Electronics,Toys,Fashion",2020-10-22 00:00:00
+929,Anthony Perez,anthony.perez929@example.co.uk,34,Prefer not to say,Nottingham,United Kingdom,2021-11-13 00:00:00,Regular,"Books,Fashion",2021-11-13 00:00:00
+930,Paul Gonzalez,paul.gonzalez930@example.co.uk,34,Other,Coventry,United Kingdom,2020-09-08 00:00:00,New,Beauty,2020-09-08 00:00:00
+931,Donna Perez,donna.perez931@example.co.uk,22,Female,Leeds,United Kingdom,2020-06-08 00:00:00,New,Automotive,2020-06-08 00:00:00
+932,Betty Jones,betty.jones932@example.co.uk,36,Other,Leeds,United Kingdom,2022-10-31 00:00:00,Premium,"Sports,Toys,Automotive",2022-10-31 00:00:00
+933,Nancy Flores,nancy.flores933@example.co.uk,45,Male,Plymouth,United Kingdom,2023-07-07 00:00:00,New,Toys,2023-07-07 00:00:00
+934,Kimberly Thomas,kimberly.thomas934@example.co.uk,50,Female,Nottingham,United Kingdom,2020-07-17 00:00:00,New,"Home & Garden,Electronics,Books",2020-07-17 00:00:00
+935,Ava Rodriguez,ava.rodriguez935@example.co.uk,24,Female,Kingston upon Hull,United Kingdom,2020-02-28 00:00:00,Premium,Books,2020-02-28 00:00:00
+936,Betty Jones,betty.jones936@example.co.uk,41,Prefer not to say,Manchester,United Kingdom,2023-10-27 00:00:00,Regular,"Electronics,Sports,Fashion",2023-10-27 00:00:00
+937,Jessica King,jessica.king937@example.co.uk,62,Other,Sheffield,United Kingdom,2022-02-08 00:00:00,Premium,"Fashion,Automotive,Toys",2022-02-08 00:00:00
+938,Sandra Perez,sandra.perez938@example.co.uk,25,Other,Glasgow,United Kingdom,2020-08-16 00:00:00,Regular,"Beauty,Home & Garden",2020-08-16 00:00:00
+939,Anthony Young,anthony.young939@example.co.uk,66,Other,London,United Kingdom,2022-03-16 00:00:00,Occasional,"Toys,Sports",2022-03-16 00:00:00
+940,Charles Walker,charles.walker940@example.co.uk,40,Other,Nottingham,United Kingdom,2021-02-09 00:00:00,Regular,"Automotive,Home & Garden,Toys",2021-02-09 00:00:00
+941,Emily Jones,emily.jones941@example.co.uk,27,Male,Liverpool,United Kingdom,2020-09-02 00:00:00,New,Sports,2020-09-02 00:00:00
+942,Ava Young,ava.young942@example.co.uk,46,Male,Glasgow,United Kingdom,2023-01-11 00:00:00,New,Books,2023-01-11 00:00:00
+943,Sarah Moore,sarah.moore943@example.co.uk,64,Male,Edinburgh,United Kingdom,2021-09-07 00:00:00,Occasional,Sports,2021-09-07 00:00:00
+944,Emma Wright,emma.wright944@example.co.uk,40,Prefer not to say,Stoke-on-Trent,United Kingdom,2021-02-23 00:00:00,Regular,"Beauty,Automotive",2021-02-23 00:00:00
+945,William Sanchez,william.sanchez945@example.co.uk,45,Other,Manchester,United Kingdom,2021-03-03 00:00:00,Regular,"Electronics,Books",2021-03-03 00:00:00
+946,James Hernandez,james.hernandez946@example.co.uk,56,Other,Stoke-on-Trent,United Kingdom,2020-06-08 00:00:00,Premium,"Automotive,Books",2020-06-08 00:00:00
+947,Harper Scott,harper.scott947@example.co.uk,42,Prefer not to say,Liverpool,United Kingdom,2022-01-24 00:00:00,Premium,Toys,2022-01-24 00:00:00
+948,Michael Lopez,michael.lopez948@example.co.uk,36,Prefer not to say,Newcastle,United Kingdom,2023-03-20 00:00:00,New,"Electronics,Books,Sports",2023-03-20 00:00:00
+949,Margaret Martin,margaret.martin949@example.co.uk,21,Prefer not to say,Bradford,United Kingdom,2022-06-02 00:00:00,Premium,Automotive,2022-06-02 00:00:00
+950,Charles Walker,charles.walker950@example.co.uk,66,Female,Birmingham,United Kingdom,2022-02-10 00:00:00,Premium,"Sports,Books,Electronics",2022-02-10 00:00:00
+951,Nancy Martinez,nancy.martinez951@example.co.uk,24,Female,London,United Kingdom,2023-07-30 00:00:00,Premium,"Books,Electronics,Beauty",2023-07-30 00:00:00
+952,Ava Ramirez,ava.ramirez952@example.co.uk,22,Prefer not to say,Bristol,United Kingdom,2022-07-30 00:00:00,New,"Automotive,Toys",2022-07-30 00:00:00
+953,Amelia Lewis,amelia.lewis953@example.co.uk,70,Female,Newcastle,United Kingdom,2020-02-17 00:00:00,New,"Beauty,Electronics",2020-02-17 00:00:00
+954,Oliver Thomas,oliver.thomas954@example.co.uk,45,Male,Bradford,United Kingdom,2023-01-24 00:00:00,Regular,"Electronics,Beauty",2023-01-24 00:00:00
+955,Lisa Hernandez,lisa.hernandez955@example.co.uk,73,Male,Kingston upon Hull,United Kingdom,2022-06-04 00:00:00,Premium,Home & Garden,2022-06-04 00:00:00
+956,Margaret King,margaret.king956@example.co.uk,26,Prefer not to say,Edinburgh,United Kingdom,2020-06-18 00:00:00,New,"Home & Garden,Automotive",2020-06-18 00:00:00
+957,Amelia Harris,amelia.harris957@example.co.uk,30,Prefer not to say,Wolverhampton,United Kingdom,2023-05-08 00:00:00,Premium,Beauty,2023-05-08 00:00:00
+958,Patricia Johnson,patricia.johnson958@example.co.uk,35,Female,Newcastle,United Kingdom,2021-05-31 00:00:00,Premium,Electronics,2021-05-31 00:00:00
+959,Evelyn Young,evelyn.young959@example.co.uk,57,Female,Liverpool,United Kingdom,2023-07-05 00:00:00,Regular,Automotive,2023-07-05 00:00:00
+960,Robert Allen,robert.allen960@example.co.uk,64,Prefer not to say,Belfast,United Kingdom,2022-08-29 00:00:00,New,Toys,2022-08-29 00:00:00
+961,Mark Robinson,mark.robinson961@example.co.uk,18,Other,Kingston upon Hull,United Kingdom,2022-07-01 00:00:00,New,Beauty,2022-07-01 00:00:00
+962,Karen Martinez,karen.martinez962@example.co.uk,21,Female,Bradford,United Kingdom,2023-08-04 00:00:00,Regular,"Books,Beauty",2023-08-04 00:00:00
+963,Michelle Nguyen,michelle.nguyen963@example.co.uk,58,Prefer not to say,Cardiff,United Kingdom,2021-06-10 00:00:00,Occasional,Home & Garden,2021-06-10 00:00:00
+964,Joseph Moore,joseph.moore964@example.co.uk,43,Prefer not to say,Cardiff,United Kingdom,2021-10-22 00:00:00,New,Beauty,2021-10-22 00:00:00
+965,Lisa Harris,lisa.harris965@example.co.uk,66,Prefer not to say,Plymouth,United Kingdom,2021-10-30 00:00:00,Premium,"Beauty,Electronics,Automotive",2021-10-30 00:00:00
+966,Charles Wright,charles.wright966@example.co.uk,54,Female,Edinburgh,United Kingdom,2023-12-01 00:00:00,Regular,"Fashion,Toys,Electronics",2023-12-01 00:00:00
+967,Nancy White,nancy.white967@example.co.uk,70,Prefer not to say,Birmingham,United Kingdom,2020-03-19 00:00:00,Premium,"Beauty,Books,Electronics",2020-03-19 00:00:00
+968,Barbara Nguyen,barbara.nguyen968@example.co.uk,46,Other,Bristol,United Kingdom,2020-02-20 00:00:00,Occasional,"Toys,Books,Home & Garden",2020-02-20 00:00:00
+969,Mark Lee,mark.lee969@example.co.uk,52,Prefer not to say,Glasgow,United Kingdom,2021-06-03 00:00:00,Regular,"Toys,Sports",2021-06-03 00:00:00
+970,Donald Young,donald.young970@example.co.uk,39,Female,Glasgow,United Kingdom,2022-06-13 00:00:00,Premium,"Fashion,Sports",2022-06-13 00:00:00
+971,Richard Ramirez,richard.ramirez971@example.co.uk,22,Prefer not to say,Wolverhampton,United Kingdom,2023-02-09 00:00:00,Premium,"Home & Garden,Electronics,Sports",2023-02-09 00:00:00
+972,Donald King,donald.king972@example.co.uk,41,Prefer not to say,Edinburgh,United Kingdom,2020-10-22 00:00:00,New,Electronics,2020-10-22 00:00:00
+973,Sarah Williams,sarah.williams973@example.co.uk,40,Prefer not to say,Cardiff,United Kingdom,2023-02-10 00:00:00,New,"Sports,Beauty",2023-02-10 00:00:00
+974,Ashley Jackson,ashley.jackson974@example.co.uk,28,Female,Glasgow,United Kingdom,2023-03-25 00:00:00,New,"Automotive,Sports",2023-03-25 00:00:00
+975,Charles Anderson,charles.anderson975@example.co.uk,58,Prefer not to say,Manchester,United Kingdom,2021-09-14 00:00:00,Premium,"Home & Garden,Sports,Toys",2021-09-14 00:00:00
+976,Sandra Taylor,sandra.taylor976@example.co.uk,66,Prefer not to say,Birmingham,United Kingdom,2021-12-15 00:00:00,Premium,"Beauty,Toys,Books",2021-12-15 00:00:00
+977,Daniel Taylor,daniel.taylor977@example.co.uk,33,Other,Birmingham,United Kingdom,2021-09-28 00:00:00,Regular,"Books,Home & Garden",2021-09-28 00:00:00
+978,Linda Davis,linda.davis978@example.co.uk,41,Male,London,United Kingdom,2022-01-19 00:00:00,Premium,"Beauty,Automotive",2022-01-19 00:00:00
+979,Mark Moore,mark.moore979@example.co.uk,58,Prefer not to say,Belfast,United Kingdom,2020-01-31 00:00:00,Premium,"Sports,Toys",2020-01-31 00:00:00
+980,David Walker,david.walker980@example.co.uk,20,Female,Edinburgh,United Kingdom,2020-07-25 00:00:00,Occasional,"Sports,Beauty",2020-07-25 00:00:00
+981,Kimberly Taylor,kimberly.taylor981@example.co.uk,38,Prefer not to say,Stoke-on-Trent,United Kingdom,2020-04-01 00:00:00,Premium,"Beauty,Sports,Toys",2020-04-01 00:00:00
+982,Michael Allen,michael.allen982@example.co.uk,60,Female,Glasgow,United Kingdom,2020-10-29 00:00:00,Regular,Toys,2020-10-29 00:00:00
+983,Karen Jones,karen.jones983@example.co.uk,44,Prefer not to say,Belfast,United Kingdom,2021-08-25 00:00:00,Occasional,"Books,Home & Garden",2021-08-25 00:00:00
+984,Christopher Jones,christopher.jones984@example.co.uk,45,Other,Stoke-on-Trent,United Kingdom,2023-01-11 00:00:00,Regular,"Toys,Beauty,Fashion",2023-01-11 00:00:00
+985,Isabella Robinson,isabella.robinson985@example.co.uk,63,Other,Wolverhampton,United Kingdom,2022-11-21 00:00:00,Premium,"Electronics,Toys",2022-11-21 00:00:00
+986,Harper King,harper.king986@example.co.uk,42,Female,Belfast,United Kingdom,2022-05-09 00:00:00,Occasional,"Fashion,Toys,Books",2022-05-09 00:00:00
+987,Lisa Perez,lisa.perez987@example.co.uk,42,Female,London,United Kingdom,2020-12-27 00:00:00,Occasional,Toys,2020-12-27 00:00:00
+988,John Young,john.young988@example.co.uk,28,Prefer not to say,Leicester,United Kingdom,2020-05-11 00:00:00,New,"Books,Electronics,Fashion",2020-05-11 00:00:00
+989,Robert King,robert.king989@example.co.uk,45,Male,Stoke-on-Trent,United Kingdom,2021-12-26 00:00:00,Regular,"Home & Garden,Electronics,Books",2021-12-26 00:00:00
+990,Mary Lopez,mary.lopez990@example.co.uk,29,Male,Sheffield,United Kingdom,2020-01-28 00:00:00,Premium,"Books,Fashion",2020-01-28 00:00:00
+991,Jessica Lee,jessica.lee991@example.co.uk,56,Female,Bradford,United Kingdom,2021-10-23 00:00:00,Occasional,"Automotive,Toys",2021-10-23 00:00:00
+992,Robert Lewis,robert.lewis992@example.co.uk,34,Prefer not to say,Edinburgh,United Kingdom,2021-04-06 00:00:00,Occasional,"Automotive,Toys,Home & Garden",2021-04-06 00:00:00
+993,John Jones,john.jones993@example.co.uk,23,Prefer not to say,Leicester,United Kingdom,2023-05-09 00:00:00,Occasional,Books,2023-05-09 00:00:00
+994,Sandra Smith,sandra.smith994@example.co.uk,52,Prefer not to say,Plymouth,United Kingdom,2023-08-16 00:00:00,Regular,"Books,Toys",2023-08-16 00:00:00
+995,Evelyn Garcia,evelyn.garcia995@example.co.uk,63,Female,Liverpool,United Kingdom,2022-04-29 00:00:00,New,"Electronics,Fashion,Automotive",2022-04-29 00:00:00
+996,Donald King,donald.king996@example.co.uk,38,Prefer not to say,Sheffield,United Kingdom,2021-08-09 00:00:00,Premium,Fashion,2021-08-09 00:00:00
+997,Joshua Taylor,joshua.taylor997@example.co.uk,34,Female,Nottingham,United Kingdom,2023-04-15 00:00:00,New,"Home & Garden,Toys,Books",2023-04-15 00:00:00
+998,David Torres,david.torres998@example.co.uk,19,Male,Leicester,United Kingdom,2021-03-11 00:00:00,Occasional,"Sports,Books,Electronics",2021-03-11 00:00:00
+999,Amelia Martin,amelia.martin999@example.co.uk,26,Female,Belfast,United Kingdom,2023-04-23 00:00:00,Premium,Fashion,2023-04-23 00:00:00
+1000,Anthony Perez,anthony.perez1000@example.co.uk,40,Female,Nottingham,United Kingdom,2023-10-25 00:00:00,Premium,"Fashion,Toys,Electronics",2023-10-25 00:00:00
