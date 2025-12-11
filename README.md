@@ -1,17 +1,24 @@
-# Azure Neo4j + Databricks Pipeline Deployer
+# Neo4j + Databricks E-commerce Analytics Pipeline
 
 [![Deploy Full Pipeline](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/deploy-full-pipeline.yml/badge.svg)](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/deploy-full-pipeline.yml)
 
-A production-ready, single-click deployment solution for automated ETL pipelines using Azure Databricks and Neo4j Aura with comprehensive secrets management and multi-environment support.
+A production-ready, single-click deployment solution for **e-commerce analytics** using Azure Databricks and Neo4j Aura. Features comprehensive graph-based customer journey analysis, product recommendations, and supply chain optimization with Neo4j Spark Connector 5.3.0 optimized for UK South region.
 
 ## 🚀 Features
 
+### E-commerce Analytics Capabilities
+- **Customer 360 View**: Complete customer journey analysis with purchase history and preferences
+- **Product Recommendations**: Collaborative filtering and graph-based recommendation engine
+- **Supply Chain Analytics**: Supplier performance tracking and inventory optimization
+- **Neo4j Graph Integration**: High-performance batch loading with Spark Connector 5.3.0
+- **UK South Optimization**: Regional deployment for data residency and GDPR compliance
+
+### Infrastructure & Deployment
+- **8 Sequential Workflows**: Automated deployment from prerequisites to validation
 - **Single-Click Deployment**: Complete infrastructure and pipeline deployment in 15-20 minutes
 - **Multi-Environment Support**: Dev, staging, and production configurations with approval gates
 - **Enhanced Secrets Management**: GitHub secrets + Azure Key Vault integration with fallback mechanisms
-- **Azure-Native Integration**: Resource Manager templates, Managed Identities, and Monitor integration
 - **Cost Optimization**: Auto-pause, scheduling, and resource cleanup capabilities
-- **Production Security**: Secret rotation, compliance checks, and security scanning
 - **Comprehensive Monitoring**: Application Insights, alerting, and performance tracking
 
 ## 📋 Table of Contents
@@ -172,72 +179,182 @@ See [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for advanced config
 
 ## 🔄 Deployment Workflows
 
-### 1. Deploy Full Pipeline
+### Sequential E-commerce Pipeline Workflows
+
+#### 1. Prerequisites Setup
+**File**: `.github/workflows/01-prerequisites-setup.yml`
+- **Duration**: 2-3 minutes
+- **Validates**: Azure credentials, Databricks token, Neo4j Aura credentials, Neo4j Spark Connector 5.3.0
+- **Use Case**: Pre-deployment validation and compatibility checks
+
+#### 2. Azure Infrastructure Deployment
+**File**: `.github/workflows/02-azure-infrastructure.yml`
+- **Duration**: 8-12 minutes
+- **Deploys**: UK South Azure resources, storage, Key Vault, networking for Neo4j
+- **Use Case**: Infrastructure foundation with regional optimization
+
+#### 3. Neo4j Aura Setup
+**File**: `.github/workflows/03-neo4j-aura-setup.yml`
+- **Duration**: 5-8 minutes
+- **Creates**: Performance-optimized Neo4j Aura instance in UK South
+- **Configures**: E-commerce indexes, constraints, and optimization settings
+- **Use Case**: Graph database setup for e-commerce workloads
+
+#### 4. Databricks Configuration
+**File**: `.github/workflows/04-databricks-configuration.yml`
+- **Duration**: 5-7 minutes
+- **Configures**: Neo4j-dedicated clusters with Spark Connector 5.3.0
+- **Installs**: Libraries, init scripts, and performance tuning
+- **Use Case**: Databricks cluster optimization for Neo4j integration
+
+#### 5. Unity Catalog Setup
+**File**: `.github/workflows/05-unity-catalog-setup.yml`
+- **Duration**: 3-5 minutes
+- **Creates**: E-commerce catalogs and schemas (bronze, silver, gold, graph_ready)
+- **Configures**: Tables optimized for traditional clusters
+- **Use Case**: Data governance and organization
+
+#### 6. Data Pipeline Development
+**File**: `.github/workflows/06-data-pipeline-development.yml`
+- **Duration**: 5-8 minutes
+- **Deploys**: E-commerce ETL notebooks, Neo4j loading jobs, analytics notebooks
+- **Creates**: Scheduled jobs for data processing
+- **Use Case**: Complete data pipeline deployment
+
+#### 7. Neo4j Integration Showcase
+**File**: `.github/workflows/07-neo4j-integration-showcase.yml`
+- **Duration**: 10-15 minutes
+- **Executes**: Complete e-commerce pipeline from ingestion to Neo4j
+- **Demonstrates**: Customer 360, product recommendations, graph queries
+- **Use Case**: End-to-end pipeline validation and showcase
+
+#### 8. Testing and Validation
+**File**: `.github/workflows/08-testing-validation.yml`
+- **Duration**: 5-7 minutes
+- **Validates**: Infrastructure, Databricks setup, Neo4j integration, performance
+- **Tests**: Sub-second query response, data integrity, connector performance
+- **Use Case**: Quality assurance and performance benchmarking
+
+### Legacy Workflows (Still Available)
+
+#### Deploy Full Pipeline
 **File**: `.github/workflows/deploy-full-pipeline.yml`
 - **Duration**: 15-20 minutes
-- **Includes**: Azure infrastructure, Neo4j Aura, Databricks workspace, jobs, and notebooks
-- **Use Case**: Complete new environment setup
+- **Use Case**: Complete new environment setup (legacy workflow)
 
-### 2. Deploy Infrastructure Only
-**File**: `.github/workflows/deploy-infrastructure.yml`
-- **Duration**: 8-12 minutes
-- **Includes**: Azure resources and Neo4j Aura instance
-- **Use Case**: Infrastructure-only updates
-
-### 3. Deploy Data Pipeline
-**File**: `.github/workflows/deploy-data-pipeline.yml`
-- **Duration**: 5-8 minutes
-- **Includes**: Databricks notebooks and job configurations
-- **Use Case**: Code updates without infrastructure changes
-
-### 4. Scheduled ETL
-**File**: `.github/workflows/scheduled-etl.yml`
-- **Schedule**: Configurable (default: daily at 2 AM UTC)
-- **Includes**: Automated data processing with monitoring
-- **Use Case**: Production data pipelines
-
-### 5. Manage Environments
-**File**: `.github/workflows/manage-environments.yml`
-- **Actions**: Promote, rollback, backup
-- **Use Case**: Environment management and promotion
-
-### 6. Cleanup Resources
-**File**: `.github/workflows/cleanup-resources.yml`
-- **Actions**: Stop/pause/delete resources
-- **Use Case**: Cost optimization and resource cleanup
+#### Scheduled ETL, Manage Environments, Cleanup Resources
+- Available for ongoing operations and maintenance
 
 ## 🏗️ Architecture
 
-### High-Level Architecture
+### E-commerce Data Model
+
+#### Graph Schema
 ```
-┌─────────────────┐
-│  GitHub Actions │
-│   Orchestration │
-└────────┬────────┘
-         │
-         ├─────────────────────────────────────────┐
-         │                                         │
-         ▼                                         ▼
-┌──────────────────┐                    ┌──────────────────┐
-│  Terraform IaC   │                    │ Databricks Jobs  │
-│  Azure Resources │                    │   & Notebooks    │
-└────────┬─────────┘                    └────────┬─────────┘
-         │                                        │
-         ├────────────────┬──────────────────────┤
-         │                │                      │
-         ▼                ▼                      ▼
-┌─────────────┐  ┌─────────────────┐   ┌──────────────┐
-│  Azure      │  │  Azure          │   │  Neo4j Aura  │
-│  Key Vault  │  │  Databricks     │   │  Graph DB    │
-└─────────────┘  └─────────────────┘   └──────────────┘
+┌──────────┐         PURCHASED         ┌──────────┐
+│ Customer ├────────────────────────────> Product │
+└────┬─────┘                            └────┬─────┘
+     │                                       │
+     │ REVIEWED                              │ BELONGS_TO
+     │                                       │
+     └──────────────────────────────────────> Category │
+                                         └──────────┘
+                                              │
+                                              │ SUPPLIES
+                                              │
+                                         ┌────▼─────┐
+                                         │ Supplier │
+                                         └──────────┘
 ```
 
-### Data Flow
+#### Node Types
+- **Customer**: 1000+ customers with demographics, preferences, and segments
+- **Product**: 700+ products across 6 categories with pricing and inventory
+- **Category**: 25 categories with hierarchical relationships
+- **Order**: 3050+ orders with purchase history
+- **Review**: 1500+ reviews with ratings and sentiment
+- **Supplier**: 50 suppliers with reliability scores
+
+#### Relationship Types
+- **PURCHASED**: Customer → Product (quantity, amount, date)
+- **REVIEWED**: Customer → Product (rating, text, sentiment)
+- **BELONGS_TO**: Product → Category
+- **SUPPLIES**: Supplier → Product (reliability)
+- **RECOMMENDS**: Customer → Product (ML-generated scores)
+
+### High-Level Architecture
 ```
-CSV Data Sources → Databricks Ingestion → 
-  Data Validation → Graph Transformation → 
-  Neo4j Loading → Monitoring & Alerts
+┌─────────────────────────────────────────────────────────┐
+│  8 Sequential GitHub Actions Workflows                  │
+│  (Prerequisites → Infrastructure → Neo4j → ... → Tests)  │
+└────────────────────┬────────────────────────────────────┘
+                     │
+         ┌───────────┴───────────┐
+         ▼                       ▼
+┌─────────────────┐     ┌─────────────────┐
+│  Terraform IaC  │     │  Databricks     │
+│  (UK South)     │     │  Neo4j Clusters │
+└────────┬────────┘     └────────┬────────┘
+         │                       │
+         ├───────────────────────┤
+         │                       │
+         ▼                       ▼
+┌─────────────────┐     ┌─────────────────┐
+│  Neo4j Aura     │◄────┤ Neo4j Connector │
+│  UK South       │     │ 5.3.0 Spark 3.5 │
+│  (E-commerce    │     └─────────────────┘
+│   Graph DB)     │
+└─────────────────┘
 ```
+
+### E-commerce Data Flow
+```
+CSV Sample Data (1000+ customers, 700+ products)
+         │
+         ▼
+Bronze Layer (Raw ingestion)
+         │
+         ▼
+Silver Layer (Cleaning & validation)
+         │
+         ▼
+Gold Layer (Business aggregations)
+         │
+         ▼
+Graph Ready Layer (Neo4j format)
+         │
+         ▼
+Neo4j Aura (Graph database)
+         │
+         ▼
+Analytics (Customer 360, Recommendations, Supply Chain)
+```
+
+### Use Cases Implemented
+
+1. **Customer 360 Analytics**
+   - Complete purchase history
+   - Preference analysis
+   - Customer segmentation (RFM)
+   - Lifetime value calculation
+
+2. **Product Recommendation Engine**
+   - Collaborative filtering
+   - Category-based recommendations
+   - Review-based suggestions
+   - Trending products
+
+3. **Supply Chain Optimization**
+   - Supplier performance tracking
+   - Inventory analysis
+   - Reliability scoring
+   - Product availability
+
+4. **Graph Analytics**
+   - Customer journey mapping
+   - Cross-sell opportunities
+   - Churn prediction patterns
+   - Fraud detection (graph patterns)
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture documentation.
 
