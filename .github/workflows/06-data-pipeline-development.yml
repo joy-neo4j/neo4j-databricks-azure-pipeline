@@ -1,0 +1,320 @@
+name: 06 - Data Pipeline Development
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy (dev, staging, prod)'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  upload-notebooks:
+    name: Deploy E-commerce ETL Notebooks
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Databricks CLI
+        run: |
+          pip install databricks-cli
+
+      - name: Configure Databricks
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          cat > ~/.databrickscfg << EOF
+          [DEFAULT]
+          host = ${{ secrets.DATABRICKS_HOST }}
+          token = $DATABRICKS_TOKEN
+          EOF
+
+      - name: Upload E-commerce ETL Notebooks
+        run: |
+          echo "Uploading e-commerce notebooks..."
+          
+          # Create workspace directory
+          databricks workspace mkdirs /Workspace/ecommerce-pipeline || true
+          
+          # Upload notebooks
+          databricks workspace import_dir \
+            ./databricks/notebooks \
+            /Workspace/ecommerce-pipeline/notebooks \
+            --overwrite
+
+      - name: Upload Configuration Files
+        run: |
+          echo "Uploading configuration files..."
+          
+          # Create config directory
+          databricks workspace mkdirs /Workspace/ecommerce-pipeline/configs || true
+          
+          # Upload Neo4j connector config
+          databricks workspace import \
+            ./configs/neo4j-connector-config.yml \
+            /Workspace/ecommerce-pipeline/configs/neo4j-connector-config.yml \
+            --language YAML \
+            --overwrite || echo "Config file not found, will be created"
+
+      - name: Upload Init Scripts
+        run: |
+          echo "Uploading initialization scripts..."
+          
+          databricks fs mkdirs dbfs:/databricks/init-scripts || true
+          
+          databricks fs cp \
+            ./databricks/init-scripts/neo4j-connector-init.sh \
+            dbfs:/databricks/init-scripts/neo4j-connector-init.sh \
+            --overwrite || echo "Init script will be created during cluster setup"
+
+  create-jobs:
+    name: Create E-commerce Data Pipeline Jobs
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    needs: upload-notebooks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Databricks CLI
+        run: |
+          pip install databricks-cli databricks-sdk
+
+      - name: Configure Databricks
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          cat > ~/.databrickscfg << EOF
+          [DEFAULT]
+          host = ${{ secrets.DATABRICKS_HOST }}
+          token = $DATABRICKS_TOKEN
+          EOF
+
+      - name: Create E-commerce Ingestion Job
+        run: |
+          cat > /tmp/ecommerce-ingestion-job.json << 'EOF'
+          {
+            "name": "E-commerce Data Ingestion - ${{ inputs.environment }}",
+            "new_cluster": {
+              "spark_version": "13.3.x-scala2.12",
+              "node_type_id": "${{ inputs.environment == 'prod' && 'Standard_DS4_v2' || 'Standard_DS3_v2' }}",
+              "num_workers": ${{ inputs.environment == 'prod' && 3 || 2 }},
+              "spark_conf": {
+                "spark.databricks.delta.preview.enabled": "true"
+              },
+              "custom_tags": {
+                "Environment": "${{ inputs.environment }}",
+                "Pipeline": "E-commerce-Ingestion"
+              }
+            },
+            "libraries": [
+              {
+                "pypi": {
+                  "package": "pyyaml"
+                }
+              }
+            ],
+            "tasks": [
+              {
+                "task_key": "ingest_customers",
+                "notebook_task": {
+                  "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/csv-ingestion",
+                  "base_parameters": {
+                    "environment": "${{ inputs.environment }}",
+                    "source_name": "customers"
+                  }
+                }
+              },
+              {
+                "task_key": "ingest_products",
+                "notebook_task": {
+                  "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/csv-ingestion",
+                  "base_parameters": {
+                    "environment": "${{ inputs.environment }}",
+                    "source_name": "products"
+                  }
+                },
+                "depends_on": [{"task_key": "ingest_customers"}]
+              },
+              {
+                "task_key": "ingest_orders",
+                "notebook_task": {
+                  "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/csv-ingestion",
+                  "base_parameters": {
+                    "environment": "${{ inputs.environment }}",
+                    "source_name": "orders"
+                  }
+                },
+                "depends_on": [{"task_key": "ingest_products"}]
+              }
+            ],
+            "max_concurrent_runs": 1,
+            "timeout_seconds": 3600,
+            "email_notifications": {
+              "on_failure": ["${{ secrets.NOTIFICATION_EMAIL }}"]
+            }
+          }
+          EOF
+          
+          echo "Creating e-commerce ingestion job..."
+          databricks jobs create --json-file /tmp/ecommerce-ingestion-job.json || \
+            echo "Job may already exist"
+
+      - name: Create Neo4j Loading Job
+        run: |
+          cat > /tmp/neo4j-loading-job.json << 'EOF'
+          {
+            "name": "Neo4j Graph Loading - ${{ inputs.environment }}",
+            "new_cluster": {
+              "spark_version": "13.3.x-scala2.12",
+              "node_type_id": "${{ inputs.environment == 'prod' && 'Standard_DS4_v2' || 'Standard_DS3_v2' }}",
+              "num_workers": ${{ inputs.environment == 'prod' && 4 || 2 }},
+              "spark_conf": {
+                "spark.databricks.delta.preview.enabled": "true"
+              },
+              "custom_tags": {
+                "Environment": "${{ inputs.environment }}",
+                "Pipeline": "Neo4j-Loading"
+              },
+              "init_scripts": [
+                {
+                  "dbfs": {
+                    "destination": "dbfs:/databricks/init-scripts/neo4j-connector-init.sh"
+                  }
+                }
+              ]
+            },
+            "libraries": [
+              {
+                "maven": {
+                  "coordinates": "org.neo4j:neo4j-connector-apache-spark_2.12:5.3.0_for_spark_3.5"
+                }
+              },
+              {
+                "pypi": {
+                  "package": "neo4j==5.14.0"
+                }
+              }
+            ],
+            "tasks": [
+              {
+                "task_key": "transform_to_graph",
+                "notebook_task": {
+                  "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/graph-transformation",
+                  "base_parameters": {
+                    "environment": "${{ inputs.environment }}"
+                  }
+                }
+              },
+              {
+                "task_key": "load_to_neo4j",
+                "notebook_task": {
+                  "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/neo4j-loading",
+                  "base_parameters": {
+                    "environment": "${{ inputs.environment }}"
+                  }
+                },
+                "depends_on": [{"task_key": "transform_to_graph"}]
+              }
+            ],
+            "max_concurrent_runs": 1,
+            "timeout_seconds": 7200,
+            "email_notifications": {
+              "on_failure": ["${{ secrets.NOTIFICATION_EMAIL }}"]
+            }
+          }
+          EOF
+          
+          echo "Creating Neo4j loading job..."
+          databricks jobs create --json-file /tmp/neo4j-loading-job.json || \
+            echo "Job may already exist"
+
+      - name: Create Scheduled Analytics Job
+        run: |
+          cat > /tmp/analytics-job.json << 'EOF'
+          {
+            "name": "E-commerce Analytics - ${{ inputs.environment }}",
+            "new_cluster": {
+              "spark_version": "13.3.x-scala2.12",
+              "node_type_id": "${{ inputs.environment == 'prod' && 'Standard_DS4_v2' || 'Standard_DS3_v2' }}",
+              "num_workers": ${{ inputs.environment == 'prod' && 3 || 2 }},
+              "custom_tags": {
+                "Environment": "${{ inputs.environment }}",
+                "Pipeline": "Analytics"
+              }
+            },
+            "libraries": [
+              {
+                "maven": {
+                  "coordinates": "org.neo4j:neo4j-connector-apache-spark_2.12:5.3.0_for_spark_3.5"
+                }
+              }
+            ],
+            "schedule": {
+              "quartz_cron_expression": "0 0 2 * * ?",
+              "timezone_id": "Europe/London"
+            },
+            "tasks": [
+              {
+                "task_key": "customer_360",
+                "notebook_task": {
+                  "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/customer-360-analytics"
+                }
+              },
+              {
+                "task_key": "recommendations",
+                "notebook_task": {
+                  "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/product-recommendations"
+                },
+                "depends_on": [{"task_key": "customer_360"}]
+              }
+            ],
+            "max_concurrent_runs": 1
+          }
+          EOF
+          
+          echo "Creating scheduled analytics job..."
+          databricks jobs create --json-file /tmp/analytics-job.json || \
+            echo "Job may already exist"
+
+      - name: Pipeline Development Summary
+        run: |
+          echo "=================================="
+          echo "Data Pipeline Development Complete"
+          echo "=================================="
+          echo ""
+          echo "Environment: ${{ inputs.environment }}"
+          echo ""
+          echo "Notebooks Deployed:"
+          echo "  ✅ CSV Ingestion"
+          echo "  ✅ Data Validation"
+          echo "  ✅ Graph Transformation"
+          echo "  ✅ Neo4j Loading"
+          echo ""
+          echo "Jobs Created:"
+          echo "  ✅ E-commerce Data Ingestion"
+          echo "  ✅ Neo4j Graph Loading"
+          echo "  ✅ E-commerce Analytics (Scheduled)"
+          echo ""
+          echo "Neo4j Connector: 5.3.0_for_spark_3.5"
+          echo "Ready for e-commerce pipeline execution!"

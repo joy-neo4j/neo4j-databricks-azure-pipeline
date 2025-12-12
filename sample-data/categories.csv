@@ -1,0 +1,26 @@
+id,name,description,parent_category,active
+1,Electronics,"Electronic devices and accessories including computers, phones, and gadgets",,True
+2,Fashion,"Clothing, footwear, and fashion accessories for all ages",,True
+3,Home & Garden,"Furniture, home decor, kitchen items, and garden supplies",,True
+4,Sports,"Sports equipment, fitness gear, and outdoor activities",,True
+5,Books,"Books across all genres including fiction, non-fiction, and educational",,True
+6,Toys,Toys and games for children of all ages,,True
+7,Computers,"Laptops, desktops, tablets, and computer accessories",Electronics,True
+8,Mobile Devices,"Smartphones, smartwatches, and mobile accessories",Electronics,True
+9,Audio,"Headphones, speakers, and audio equipment",Electronics,True
+10,Cameras,"Digital cameras, lenses, and photography equipment",Electronics,True
+11,Clothing,"Apparel for men, women, and children",Fashion,True
+12,Footwear,"Shoes, boots, sandals, and slippers",Fashion,True
+13,Accessories,"Fashion accessories including watches, bags, and jewelry",Fashion,True
+14,Furniture,Indoor and outdoor furniture,Home & Garden,True
+15,Kitchen,Kitchen appliances and cookware,Home & Garden,True
+16,Garden,Garden tools and outdoor living,Home & Garden,True
+17,Fitness,Fitness equipment and exercise gear,Sports,True
+18,Outdoor,Camping and outdoor adventure equipment,Sports,True
+19,Team Sports,Equipment for team sports,Sports,True
+20,Fiction,Novels and fictional works,Books,True
+21,Non-Fiction,Non-fiction books and references,Books,True
+22,Educational,Educational books and textbooks,Books,True
+23,Educational Toys,Learning and educational toys,Toys,True
+24,Action Toys,Action figures and playsets,Toys,True
+25,Creative Toys,"Arts, crafts, and creative play",Toys,True

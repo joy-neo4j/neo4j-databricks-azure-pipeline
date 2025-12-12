@@ -1,0 +1,219 @@
+# Neo4j Spark Connector Configuration
+# Version: 5.3.0_for_spark_3.5
+# Optimized for UK South region e-commerce workload
+
+connector:
+  version: "5.3.0_for_spark_3.5"
+  artifact: "org.neo4j:neo4j-connector-apache-spark_2.12:5.3.0_for_spark_3.5"
+  repository: "https://repo1.maven.org/maven2/"
+  
+connection:
+  # UK South region optimization
+  region: "uksouth"
+  
+  # Connection pooling for high throughput
+  max_pool_size: 100
+  connection_acquisition_timeout: 60
+  max_connection_lifetime: 3600
+  max_transaction_retry_time: 30
+  connection_timeout: 30
+  keep_alive: true
+  
+  # Authentication
+  auth_type: "basic"
+  
+  # SSL/TLS for Aura
+  encrypted: true
+  trust_strategy: "TRUST_SYSTEM_CA_SIGNED_CERTIFICATES"
+
+performance:
+  # Batch loading optimization for e-commerce data
+  batch_size: 5000
+  node_write_batch_size: 5000
+  relationship_write_batch_size: 5000
+  
+  # Parallel processing
+  parallel_writes: 4
+  partitions_per_core: 2
+  
+  # Write strategies
+  use_unwind: true
+  use_batch_import: true
+  
+  # Transaction settings
+  transaction_retries: 3
+  transaction_timeout: 300
+
+spark_config:
+  # Neo4j connection settings
+  spark.neo4j.authentication.type: "basic"
+  spark.neo4j.batch.size: "5000"
+  spark.neo4j.transaction.retries: "3"
+  
+  # Performance tuning
+  spark.databricks.delta.preview.enabled: "true"
+  spark.databricks.io.cache.enabled: "true"
+  spark.sql.adaptive.enabled: "true"
+  spark.sql.adaptive.coalescePartitions.enabled: "true"
+  
+  # Memory optimization for graph workloads
+  spark.executor.memory: "8g"
+  spark.driver.memory: "4g"
+  spark.memory.fraction: "0.8"
+  spark.memory.storageFraction: "0.3"
+
+ecommerce_schema:
+  # Node labels
+  nodes:
+    - label: "Customer"
+      id_field: "id"
+      indexes: ["id", "email"]
+      constraints: ["id"]
+      
+    - label: "Product"
+      id_field: "id"
+      indexes: ["id", "category"]
+      constraints: ["id"]
+      
+    - label: "Category"
+      id_field: "id"
+      indexes: ["id", "name"]
+      constraints: ["id"]
+      
+    - label: "Order"
+      id_field: "id"
+      indexes: ["id", "order_date"]
+      constraints: ["id"]
+      
+    - label: "Review"
+      id_field: "id"
+      indexes: ["id", "rating"]
+      constraints: ["id"]
+      
+    - label: "Supplier"
+      id_field: "id"
+      indexes: ["id"]
+      constraints: ["id"]
+  
+  # Relationship types
+  relationships:
+    - type: "PURCHASED"
+      from: "Customer"
+      to: "Product"
+      properties: ["quantity", "total_amount", "order_date"]
+      
+    - type: "REVIEWED"
+      from: "Customer"
+      to: "Product"
+      properties: ["rating", "review_text", "review_date"]
+      
+    - type: "BELONGS_TO"
+      from: "Product"
+      to: "Category"
+      properties: []
+      
+    - type: "SUPPLIES"
+      from: "Supplier"
+      to: "Product"
+      properties: ["reliability_score"]
+      
+    - type: "RECOMMENDS"
+      from: "Product"
+      to: "Product"
+      properties: ["score", "algorithm"]
+
+analytics_queries:
+  # Customer 360 view
+  customer_360:
+    name: "Customer 360 Analysis"
+    description: "Complete customer purchase and review history"
+    cypher: |
+      MATCH (c:Customer)
+      OPTIONAL MATCH (c)-[p:PURCHASED]->(prod:Product)
+      OPTIONAL MATCH (c)-[r:REVIEWED]->(prod2:Product)
+      WITH c, 
+           count(DISTINCT p) as purchase_count,
+           sum(p.total_amount) as total_spent,
+           count(DISTINCT r) as review_count,
+           avg(r.rating) as avg_rating,
+           collect(DISTINCT prod.category) as categories
+      RETURN c.id, c.name, c.email,
+             purchase_count, total_spent,
+             review_count, avg_rating,
+             categories
+      ORDER BY total_spent DESC
+      LIMIT 100
+  
+  # Product recommendations
+  collaborative_filtering:
+    name: "Collaborative Filtering Recommendations"
+    description: "Recommend products based on similar customer purchases"
+    cypher: |
+      MATCH (c:Customer {id: $customerId})-[:PURCHASED]->(p:Product)
+      MATCH (p)<-[:PURCHASED]-(other:Customer)
+      MATCH (other)-[:PURCHASED]->(rec:Product)
+      WHERE NOT (c)-[:PURCHASED]->(rec)
+      WITH rec, count(*) as score
+      ORDER BY score DESC
+      LIMIT 10
+      RETURN rec.id, rec.name, rec.category, score
+  
+  # Supply chain analysis
+  supply_chain:
+    name: "Supply Chain Reliability"
+    description: "Analyze supplier performance and product availability"
+    cypher: |
+      MATCH (s:Supplier)-[:SUPPLIES]->(p:Product)
+      WITH s, count(p) as product_count,
+           avg(p.stock_quantity) as avg_stock,
+           avg(s.reliability_score) as reliability
+      WHERE product_count > 5
+      RETURN s.id, s.name, s.country,
+             product_count, avg_stock, reliability
+      ORDER BY reliability DESC
+  
+  # Customer segmentation
+  customer_segments:
+    name: "Customer Segmentation"
+    description: "Segment customers by purchase behavior"
+    cypher: |
+      MATCH (c:Customer)-[p:PURCHASED]->(prod:Product)
+      WITH c,
+           count(p) as purchase_count,
+           sum(p.total_amount) as total_spent,
+           collect(DISTINCT prod.category) as categories,
+           size(collect(DISTINCT prod.category)) as category_diversity
+      RETURN 
+        CASE
+          WHEN total_spent > 5000 AND purchase_count > 20 THEN 'Premium'
+          WHEN total_spent > 2000 THEN 'Regular'
+          WHEN purchase_count > 5 THEN 'Occasional'
+          ELSE 'New'
+        END as segment,
+        count(c) as customer_count,
+        avg(total_spent) as avg_spend,
+        avg(category_diversity) as avg_categories
+      ORDER BY avg_spend DESC
+
+cluster_configuration:
+  # Recommended cluster settings for Neo4j workload
+  dev:
+    node_type: "Standard_DS3_v2"
+    min_workers: 1
+    max_workers: 5
+    autotermination_minutes: 120
+    spark_version: "13.3.x-scala2.12"
+    
+  staging:
+    node_type: "Standard_DS4_v2"
+    min_workers: 2
+    max_workers: 8
+    autotermination_minutes: 180
+    spark_version: "13.3.x-scala2.12"
+    
+  prod:
+    node_type: "Standard_DS5_v2"
+    min_workers: 3
+    max_workers: 10
+    autotermination_minutes: 240
+    spark_version: "13.3.x-scala2.12"

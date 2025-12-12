@@ -1,11 +1,701 @@
-id,name,category,price,created_at
-1,Laptop Pro 15,Electronics,1299.99,2024-01-01 00:00:00
-2,Wireless Mouse,Electronics,29.99,2024-01-01 00:00:00
-3,USB-C Cable,Electronics,15.99,2024-01-01 00:00:00
-4,Desk Chair,Furniture,249.99,2024-01-01 00:00:00
-5,Standing Desk,Furniture,599.99,2024-01-01 00:00:00
-6,Monitor 27 inch,Electronics,349.99,2024-01-01 00:00:00
-7,Keyboard Mechanical,Electronics,149.99,2024-01-01 00:00:00
-8,Webcam HD,Electronics,89.99,2024-01-01 00:00:00
-9,Desk Lamp,Furniture,45.99,2024-01-01 00:00:00
-10,Notebook Set,Stationery,19.99,2024-01-01 00:00:00
+id,name,description,category,subcategory,price,supplier_id,stock_quantity,created_at
+1,Master Laptop 13-inch Standard,Affordable laptop 13-inch with excellent value for money,Electronics,Consumer Electronics,624.65,28,58,2024-01-01 00:00:00
+2,ProLine Laptop 13-inch Plus,High-quality laptop 13-inch perfect for everyday use,Electronics,Consumer Electronics,1155.07,32,407,2024-01-01 00:00:00
+3,Advanced Laptop 13-inch Premium,Affordable laptop 13-inch with excellent value for money,Electronics,Consumer Electronics,1534.71,18,94,2024-01-01 00:00:00
+4,EliteGear Laptop 15-inch Standard,Award-winning laptop 15-inch with innovative design,Electronics,Consumer Electronics,179.82,17,451,2024-01-01 00:00:00
+5,UltraMax Laptop 15-inch Plus,Professional-grade laptop 15-inch with advanced features,Electronics,Consumer Electronics,3351.21,34,484,2024-01-01 00:00:00
+6,NextGen Laptop 15-inch Premium,Award-winning laptop 15-inch with innovative design,Electronics,Consumer Electronics,477.15,28,30,2024-01-01 00:00:00
+7,NextGen Laptop 17-inch,Award-winning laptop 17-inch with innovative design,Electronics,Consumer Electronics,1641.62,25,299,2024-01-01 00:00:00
+8,SmartChoice Gaming Laptop,Award-winning gaming laptop with innovative design,Electronics,Consumer Electronics,1839.51,7,76,2024-01-01 00:00:00
+9,Advanced Ultrabook,High-quality ultrabook perfect for everyday use,Electronics,Consumer Electronics,746.67,16,475,2024-01-01 00:00:00
+10,Classic Desktop PC,Professional-grade desktop pc with advanced features,Electronics,Consumer Electronics,2476.91,43,14,2024-01-01 00:00:00
+11,UltraMax All-in-One PC Standard,Best-selling all-in-one pc with outstanding reviews,Electronics,Consumer Electronics,1171.95,9,315,2024-01-01 00:00:00
+12,EliteGear All-in-One PC Plus,Affordable all-in-one pc with excellent value for money,Electronics,Consumer Electronics,2594.31,11,31,2024-01-01 00:00:00
+13,Modern All-in-One PC Premium,Premium all-in-one pc for discerning customers,Electronics,Consumer Electronics,1879.7,6,48,2024-01-01 00:00:00
+14,UltraMax Mini PC Standard,Affordable mini pc with excellent value for money,Electronics,Consumer Electronics,2148.14,34,101,2024-01-01 00:00:00
+15,Champion Mini PC Plus,Affordable mini pc with excellent value for money,Electronics,Consumer Electronics,222.08,32,51,2024-01-01 00:00:00
+16,Premium Mini PC Premium,Award-winning mini pc with innovative design,Electronics,Consumer Electronics,3989.96,29,244,2024-01-01 00:00:00
+17,TechPro Gaming Desktop Standard,Award-winning gaming desktop with innovative design,Electronics,Consumer Electronics,784.23,1,239,2024-01-01 00:00:00
+18,Expert Gaming Desktop Plus,Premium gaming desktop for discerning customers,Electronics,Consumer Electronics,3267.35,1,253,2024-01-01 00:00:00
+19,SmartChoice Gaming Desktop Premium,Affordable gaming desktop with excellent value for money,Electronics,Consumer Electronics,3106.52,2,358,2024-01-01 00:00:00
+20,NextGen Workstation,High-quality workstation perfect for everyday use,Electronics,Consumer Electronics,1173.07,31,242,2024-01-01 00:00:00
+21,Expert Tablet 7-inch Standard,Award-winning tablet 7-inch with innovative design,Electronics,Consumer Electronics,704.31,21,326,2024-01-01 00:00:00
+22,Advanced Tablet 7-inch Plus,Premium tablet 7-inch for discerning customers,Electronics,Consumer Electronics,2125.84,27,402,2024-01-01 00:00:00
+23,Supreme Tablet 10-inch,Top-rated tablet 10-inch trusted by thousands,Electronics,Consumer Electronics,2253.86,7,187,2024-01-01 00:00:00
+24,Premium iPad Standard,Best-selling ipad with outstanding reviews,Electronics,Consumer Electronics,2107.55,2,121,2024-01-01 00:00:00
+25,NextGen iPad Plus,High-quality ipad perfect for everyday use,Electronics,Consumer Electronics,1035.03,7,421,2024-01-01 00:00:00
+26,Professional iPad Premium,Best-selling ipad with outstanding reviews,Electronics,Consumer Electronics,1278.29,7,403,2024-01-01 00:00:00
+27,Premium Android Tablet Standard,Award-winning android tablet with innovative design,Electronics,Consumer Electronics,1589.67,30,478,2024-01-01 00:00:00
+28,NextGen Android Tablet Plus,Top-rated android tablet trusted by thousands,Electronics,Consumer Electronics,111.77,21,83,2024-01-01 00:00:00
+29,EliteGear Android Tablet Premium,Top-rated android tablet trusted by thousands,Electronics,Consumer Electronics,778.47,37,165,2024-01-01 00:00:00
+30,UltraMax Windows Tablet Standard,Affordable windows tablet with excellent value for money,Electronics,Consumer Electronics,1847.65,18,126,2024-01-01 00:00:00
+31,UltraMax Windows Tablet Plus,Affordable windows tablet with excellent value for money,Electronics,Consumer Electronics,2740.06,16,224,2024-01-01 00:00:00
+32,Essential Windows Tablet Premium,Premium windows tablet for discerning customers,Electronics,Consumer Electronics,1027.4,32,497,2024-01-01 00:00:00
+33,Champion Monitor 24-inch Standard,Award-winning monitor 24-inch with innovative design,Electronics,Consumer Electronics,2277.49,13,169,2024-01-01 00:00:00
+34,TechPro Monitor 24-inch Plus,Award-winning monitor 24-inch with innovative design,Electronics,Consumer Electronics,774.02,47,493,2024-01-01 00:00:00
+35,EliteGear Monitor 24-inch Premium,Premium monitor 24-inch for discerning customers,Electronics,Consumer Electronics,213.38,46,396,2024-01-01 00:00:00
+36,EliteGear Monitor 27-inch Standard,Best-selling monitor 27-inch with outstanding reviews,Electronics,Consumer Electronics,1305.28,31,136,2024-01-01 00:00:00
+37,UltraMax Monitor 27-inch Plus,Professional-grade monitor 27-inch with advanced features,Electronics,Consumer Electronics,1612.36,28,401,2024-01-01 00:00:00
+38,Advanced Monitor 32-inch Standard,Affordable monitor 32-inch with excellent value for money,Electronics,Consumer Electronics,2055.29,25,446,2024-01-01 00:00:00
+39,ValueBest Monitor 32-inch Plus,Premium monitor 32-inch for discerning customers,Electronics,Consumer Electronics,2841.04,39,154,2024-01-01 00:00:00
+40,UltraMax Monitor 32-inch Premium,Best-selling monitor 32-inch with outstanding reviews,Electronics,Consumer Electronics,1068.99,27,382,2024-01-01 00:00:00
+41,EliteGear 4K Monitor Standard,Best-selling 4k monitor with outstanding reviews,Electronics,Consumer Electronics,1015.57,50,414,2024-01-01 00:00:00
+42,Master 4K Monitor Plus,Professional-grade 4k monitor with advanced features,Electronics,Consumer Electronics,3061.97,24,273,2024-01-01 00:00:00
+43,EliteGear Gaming Monitor Standard,Affordable gaming monitor with excellent value for money,Electronics,Consumer Electronics,1415.42,11,480,2024-01-01 00:00:00
+44,Premium Gaming Monitor Plus,Award-winning gaming monitor with innovative design,Electronics,Consumer Electronics,815.53,20,386,2024-01-01 00:00:00
+45,Supreme Gaming Monitor Premium,Award-winning gaming monitor with innovative design,Electronics,Consumer Electronics,2606.72,33,261,2024-01-01 00:00:00
+46,ValueBest Mechanical Keyboard Standard,Top-rated mechanical keyboard trusted by thousands,Electronics,Consumer Electronics,411.19,14,403,2024-01-01 00:00:00
+47,Advanced Mechanical Keyboard Plus,Professional-grade mechanical keyboard with advanced features,Electronics,Consumer Electronics,2383.97,13,248,2024-01-01 00:00:00
+48,Advanced Mechanical Keyboard Premium,High-quality mechanical keyboard perfect for everyday use,Electronics,Consumer Electronics,2909.38,50,334,2024-01-01 00:00:00
+49,UltraMax Wireless Keyboard Standard,Professional-grade wireless keyboard with advanced features,Electronics,Consumer Electronics,453.54,39,195,2024-01-01 00:00:00
+50,TechPro Wireless Keyboard Plus,Award-winning wireless keyboard with innovative design,Electronics,Consumer Electronics,3365.59,37,388,2024-01-01 00:00:00
+51,UltraMax Wireless Keyboard Premium,Affordable wireless keyboard with excellent value for money,Electronics,Consumer Electronics,3993.08,27,274,2024-01-01 00:00:00
+52,SmartChoice Gaming Keyboard,Best-selling gaming keyboard with outstanding reviews,Electronics,Consumer Electronics,2041.83,5,278,2024-01-01 00:00:00
+53,UltraMax Bluetooth Keyboard Standard,Affordable bluetooth keyboard with excellent value for money,Electronics,Consumer Electronics,2454.09,50,23,2024-01-01 00:00:00
+54,Expert Bluetooth Keyboard Plus,Best-selling bluetooth keyboard with outstanding reviews,Electronics,Consumer Electronics,2553.26,44,162,2024-01-01 00:00:00
+55,ValueBest Bluetooth Keyboard Premium,Award-winning bluetooth keyboard with innovative design,Electronics,Consumer Electronics,1726.48,50,61,2024-01-01 00:00:00
+56,Professional Wireless Mouse Standard,Professional-grade wireless mouse with advanced features,Electronics,Consumer Electronics,716.61,46,50,2024-01-01 00:00:00
+57,SmartChoice Wireless Mouse Plus,Best-selling wireless mouse with outstanding reviews,Electronics,Consumer Electronics,2495.45,1,160,2024-01-01 00:00:00
+58,ProLine Gaming Mouse,Best-selling gaming mouse with outstanding reviews,Electronics,Consumer Electronics,1355.04,46,166,2024-01-01 00:00:00
+59,Professional Ergonomic Mouse Standard,Premium ergonomic mouse for discerning customers,Electronics,Consumer Electronics,334.11,18,466,2024-01-01 00:00:00
+60,Essential Ergonomic Mouse Plus,High-quality ergonomic mouse perfect for everyday use,Electronics,Consumer Electronics,531.73,40,151,2024-01-01 00:00:00
+61,Premium Trackball Mouse Standard,Affordable trackball mouse with excellent value for money,Electronics,Consumer Electronics,1438.99,25,58,2024-01-01 00:00:00
+62,Modern Trackball Mouse Plus,Best-selling trackball mouse with outstanding reviews,Electronics,Consumer Electronics,2331.82,49,18,2024-01-01 00:00:00
+63,Expert Trackball Mouse Premium,Professional-grade trackball mouse with advanced features,Electronics,Consumer Electronics,1813.57,8,289,2024-01-01 00:00:00
+64,NextGen Smartphone 5G Standard,Best-selling smartphone 5g with outstanding reviews,Electronics,Consumer Electronics,2433.72,5,465,2024-01-01 00:00:00
+65,ValueBest Smartphone 5G Plus,High-quality smartphone 5g perfect for everyday use,Electronics,Consumer Electronics,1420.57,11,378,2024-01-01 00:00:00
+66,TechPro Budget Smartphone,Top-rated budget smartphone trusted by thousands,Electronics,Consumer Electronics,511.04,50,425,2024-01-01 00:00:00
+67,EliteGear Premium Smartphone Standard,Top-rated premium smartphone trusted by thousands,Electronics,Consumer Electronics,1897.09,45,457,2024-01-01 00:00:00
+68,Master Premium Smartphone Plus,Premium premium smartphone for discerning customers,Electronics,Consumer Electronics,2335.41,45,441,2024-01-01 00:00:00
+69,Advanced Foldable Phone,High-quality foldable phone perfect for everyday use,Electronics,Consumer Electronics,506.94,40,36,2024-01-01 00:00:00
+70,Premium Smartwatch Standard,High-quality smartwatch perfect for everyday use,Electronics,Consumer Electronics,2221.99,20,291,2024-01-01 00:00:00
+71,Advanced Smartwatch Plus,Award-winning smartwatch with innovative design,Electronics,Consumer Electronics,1123.94,39,328,2024-01-01 00:00:00
+72,TechPro Smartwatch Premium,High-quality smartwatch perfect for everyday use,Electronics,Consumer Electronics,3048.22,14,210,2024-01-01 00:00:00
+73,EliteGear Fitness Tracker Standard,Professional-grade fitness tracker with advanced features,Electronics,Consumer Electronics,404.17,7,283,2024-01-01 00:00:00
+74,NextGen Fitness Tracker Plus,Award-winning fitness tracker with innovative design,Electronics,Consumer Electronics,2849.5,45,121,2024-01-01 00:00:00
+75,Champion Smart Band Standard,Best-selling smart band with outstanding reviews,Electronics,Consumer Electronics,1454.1,34,320,2024-01-01 00:00:00
+76,Advanced Smart Band Plus,Top-rated smart band trusted by thousands,Electronics,Consumer Electronics,3352.41,45,364,2024-01-01 00:00:00
+77,UltraMax Hybrid Smartwatch,Award-winning hybrid smartwatch with innovative design,Electronics,Consumer Electronics,584.5,4,314,2024-01-01 00:00:00
+78,Supreme Wireless Earbuds,Professional-grade wireless earbuds with advanced features,Electronics,Consumer Electronics,896.13,43,63,2024-01-01 00:00:00
+79,Classic Over-Ear Headphones Standard,Top-rated over-ear headphones trusted by thousands,Electronics,Consumer Electronics,187.53,18,200,2024-01-01 00:00:00
+80,Essential Over-Ear Headphones Plus,Award-winning over-ear headphones with innovative design,Electronics,Consumer Electronics,1513.99,35,354,2024-01-01 00:00:00
+81,UltraMax Over-Ear Headphones Premium,Top-rated over-ear headphones trusted by thousands,Electronics,Consumer Electronics,156.01,35,32,2024-01-01 00:00:00
+82,EliteGear In-Ear Headphones,Premium in-ear headphones for discerning customers,Electronics,Consumer Electronics,1320.48,14,295,2024-01-01 00:00:00
+83,EliteGear Gaming Headset Standard,Best-selling gaming headset with outstanding reviews,Electronics,Consumer Electronics,994.34,9,81,2024-01-01 00:00:00
+84,EliteGear Gaming Headset Plus,Award-winning gaming headset with innovative design,Electronics,Consumer Electronics,2211.81,6,200,2024-01-01 00:00:00
+85,NextGen Bluetooth Speaker Standard,Affordable bluetooth speaker with excellent value for money,Electronics,Consumer Electronics,1593.98,32,228,2024-01-01 00:00:00
+86,ProLine Bluetooth Speaker Plus,High-quality bluetooth speaker perfect for everyday use,Electronics,Consumer Electronics,207.63,42,26,2024-01-01 00:00:00
+87,Classic Smart Speaker Standard,Top-rated smart speaker trusted by thousands,Electronics,Consumer Electronics,2494.44,40,163,2024-01-01 00:00:00
+88,Expert Smart Speaker Plus,Top-rated smart speaker trusted by thousands,Electronics,Consumer Electronics,737.45,45,247,2024-01-01 00:00:00
+89,Advanced Portable Speaker Standard,Award-winning portable speaker with innovative design,Electronics,Consumer Electronics,2037.03,38,35,2024-01-01 00:00:00
+90,EliteGear Portable Speaker Plus,Best-selling portable speaker with outstanding reviews,Electronics,Consumer Electronics,1718.71,33,198,2024-01-01 00:00:00
+91,Elite Sound Bar Standard,Affordable sound bar with excellent value for money,Electronics,Consumer Electronics,64.63,17,455,2024-01-01 00:00:00
+92,Advanced Sound Bar Plus,Professional-grade sound bar with advanced features,Electronics,Consumer Electronics,425.59,37,304,2024-01-01 00:00:00
+93,TechPro Sound Bar Premium,Professional-grade sound bar with advanced features,Electronics,Consumer Electronics,3068.55,12,401,2024-01-01 00:00:00
+94,Essential DSLR Camera Standard,High-quality dslr camera perfect for everyday use,Electronics,Consumer Electronics,846.71,39,366,2024-01-01 00:00:00
+95,Master DSLR Camera Plus,Best-selling dslr camera with outstanding reviews,Electronics,Consumer Electronics,83.16,42,99,2024-01-01 00:00:00
+96,TechPro DSLR Camera Premium,Best-selling dslr camera with outstanding reviews,Electronics,Consumer Electronics,2937.4,41,221,2024-01-01 00:00:00
+97,Professional Mirrorless Camera,High-quality mirrorless camera perfect for everyday use,Electronics,Consumer Electronics,1075.54,15,480,2024-01-01 00:00:00
+98,Supreme Action Camera Standard,Premium action camera for discerning customers,Electronics,Consumer Electronics,809.79,48,310,2024-01-01 00:00:00
+99,Essential Action Camera Plus,High-quality action camera perfect for everyday use,Electronics,Consumer Electronics,1734.62,37,467,2024-01-01 00:00:00
+100,TechPro Webcam HD Standard,Affordable webcam hd with excellent value for money,Electronics,Consumer Electronics,640.71,9,185,2024-01-01 00:00:00
+101,Advanced Webcam HD Plus,Top-rated webcam hd trusted by thousands,Electronics,Consumer Electronics,2563.87,32,260,2024-01-01 00:00:00
+102,NextGen Webcam 4K,Professional-grade webcam 4k with advanced features,Electronics,Consumer Electronics,1614.92,48,476,2024-01-01 00:00:00
+103,NextGen Camera Lens 50mm,Best-selling camera lens 50mm with outstanding reviews,Electronics,Consumer Electronics,1246.88,32,102,2024-01-01 00:00:00
+104,SmartChoice Camera Lens 85mm Standard,Top-rated camera lens 85mm trusted by thousands,Electronics,Consumer Electronics,489.99,48,121,2024-01-01 00:00:00
+105,ValueBest Camera Lens 85mm Plus,Professional-grade camera lens 85mm with advanced features,Electronics,Consumer Electronics,2886.26,5,82,2024-01-01 00:00:00
+106,SmartChoice Wide Angle Lens,Affordable wide angle lens with excellent value for money,Electronics,Consumer Electronics,900.43,18,409,2024-01-01 00:00:00
+107,Essential Zoom Lens Standard,Best-selling zoom lens with outstanding reviews,Electronics,Consumer Electronics,1710.8,49,107,2024-01-01 00:00:00
+108,Champion Zoom Lens Plus,High-quality zoom lens perfect for everyday use,Electronics,Consumer Electronics,553.45,36,285,2024-01-01 00:00:00
+109,ValueBest Zoom Lens Premium,Professional-grade zoom lens with advanced features,Electronics,Consumer Electronics,1525.42,26,316,2024-01-01 00:00:00
+110,Champion USB-C Cable,Top-rated usb-c cable trusted by thousands,Electronics,Consumer Electronics,1942.17,26,114,2024-01-01 00:00:00
+111,Master HDMI Cable Standard,Best-selling hdmi cable with outstanding reviews,Electronics,Consumer Electronics,727.4,46,310,2024-01-01 00:00:00
+112,Advanced HDMI Cable Plus,Premium hdmi cable for discerning customers,Electronics,Consumer Electronics,737.93,39,334,2024-01-01 00:00:00
+113,Supreme HDMI Cable Premium,Best-selling hdmi cable with outstanding reviews,Electronics,Consumer Electronics,2760.66,34,390,2024-01-01 00:00:00
+114,Modern Lightning Cable Standard,Best-selling lightning cable with outstanding reviews,Electronics,Consumer Electronics,411.75,20,278,2024-01-01 00:00:00
+115,Essential Lightning Cable Plus,Professional-grade lightning cable with advanced features,Electronics,Consumer Electronics,1928.38,11,238,2024-01-01 00:00:00
+116,ProLine Lightning Cable Premium,High-quality lightning cable perfect for everyday use,Electronics,Consumer Electronics,3661.89,26,5,2024-01-01 00:00:00
+117,ProLine Charging Station,Top-rated charging station trusted by thousands,Electronics,Consumer Electronics,1442.63,20,495,2024-01-01 00:00:00
+118,Essential Power Bank 10000mAh Standard,Affordable power bank 10000mah with excellent value for money,Electronics,Consumer Electronics,1847.31,37,414,2024-01-01 00:00:00
+119,UltraMax Power Bank 10000mAh Plus,Award-winning power bank 10000mah with innovative design,Electronics,Consumer Electronics,1566.27,13,466,2024-01-01 00:00:00
+120,NextGen Power Bank 10000mAh Premium,Affordable power bank 10000mah with excellent value for money,Electronics,Consumer Electronics,2082.76,27,25,2024-01-01 00:00:00
+121,Master Power Bank 20000mAh Standard,Premium power bank 20000mah for discerning customers,Electronics,Consumer Electronics,873.61,46,365,2024-01-01 00:00:00
+122,TechPro Power Bank 20000mAh Plus,Award-winning power bank 20000mah with innovative design,Electronics,Consumer Electronics,1370.92,34,371,2024-01-01 00:00:00
+123,Champion Wireless Charger,Professional-grade wireless charger with advanced features,Electronics,Consumer Electronics,1666.73,31,42,2024-01-01 00:00:00
+124,TechPro Fast Charger Standard,Professional-grade fast charger with advanced features,Electronics,Consumer Electronics,1268.55,22,404,2024-01-01 00:00:00
+125,Professional Fast Charger Plus,Top-rated fast charger trusted by thousands,Electronics,Consumer Electronics,2335.92,40,489,2024-01-01 00:00:00
+126,Premium External SSD 500GB,Award-winning external ssd 500gb with innovative design,Electronics,Consumer Electronics,2420.43,27,309,2024-01-01 00:00:00
+127,Professional External SSD 1TB Standard,Premium external ssd 1tb for discerning customers,Electronics,Consumer Electronics,122.63,12,344,2024-01-01 00:00:00
+128,Master External SSD 1TB Plus,Award-winning external ssd 1tb with innovative design,Electronics,Consumer Electronics,766.52,3,479,2024-01-01 00:00:00
+129,Modern External HDD 2TB,Premium external hdd 2tb for discerning customers,Electronics,Consumer Electronics,1784.57,47,240,2024-01-01 00:00:00
+130,Professional USB Flash Drive Standard,Top-rated usb flash drive trusted by thousands,Electronics,Consumer Electronics,2153.14,48,16,2024-01-01 00:00:00
+131,Premium USB Flash Drive Plus,Best-selling usb flash drive with outstanding reviews,Electronics,Consumer Electronics,2956.89,50,354,2024-01-01 00:00:00
+132,Classic USB Flash Drive Premium,Affordable usb flash drive with excellent value for money,Electronics,Consumer Electronics,3312.76,3,139,2024-01-01 00:00:00
+133,Master Router,Best-selling router with outstanding reviews,Electronics,Consumer Electronics,2306.56,17,357,2024-01-01 00:00:00
+134,Premium Wi-Fi Extender Standard,Affordable wi-fi extender with excellent value for money,Electronics,Consumer Electronics,1167.06,41,433,2024-01-01 00:00:00
+135,Expert Wi-Fi Extender Plus,Affordable wi-fi extender with excellent value for money,Electronics,Consumer Electronics,1576.73,37,36,2024-01-01 00:00:00
+136,EliteGear Network Switch,Award-winning network switch with innovative design,Electronics,Consumer Electronics,273.13,46,451,2024-01-01 00:00:00
+137,TechPro Modem Standard,Award-winning modem with innovative design,Electronics,Consumer Electronics,1276.0,27,402,2024-01-01 00:00:00
+138,UltraMax Modem Plus,High-quality modem perfect for everyday use,Electronics,Consumer Electronics,1094.62,43,323,2024-01-01 00:00:00
+139,Supreme Men's T-Shirt,Professional-grade men's t-shirt with advanced features,Fashion,Apparel & Accessories,364.85,29,71,2024-01-01 00:00:00
+140,ValueBest Women's T-Shirt,Award-winning women's t-shirt with innovative design,Fashion,Apparel & Accessories,15.29,19,331,2024-01-01 00:00:00
+141,UltraMax Kids T-Shirt Standard,Affordable kids t-shirt with excellent value for money,Fashion,Apparel & Accessories,244.4,29,359,2024-01-01 00:00:00
+142,ValueBest Kids T-Shirt Plus,High-quality kids t-shirt perfect for everyday use,Fashion,Apparel & Accessories,611.08,25,56,2024-01-01 00:00:00
+143,NextGen Kids T-Shirt Premium,Top-rated kids t-shirt trusted by thousands,Fashion,Apparel & Accessories,688.79,39,336,2024-01-01 00:00:00
+144,ProLine Graphic T-Shirt Standard,Premium graphic t-shirt for discerning customers,Fashion,Apparel & Accessories,281.85,36,75,2024-01-01 00:00:00
+145,Professional Graphic T-Shirt Plus,Premium graphic t-shirt for discerning customers,Fashion,Apparel & Accessories,579.92,15,348,2024-01-01 00:00:00
+146,Premium Graphic T-Shirt Premium,Best-selling graphic t-shirt with outstanding reviews,Fashion,Apparel & Accessories,470.84,47,244,2024-01-01 00:00:00
+147,Champion Men's Dress Shirt Standard,Affordable men's dress shirt with excellent value for money,Fashion,Apparel & Accessories,131.96,11,251,2024-01-01 00:00:00
+148,Classic Men's Dress Shirt Plus,Top-rated men's dress shirt trusted by thousands,Fashion,Apparel & Accessories,270.1,3,487,2024-01-01 00:00:00
+149,TechPro Men's Dress Shirt Premium,Best-selling men's dress shirt with outstanding reviews,Fashion,Apparel & Accessories,304.7,3,258,2024-01-01 00:00:00
+150,Classic Women's Blouse Standard,Premium women's blouse for discerning customers,Fashion,Apparel & Accessories,374.87,44,383,2024-01-01 00:00:00
+151,EliteGear Women's Blouse Plus,Premium women's blouse for discerning customers,Fashion,Apparel & Accessories,772.61,43,339,2024-01-01 00:00:00
+152,Premium Polo Shirt Standard,Best-selling polo shirt with outstanding reviews,Fashion,Apparel & Accessories,143.64,2,346,2024-01-01 00:00:00
+153,Advanced Polo Shirt Plus,Professional-grade polo shirt with advanced features,Fashion,Apparel & Accessories,488.99,48,361,2024-01-01 00:00:00
+154,Champion Henley Shirt Standard,Affordable henley shirt with excellent value for money,Fashion,Apparel & Accessories,408.88,38,175,2024-01-01 00:00:00
+155,Modern Henley Shirt Plus,Affordable henley shirt with excellent value for money,Fashion,Apparel & Accessories,734.46,9,471,2024-01-01 00:00:00
+156,UltraMax Men's Jeans Standard,Premium men's jeans for discerning customers,Fashion,Apparel & Accessories,96.4,42,151,2024-01-01 00:00:00
+157,Premium Men's Jeans Plus,Award-winning men's jeans with innovative design,Fashion,Apparel & Accessories,802.01,28,356,2024-01-01 00:00:00
+158,Advanced Men's Jeans Premium,Top-rated men's jeans trusted by thousands,Fashion,Apparel & Accessories,992.26,25,47,2024-01-01 00:00:00
+159,TechPro Women's Jeans Standard,Award-winning women's jeans with innovative design,Fashion,Apparel & Accessories,251.46,28,487,2024-01-01 00:00:00
+160,ValueBest Women's Jeans Plus,Award-winning women's jeans with innovative design,Fashion,Apparel & Accessories,698.32,21,59,2024-01-01 00:00:00
+161,TechPro Skinny Jeans Standard,Affordable skinny jeans with excellent value for money,Fashion,Apparel & Accessories,321.53,34,65,2024-01-01 00:00:00
+162,Modern Skinny Jeans Plus,Affordable skinny jeans with excellent value for money,Fashion,Apparel & Accessories,443.1,40,69,2024-01-01 00:00:00
+163,NextGen Straight Jeans Standard,High-quality straight jeans perfect for everyday use,Fashion,Apparel & Accessories,103.79,39,388,2024-01-01 00:00:00
+164,Classic Straight Jeans Plus,Professional-grade straight jeans with advanced features,Fashion,Apparel & Accessories,829.63,24,295,2024-01-01 00:00:00
+165,ProLine Boot Cut Jeans Standard,Affordable boot cut jeans with excellent value for money,Fashion,Apparel & Accessories,369.53,10,473,2024-01-01 00:00:00
+166,Essential Boot Cut Jeans Plus,Professional-grade boot cut jeans with advanced features,Fashion,Apparel & Accessories,623.03,39,19,2024-01-01 00:00:00
+167,UltraMax Leather Jacket,High-quality leather jacket perfect for everyday use,Fashion,Apparel & Accessories,70.16,9,472,2024-01-01 00:00:00
+168,Professional Denim Jacket Standard,Top-rated denim jacket trusted by thousands,Fashion,Apparel & Accessories,263.56,8,58,2024-01-01 00:00:00
+169,Expert Denim Jacket Plus,Top-rated denim jacket trusted by thousands,Fashion,Apparel & Accessories,570.21,29,454,2024-01-01 00:00:00
+170,Premium Denim Jacket Premium,Affordable denim jacket with excellent value for money,Fashion,Apparel & Accessories,694.39,44,345,2024-01-01 00:00:00
+171,Master Winter Jacket,Affordable winter jacket with excellent value for money,Fashion,Apparel & Accessories,54.35,8,170,2024-01-01 00:00:00
+172,Essential Bomber Jacket Standard,High-quality bomber jacket perfect for everyday use,Fashion,Apparel & Accessories,52.72,9,48,2024-01-01 00:00:00
+173,Professional Bomber Jacket Plus,Premium bomber jacket for discerning customers,Fashion,Apparel & Accessories,690.24,11,21,2024-01-01 00:00:00
+174,Classic Windbreaker Standard,Top-rated windbreaker trusted by thousands,Fashion,Apparel & Accessories,48.32,27,318,2024-01-01 00:00:00
+175,Master Windbreaker Plus,High-quality windbreaker perfect for everyday use,Fashion,Apparel & Accessories,429.02,26,15,2024-01-01 00:00:00
+176,UltraMax Hoodie Standard,Award-winning hoodie with innovative design,Fashion,Apparel & Accessories,120.49,45,48,2024-01-01 00:00:00
+177,Advanced Hoodie Plus,Top-rated hoodie trusted by thousands,Fashion,Apparel & Accessories,553.92,14,122,2024-01-01 00:00:00
+178,EliteGear Hoodie Premium,Top-rated hoodie trusted by thousands,Fashion,Apparel & Accessories,44.13,5,392,2024-01-01 00:00:00
+179,ValueBest Sweater Standard,Affordable sweater with excellent value for money,Fashion,Apparel & Accessories,221.4,19,415,2024-01-01 00:00:00
+180,Classic Sweater Plus,Top-rated sweater trusted by thousands,Fashion,Apparel & Accessories,276.49,44,458,2024-01-01 00:00:00
+181,Professional Cardigan,Award-winning cardigan with innovative design,Fashion,Apparel & Accessories,234.83,34,305,2024-01-01 00:00:00
+182,Essential Pullover,Award-winning pullover with innovative design,Fashion,Apparel & Accessories,62.1,39,269,2024-01-01 00:00:00
+183,Classic Fleece Jacket Standard,Premium fleece jacket for discerning customers,Fashion,Apparel & Accessories,190.74,50,383,2024-01-01 00:00:00
+184,Essential Fleece Jacket Plus,Professional-grade fleece jacket with advanced features,Fashion,Apparel & Accessories,209.18,48,489,2024-01-01 00:00:00
+185,Elite Fleece Jacket Premium,Best-selling fleece jacket with outstanding reviews,Fashion,Apparel & Accessories,772.79,41,335,2024-01-01 00:00:00
+186,Expert Casual Dress Standard,High-quality casual dress perfect for everyday use,Fashion,Apparel & Accessories,171.71,36,392,2024-01-01 00:00:00
+187,ValueBest Casual Dress Plus,Top-rated casual dress trusted by thousands,Fashion,Apparel & Accessories,821.84,15,332,2024-01-01 00:00:00
+188,Modern Formal Dress Standard,Best-selling formal dress with outstanding reviews,Fashion,Apparel & Accessories,250.88,43,120,2024-01-01 00:00:00
+189,TechPro Formal Dress Plus,Best-selling formal dress with outstanding reviews,Fashion,Apparel & Accessories,325.98,6,51,2024-01-01 00:00:00
+190,ValueBest Summer Dress,Best-selling summer dress with outstanding reviews,Fashion,Apparel & Accessories,377.18,45,303,2024-01-01 00:00:00
+191,Essential Cocktail Dress Standard,Professional-grade cocktail dress with advanced features,Fashion,Apparel & Accessories,207.28,23,70,2024-01-01 00:00:00
+192,Champion Cocktail Dress Plus,Best-selling cocktail dress with outstanding reviews,Fashion,Apparel & Accessories,553.38,27,463,2024-01-01 00:00:00
+193,ProLine Maxi Dress Standard,Best-selling maxi dress with outstanding reviews,Fashion,Apparel & Accessories,181.27,3,317,2024-01-01 00:00:00
+194,Champion Maxi Dress Plus,Affordable maxi dress with excellent value for money,Fashion,Apparel & Accessories,101.78,41,34,2024-01-01 00:00:00
+195,Expert Running Shoes,Premium running shoes for discerning customers,Fashion,Apparel & Accessories,355.18,12,89,2024-01-01 00:00:00
+196,Classic Casual Sneakers Standard,Premium casual sneakers for discerning customers,Fashion,Apparel & Accessories,250.09,41,19,2024-01-01 00:00:00
+197,Modern Casual Sneakers Plus,Best-selling casual sneakers with outstanding reviews,Fashion,Apparel & Accessories,308.39,45,230,2024-01-01 00:00:00
+198,UltraMax Casual Sneakers Premium,High-quality casual sneakers perfect for everyday use,Fashion,Apparel & Accessories,1008.8,5,196,2024-01-01 00:00:00
+199,UltraMax High-Top Sneakers,Top-rated high-top sneakers trusted by thousands,Fashion,Apparel & Accessories,424.07,7,67,2024-01-01 00:00:00
+200,Elite Canvas Shoes Standard,Affordable canvas shoes with excellent value for money,Fashion,Apparel & Accessories,135.5,26,372,2024-01-01 00:00:00
+201,ProLine Canvas Shoes Plus,Premium canvas shoes for discerning customers,Fashion,Apparel & Accessories,339.96,42,270,2024-01-01 00:00:00
+202,Premium Leather Boots Standard,Award-winning leather boots with innovative design,Fashion,Apparel & Accessories,235.44,45,71,2024-01-01 00:00:00
+203,TechPro Leather Boots Plus,Affordable leather boots with excellent value for money,Fashion,Apparel & Accessories,789.66,21,242,2024-01-01 00:00:00
+204,Champion Ankle Boots,Award-winning ankle boots with innovative design,Fashion,Apparel & Accessories,455.55,50,399,2024-01-01 00:00:00
+205,Elite Chelsea Boots Standard,Premium chelsea boots for discerning customers,Fashion,Apparel & Accessories,589.73,2,336,2024-01-01 00:00:00
+206,ValueBest Chelsea Boots Plus,Best-selling chelsea boots with outstanding reviews,Fashion,Apparel & Accessories,467.4,4,62,2024-01-01 00:00:00
+207,ProLine Chelsea Boots Premium,Professional-grade chelsea boots with advanced features,Fashion,Apparel & Accessories,901.19,7,150,2024-01-01 00:00:00
+208,Modern Winter Boots Standard,High-quality winter boots perfect for everyday use,Fashion,Apparel & Accessories,385.94,36,250,2024-01-01 00:00:00
+209,Premium Winter Boots Plus,Professional-grade winter boots with advanced features,Fashion,Apparel & Accessories,836.57,29,495,2024-01-01 00:00:00
+210,Premium Formal Shoes Men Standard,Professional-grade formal shoes men with advanced features,Fashion,Apparel & Accessories,444.95,20,253,2024-01-01 00:00:00
+211,Essential Formal Shoes Men Plus,Best-selling formal shoes men with outstanding reviews,Fashion,Apparel & Accessories,529.49,26,66,2024-01-01 00:00:00
+212,Modern Formal Shoes Men Premium,Top-rated formal shoes men trusted by thousands,Fashion,Apparel & Accessories,689.97,47,465,2024-01-01 00:00:00
+213,Elite Formal Shoes Women Standard,Best-selling formal shoes women with outstanding reviews,Fashion,Apparel & Accessories,104.7,12,143,2024-01-01 00:00:00
+214,ValueBest Formal Shoes Women Plus,Best-selling formal shoes women with outstanding reviews,Fashion,Apparel & Accessories,485.03,19,171,2024-01-01 00:00:00
+215,Elite Formal Shoes Women Premium,Top-rated formal shoes women trusted by thousands,Fashion,Apparel & Accessories,499.54,31,318,2024-01-01 00:00:00
+216,NextGen Oxford Shoes Standard,Affordable oxford shoes with excellent value for money,Fashion,Apparel & Accessories,69.6,9,15,2024-01-01 00:00:00
+217,Advanced Oxford Shoes Plus,High-quality oxford shoes perfect for everyday use,Fashion,Apparel & Accessories,333.29,3,203,2024-01-01 00:00:00
+218,Modern Loafers Standard,Premium loafers for discerning customers,Fashion,Apparel & Accessories,155.9,12,47,2024-01-01 00:00:00
+219,ValueBest Loafers Plus,Affordable loafers with excellent value for money,Fashion,Apparel & Accessories,24.21,13,10,2024-01-01 00:00:00
+220,NextGen Loafers Premium,Affordable loafers with excellent value for money,Fashion,Apparel & Accessories,549.85,22,393,2024-01-01 00:00:00
+221,Professional Flip Flops Standard,Best-selling flip flops with outstanding reviews,Fashion,Apparel & Accessories,283.76,37,196,2024-01-01 00:00:00
+222,ValueBest Flip Flops Plus,Professional-grade flip flops with advanced features,Fashion,Apparel & Accessories,789.5,7,69,2024-01-01 00:00:00
+223,Elite Flip Flops Premium,Top-rated flip flops trusted by thousands,Fashion,Apparel & Accessories,128.86,26,310,2024-01-01 00:00:00
+224,Master Sandals Standard,Top-rated sandals trusted by thousands,Fashion,Apparel & Accessories,193.4,23,144,2024-01-01 00:00:00
+225,Premium Sandals Plus,Professional-grade sandals with advanced features,Fashion,Apparel & Accessories,578.54,28,190,2024-01-01 00:00:00
+226,NextGen Sport Sandals Standard,Premium sport sandals for discerning customers,Fashion,Apparel & Accessories,267.55,22,146,2024-01-01 00:00:00
+227,ProLine Sport Sandals Plus,Best-selling sport sandals with outstanding reviews,Fashion,Apparel & Accessories,21.88,3,381,2024-01-01 00:00:00
+228,Champion Sport Sandals Premium,Professional-grade sport sandals with advanced features,Fashion,Apparel & Accessories,635.44,17,352,2024-01-01 00:00:00
+229,Professional Slides Standard,Professional-grade slides with advanced features,Fashion,Apparel & Accessories,585.65,11,200,2024-01-01 00:00:00
+230,Champion Slides Plus,Professional-grade slides with advanced features,Fashion,Apparel & Accessories,588.26,49,128,2024-01-01 00:00:00
+231,Champion Slides Premium,Premium slides for discerning customers,Fashion,Apparel & Accessories,663.17,32,184,2024-01-01 00:00:00
+232,Modern Analog Watch Standard,Premium analog watch for discerning customers,Fashion,Apparel & Accessories,197.86,8,487,2024-01-01 00:00:00
+233,Champion Analog Watch Plus,Best-selling analog watch with outstanding reviews,Fashion,Apparel & Accessories,132.61,35,148,2024-01-01 00:00:00
+234,SmartChoice Analog Watch Premium,Award-winning analog watch with innovative design,Fashion,Apparel & Accessories,771.8,17,213,2024-01-01 00:00:00
+235,UltraMax Digital Watch Standard,Professional-grade digital watch with advanced features,Fashion,Apparel & Accessories,312.11,31,23,2024-01-01 00:00:00
+236,Professional Digital Watch Plus,Best-selling digital watch with outstanding reviews,Fashion,Apparel & Accessories,315.13,5,250,2024-01-01 00:00:00
+237,SmartChoice Smart Watch Standard,Professional-grade smart watch with advanced features,Fashion,Apparel & Accessories,52.77,11,75,2024-01-01 00:00:00
+238,UltraMax Smart Watch Plus,Top-rated smart watch trusted by thousands,Fashion,Apparel & Accessories,494.69,9,268,2024-01-01 00:00:00
+239,EliteGear Luxury Watch Standard,High-quality luxury watch perfect for everyday use,Fashion,Apparel & Accessories,218.99,13,96,2024-01-01 00:00:00
+240,EliteGear Luxury Watch Plus,Affordable luxury watch with excellent value for money,Fashion,Apparel & Accessories,429.88,38,448,2024-01-01 00:00:00
+241,ValueBest Leather Belt Standard,Premium leather belt for discerning customers,Fashion,Apparel & Accessories,402.5,12,413,2024-01-01 00:00:00
+242,ProLine Leather Belt Plus,Premium leather belt for discerning customers,Fashion,Apparel & Accessories,205.21,47,60,2024-01-01 00:00:00
+243,Advanced Leather Belt Premium,Premium leather belt for discerning customers,Fashion,Apparel & Accessories,762.94,46,194,2024-01-01 00:00:00
+244,Elite Canvas Belt,Top-rated canvas belt trusted by thousands,Fashion,Apparel & Accessories,96.26,46,425,2024-01-01 00:00:00
+245,Classic Designer Belt Standard,Top-rated designer belt trusted by thousands,Fashion,Apparel & Accessories,281.82,35,404,2024-01-01 00:00:00
+246,Supreme Designer Belt Plus,Professional-grade designer belt with advanced features,Fashion,Apparel & Accessories,203.61,25,369,2024-01-01 00:00:00
+247,Expert Leather Wallet,Award-winning leather wallet with innovative design,Fashion,Apparel & Accessories,32.75,39,362,2024-01-01 00:00:00
+248,EliteGear Bifold Wallet,Award-winning bifold wallet with innovative design,Fashion,Apparel & Accessories,183.8,43,25,2024-01-01 00:00:00
+249,Supreme Card Holder Standard,Premium card holder for discerning customers,Fashion,Apparel & Accessories,257.11,21,459,2024-01-01 00:00:00
+250,EliteGear Card Holder Plus,Best-selling card holder with outstanding reviews,Fashion,Apparel & Accessories,241.52,22,184,2024-01-01 00:00:00
+251,Champion Card Holder Premium,High-quality card holder perfect for everyday use,Fashion,Apparel & Accessories,614.61,40,329,2024-01-01 00:00:00
+252,Champion Money Clip,Premium money clip for discerning customers,Fashion,Apparel & Accessories,346.36,34,441,2024-01-01 00:00:00
+253,Elite Sunglasses Aviator,Best-selling sunglasses aviator with outstanding reviews,Fashion,Apparel & Accessories,194.27,10,307,2024-01-01 00:00:00
+254,Premium Sunglasses Wayfarer,High-quality sunglasses wayfarer perfect for everyday use,Fashion,Apparel & Accessories,405.99,40,137,2024-01-01 00:00:00
+255,Classic Sport Sunglasses,Award-winning sport sunglasses with innovative design,Fashion,Apparel & Accessories,56.67,44,27,2024-01-01 00:00:00
+256,Essential Polarized Sunglasses Standard,Affordable polarized sunglasses with excellent value for money,Fashion,Apparel & Accessories,79.66,12,40,2024-01-01 00:00:00
+257,Modern Polarized Sunglasses Plus,Top-rated polarized sunglasses trusted by thousands,Fashion,Apparel & Accessories,654.84,43,339,2024-01-01 00:00:00
+258,EliteGear Baseball Cap,Award-winning baseball cap with innovative design,Fashion,Apparel & Accessories,539.31,43,199,2024-01-01 00:00:00
+259,Expert Beanie Standard,Affordable beanie with excellent value for money,Fashion,Apparel & Accessories,429.36,18,176,2024-01-01 00:00:00
+260,NextGen Beanie Plus,Affordable beanie with excellent value for money,Fashion,Apparel & Accessories,671.19,18,320,2024-01-01 00:00:00
+261,UltraMax Fedora,Affordable fedora with excellent value for money,Fashion,Apparel & Accessories,191.82,42,134,2024-01-01 00:00:00
+262,ValueBest Sun Hat,Award-winning sun hat with innovative design,Fashion,Apparel & Accessories,251.27,39,134,2024-01-01 00:00:00
+263,Essential Winter Hat Standard,Premium winter hat for discerning customers,Fashion,Apparel & Accessories,94.52,16,158,2024-01-01 00:00:00
+264,TechPro Winter Hat Plus,Premium winter hat for discerning customers,Fashion,Apparel & Accessories,392.06,15,437,2024-01-01 00:00:00
+265,SmartChoice Wool Scarf Standard,Top-rated wool scarf trusted by thousands,Fashion,Apparel & Accessories,445.03,50,7,2024-01-01 00:00:00
+266,Premium Wool Scarf Plus,Affordable wool scarf with excellent value for money,Fashion,Apparel & Accessories,63.41,6,27,2024-01-01 00:00:00
+267,Master Wool Scarf Premium,Professional-grade wool scarf with advanced features,Fashion,Apparel & Accessories,443.97,44,422,2024-01-01 00:00:00
+268,Professional Cotton Scarf,Top-rated cotton scarf trusted by thousands,Fashion,Apparel & Accessories,366.47,16,155,2024-01-01 00:00:00
+269,SmartChoice Silk Scarf,Award-winning silk scarf with innovative design,Fashion,Apparel & Accessories,121.42,50,170,2024-01-01 00:00:00
+270,Supreme Infinity Scarf,Premium infinity scarf for discerning customers,Fashion,Apparel & Accessories,141.35,16,378,2024-01-01 00:00:00
+271,Champion 3-Seater Sofa Standard,Professional-grade 3-seater sofa with advanced features,Home & Garden,Home Essentials,640.18,19,500,2024-01-01 00:00:00
+272,Master 3-Seater Sofa Plus,Top-rated 3-seater sofa trusted by thousands,Home & Garden,Home Essentials,2774.31,40,66,2024-01-01 00:00:00
+273,SmartChoice L-Shaped Sofa Standard,Professional-grade l-shaped sofa with advanced features,Home & Garden,Home Essentials,1089.2,30,121,2024-01-01 00:00:00
+274,Advanced L-Shaped Sofa Plus,Award-winning l-shaped sofa with innovative design,Home & Garden,Home Essentials,2720.39,19,363,2024-01-01 00:00:00
+275,Champion L-Shaped Sofa Premium,Award-winning l-shaped sofa with innovative design,Home & Garden,Home Essentials,2810.01,18,363,2024-01-01 00:00:00
+276,Expert Recliner Sofa Standard,Affordable recliner sofa with excellent value for money,Home & Garden,Home Essentials,243.4,50,157,2024-01-01 00:00:00
+277,Classic Recliner Sofa Plus,Premium recliner sofa for discerning customers,Home & Garden,Home Essentials,1449.35,32,471,2024-01-01 00:00:00
+278,Modern Loveseat,Premium loveseat for discerning customers,Home & Garden,Home Essentials,1565.54,25,406,2024-01-01 00:00:00
+279,Elite Sectional Sofa,Affordable sectional sofa with excellent value for money,Home & Garden,Home Essentials,1397.7,3,383,2024-01-01 00:00:00
+280,Advanced Office Chair Standard,Affordable office chair with excellent value for money,Home & Garden,Home Essentials,1170.51,42,463,2024-01-01 00:00:00
+281,Essential Office Chair Plus,Affordable office chair with excellent value for money,Home & Garden,Home Essentials,854.18,27,52,2024-01-01 00:00:00
+282,ValueBest Gaming Chair Standard,Premium gaming chair for discerning customers,Home & Garden,Home Essentials,489.23,25,59,2024-01-01 00:00:00
+283,Modern Gaming Chair Plus,Professional-grade gaming chair with advanced features,Home & Garden,Home Essentials,2430.11,12,396,2024-01-01 00:00:00
+284,SmartChoice Gaming Chair Premium,Affordable gaming chair with excellent value for money,Home & Garden,Home Essentials,1619.12,29,370,2024-01-01 00:00:00
+285,Elite Dining Chair Standard,High-quality dining chair perfect for everyday use,Home & Garden,Home Essentials,1525.68,18,377,2024-01-01 00:00:00
+286,Modern Dining Chair Plus,Affordable dining chair with excellent value for money,Home & Garden,Home Essentials,1247.97,7,413,2024-01-01 00:00:00
+287,NextGen Dining Chair Premium,Best-selling dining chair with outstanding reviews,Home & Garden,Home Essentials,3047.82,2,127,2024-01-01 00:00:00
+288,Expert Accent Chair,Top-rated accent chair trusted by thousands,Home & Garden,Home Essentials,589.71,30,105,2024-01-01 00:00:00
+289,Elite Rocking Chair Standard,Award-winning rocking chair with innovative design,Home & Garden,Home Essentials,1887.72,1,239,2024-01-01 00:00:00
+290,TechPro Rocking Chair Plus,Affordable rocking chair with excellent value for money,Home & Garden,Home Essentials,657.7,24,48,2024-01-01 00:00:00
+291,Expert Standing Desk,Premium standing desk for discerning customers,Home & Garden,Home Essentials,725.16,37,299,2024-01-01 00:00:00
+292,EliteGear Computer Desk,Premium computer desk for discerning customers,Home & Garden,Home Essentials,877.28,1,83,2024-01-01 00:00:00
+293,ValueBest Writing Desk,Premium writing desk for discerning customers,Home & Garden,Home Essentials,406.66,41,56,2024-01-01 00:00:00
+294,Premium Corner Desk,Award-winning corner desk with innovative design,Home & Garden,Home Essentials,1673.6,35,129,2024-01-01 00:00:00
+295,Supreme Executive Desk Standard,High-quality executive desk perfect for everyday use,Home & Garden,Home Essentials,1099.17,22,299,2024-01-01 00:00:00
+296,ValueBest Executive Desk Plus,Top-rated executive desk trusted by thousands,Home & Garden,Home Essentials,2350.99,11,343,2024-01-01 00:00:00
+297,Classic Dining Table,High-quality dining table perfect for everyday use,Home & Garden,Home Essentials,1801.49,6,361,2024-01-01 00:00:00
+298,Advanced Coffee Table Standard,Best-selling coffee table with outstanding reviews,Home & Garden,Home Essentials,1106.03,1,192,2024-01-01 00:00:00
+299,Expert Coffee Table Plus,Professional-grade coffee table with advanced features,Home & Garden,Home Essentials,2712.28,19,268,2024-01-01 00:00:00
+300,ValueBest Side Table,Best-selling side table with outstanding reviews,Home & Garden,Home Essentials,1683.82,50,278,2024-01-01 00:00:00
+301,Modern Console Table Standard,Professional-grade console table with advanced features,Home & Garden,Home Essentials,440.97,47,310,2024-01-01 00:00:00
+302,UltraMax Console Table Plus,Affordable console table with excellent value for money,Home & Garden,Home Essentials,1659.23,35,273,2024-01-01 00:00:00
+303,Champion Folding Table Standard,Award-winning folding table with innovative design,Home & Garden,Home Essentials,1012.81,35,32,2024-01-01 00:00:00
+304,Master Folding Table Plus,Top-rated folding table trusted by thousands,Home & Garden,Home Essentials,125.72,30,207,2024-01-01 00:00:00
+305,Advanced Folding Table Premium,Professional-grade folding table with advanced features,Home & Garden,Home Essentials,838.25,21,137,2024-01-01 00:00:00
+306,Advanced Queen Bed Standard,High-quality queen bed perfect for everyday use,Home & Garden,Home Essentials,1658.5,21,268,2024-01-01 00:00:00
+307,ValueBest Queen Bed Plus,Premium queen bed for discerning customers,Home & Garden,Home Essentials,1130.85,29,63,2024-01-01 00:00:00
+308,Master King Bed Standard,Best-selling king bed with outstanding reviews,Home & Garden,Home Essentials,1437.87,32,254,2024-01-01 00:00:00
+309,Professional King Bed Plus,Affordable king bed with excellent value for money,Home & Garden,Home Essentials,318.8,50,107,2024-01-01 00:00:00
+310,Premium Single Bed,Premium single bed for discerning customers,Home & Garden,Home Essentials,1018.95,34,277,2024-01-01 00:00:00
+311,TechPro Bunk Bed,Best-selling bunk bed with outstanding reviews,Home & Garden,Home Essentials,309.14,32,207,2024-01-01 00:00:00
+312,Advanced Storage Bed Standard,High-quality storage bed perfect for everyday use,Home & Garden,Home Essentials,1387.56,17,405,2024-01-01 00:00:00
+313,ProLine Storage Bed Plus,Professional-grade storage bed with advanced features,Home & Garden,Home Essentials,2223.74,28,153,2024-01-01 00:00:00
+314,Premium Storage Bed Premium,Affordable storage bed with excellent value for money,Home & Garden,Home Essentials,2354.62,16,318,2024-01-01 00:00:00
+315,Elite Bookshelf 3-Tier Standard,Award-winning bookshelf 3-tier with innovative design,Home & Garden,Home Essentials,41.94,41,48,2024-01-01 00:00:00
+316,Advanced Bookshelf 3-Tier Plus,Top-rated bookshelf 3-tier trusted by thousands,Home & Garden,Home Essentials,402.48,34,296,2024-01-01 00:00:00
+317,Supreme Bookshelf 3-Tier Premium,Award-winning bookshelf 3-tier with innovative design,Home & Garden,Home Essentials,2688.52,38,482,2024-01-01 00:00:00
+318,EliteGear Bookshelf 5-Tier,Affordable bookshelf 5-tier with excellent value for money,Home & Garden,Home Essentials,576.87,26,70,2024-01-01 00:00:00
+319,Premium Corner Bookshelf Standard,Professional-grade corner bookshelf with advanced features,Home & Garden,Home Essentials,1085.18,10,284,2024-01-01 00:00:00
+320,Classic Corner Bookshelf Plus,Affordable corner bookshelf with excellent value for money,Home & Garden,Home Essentials,418.49,27,95,2024-01-01 00:00:00
+321,Expert Wall-Mounted Shelf Standard,Best-selling wall-mounted shelf with outstanding reviews,Home & Garden,Home Essentials,648.39,41,129,2024-01-01 00:00:00
+322,Champion Wall-Mounted Shelf Plus,Award-winning wall-mounted shelf with innovative design,Home & Garden,Home Essentials,2137.05,25,3,2024-01-01 00:00:00
+323,Elite Wall-Mounted Shelf Premium,Professional-grade wall-mounted shelf with advanced features,Home & Garden,Home Essentials,3271.97,34,238,2024-01-01 00:00:00
+324,ProLine Blender 500W Standard,Professional-grade blender 500w with advanced features,Home & Garden,Home Essentials,657.58,10,424,2024-01-01 00:00:00
+325,NextGen Blender 500W Plus,Professional-grade blender 500w with advanced features,Home & Garden,Home Essentials,379.58,41,449,2024-01-01 00:00:00
+326,Elite Blender 500W Premium,Professional-grade blender 500w with advanced features,Home & Garden,Home Essentials,3118.25,22,396,2024-01-01 00:00:00
+327,Essential Blender 1000W,Award-winning blender 1000w with innovative design,Home & Garden,Home Essentials,1481.15,18,356,2024-01-01 00:00:00
+328,Elite Hand Blender Standard,Top-rated hand blender trusted by thousands,Home & Garden,Home Essentials,143.81,2,180,2024-01-01 00:00:00
+329,UltraMax Hand Blender Plus,Best-selling hand blender with outstanding reviews,Home & Garden,Home Essentials,2169.36,9,434,2024-01-01 00:00:00
+330,ValueBest Personal Blender,Top-rated personal blender trusted by thousands,Home & Garden,Home Essentials,80.91,3,410,2024-01-01 00:00:00
+331,Master Drip Coffee Maker,High-quality drip coffee maker perfect for everyday use,Home & Garden,Home Essentials,1473.48,34,19,2024-01-01 00:00:00
+332,Essential Espresso Machine,Top-rated espresso machine trusted by thousands,Home & Garden,Home Essentials,996.58,30,363,2024-01-01 00:00:00
+333,Modern French Press Standard,High-quality french press perfect for everyday use,Home & Garden,Home Essentials,714.69,3,447,2024-01-01 00:00:00
+334,Master French Press Plus,Professional-grade french press with advanced features,Home & Garden,Home Essentials,1931.79,32,72,2024-01-01 00:00:00
+335,Premium French Press Premium,High-quality french press perfect for everyday use,Home & Garden,Home Essentials,1745.43,34,193,2024-01-01 00:00:00
+336,Elite Cold Brew Maker,Award-winning cold brew maker with innovative design,Home & Garden,Home Essentials,839.41,26,323,2024-01-01 00:00:00
+337,Expert Toaster 2-Slice Standard,Top-rated toaster 2-slice trusted by thousands,Home & Garden,Home Essentials,233.01,42,40,2024-01-01 00:00:00
+338,Advanced Toaster 2-Slice Plus,Professional-grade toaster 2-slice with advanced features,Home & Garden,Home Essentials,2730.22,15,268,2024-01-01 00:00:00
+339,Expert Toaster 4-Slice,Professional-grade toaster 4-slice with advanced features,Home & Garden,Home Essentials,1991.36,34,82,2024-01-01 00:00:00
+340,NextGen Toaster Oven Standard,Top-rated toaster oven trusted by thousands,Home & Garden,Home Essentials,1498.31,4,131,2024-01-01 00:00:00
+341,Advanced Toaster Oven Plus,High-quality toaster oven perfect for everyday use,Home & Garden,Home Essentials,2273.65,46,194,2024-01-01 00:00:00
+342,Champion Toaster Oven Premium,Award-winning toaster oven with innovative design,Home & Garden,Home Essentials,2292.44,34,233,2024-01-01 00:00:00
+343,Essential Non-Stick Cookware Set Standard,High-quality non-stick cookware set perfect for everyday use,Home & Garden,Home Essentials,292.76,39,199,2024-01-01 00:00:00
+344,Master Non-Stick Cookware Set Plus,Premium non-stick cookware set for discerning customers,Home & Garden,Home Essentials,2054.52,30,312,2024-01-01 00:00:00
+345,Professional Stainless Steel Cookware Standard,Affordable stainless steel cookware with excellent value for money,Home & Garden,Home Essentials,1402.99,26,126,2024-01-01 00:00:00
+346,Advanced Stainless Steel Cookware Plus,Best-selling stainless steel cookware with outstanding reviews,Home & Garden,Home Essentials,2494.66,34,216,2024-01-01 00:00:00
+347,SmartChoice Cast Iron Cookware Standard,Professional-grade cast iron cookware with advanced features,Home & Garden,Home Essentials,1261.17,30,493,2024-01-01 00:00:00
+348,UltraMax Cast Iron Cookware Plus,Best-selling cast iron cookware with outstanding reviews,Home & Garden,Home Essentials,2675.79,31,21,2024-01-01 00:00:00
+349,Champion Knife Set,Best-selling knife set with outstanding reviews,Home & Garden,Home Essentials,94.14,42,412,2024-01-01 00:00:00
+350,NextGen Cutting Board Standard,Premium cutting board for discerning customers,Home & Garden,Home Essentials,837.08,31,198,2024-01-01 00:00:00
+351,Advanced Cutting Board Plus,High-quality cutting board perfect for everyday use,Home & Garden,Home Essentials,925.89,23,182,2024-01-01 00:00:00
+352,Premium Mixing Bowl Set,Professional-grade mixing bowl set with advanced features,Home & Garden,Home Essentials,119.71,46,430,2024-01-01 00:00:00
+353,Supreme Utensil Set,Best-selling utensil set with outstanding reviews,Home & Garden,Home Essentials,964.11,11,22,2024-01-01 00:00:00
+354,Modern Microwave Oven Standard,Premium microwave oven for discerning customers,Home & Garden,Home Essentials,924.58,47,236,2024-01-01 00:00:00
+355,Classic Microwave Oven Plus,Top-rated microwave oven trusted by thousands,Home & Garden,Home Essentials,2391.15,16,43,2024-01-01 00:00:00
+356,SmartChoice Microwave Oven Premium,Award-winning microwave oven with innovative design,Home & Garden,Home Essentials,453.36,28,78,2024-01-01 00:00:00
+357,ProLine Air Fryer Standard,Premium air fryer for discerning customers,Home & Garden,Home Essentials,1574.24,2,293,2024-01-01 00:00:00
+358,Expert Air Fryer Plus,Affordable air fryer with excellent value for money,Home & Garden,Home Essentials,743.78,3,104,2024-01-01 00:00:00
+359,ProLine Air Fryer Premium,Affordable air fryer with excellent value for money,Home & Garden,Home Essentials,1192.36,18,57,2024-01-01 00:00:00
+360,Classic Electric Kettle Standard,Professional-grade electric kettle with advanced features,Home & Garden,Home Essentials,715.27,13,38,2024-01-01 00:00:00
+361,Elite Electric Kettle Plus,Professional-grade electric kettle with advanced features,Home & Garden,Home Essentials,2256.56,17,157,2024-01-01 00:00:00
+362,NextGen Electric Kettle Premium,Affordable electric kettle with excellent value for money,Home & Garden,Home Essentials,2213.41,38,293,2024-01-01 00:00:00
+363,Premium Food Processor Standard,Best-selling food processor with outstanding reviews,Home & Garden,Home Essentials,964.67,25,326,2024-01-01 00:00:00
+364,Modern Food Processor Plus,Best-selling food processor with outstanding reviews,Home & Garden,Home Essentials,217.07,30,94,2024-01-01 00:00:00
+365,ValueBest Vacuum Cleaner,Premium vacuum cleaner for discerning customers,Home & Garden,Home Essentials,801.4,37,425,2024-01-01 00:00:00
+366,Expert Robot Vacuum Standard,High-quality robot vacuum perfect for everyday use,Home & Garden,Home Essentials,225.85,27,484,2024-01-01 00:00:00
+367,ValueBest Robot Vacuum Plus,High-quality robot vacuum perfect for everyday use,Home & Garden,Home Essentials,2117.75,33,425,2024-01-01 00:00:00
+368,UltraMax Steam Mop Standard,Affordable steam mop with excellent value for money,Home & Garden,Home Essentials,525.92,9,248,2024-01-01 00:00:00
+369,Supreme Steam Mop Plus,Professional-grade steam mop with advanced features,Home & Garden,Home Essentials,1869.33,11,437,2024-01-01 00:00:00
+370,Modern Steam Mop Premium,Premium steam mop for discerning customers,Home & Garden,Home Essentials,412.13,18,470,2024-01-01 00:00:00
+371,NextGen Carpet Cleaner Standard,Premium carpet cleaner for discerning customers,Home & Garden,Home Essentials,684.29,35,318,2024-01-01 00:00:00
+372,ProLine Carpet Cleaner Plus,Affordable carpet cleaner with excellent value for money,Home & Garden,Home Essentials,714.81,48,279,2024-01-01 00:00:00
+373,Expert Garden Shovel Standard,Award-winning garden shovel with innovative design,Home & Garden,Home Essentials,637.1,14,311,2024-01-01 00:00:00
+374,Professional Garden Shovel Plus,Best-selling garden shovel with outstanding reviews,Home & Garden,Home Essentials,913.32,41,10,2024-01-01 00:00:00
+375,SmartChoice Garden Shovel Premium,Premium garden shovel for discerning customers,Home & Garden,Home Essentials,2950.77,20,49,2024-01-01 00:00:00
+376,NextGen Rake,Affordable rake with excellent value for money,Home & Garden,Home Essentials,622.97,29,115,2024-01-01 00:00:00
+377,Advanced Pruning Shears Standard,Best-selling pruning shears with outstanding reviews,Home & Garden,Home Essentials,672.82,50,461,2024-01-01 00:00:00
+378,NextGen Pruning Shears Plus,High-quality pruning shears perfect for everyday use,Home & Garden,Home Essentials,1319.74,3,497,2024-01-01 00:00:00
+379,Champion Lawn Mower,Best-selling lawn mower with outstanding reviews,Home & Garden,Home Essentials,27.24,7,142,2024-01-01 00:00:00
+380,Supreme Hedge Trimmer Standard,Professional-grade hedge trimmer with advanced features,Home & Garden,Home Essentials,1776.5,42,141,2024-01-01 00:00:00
+381,TechPro Hedge Trimmer Plus,Best-selling hedge trimmer with outstanding reviews,Home & Garden,Home Essentials,2450.25,32,264,2024-01-01 00:00:00
+382,EliteGear Plant Pot Small Standard,Professional-grade plant pot small with advanced features,Home & Garden,Home Essentials,1397.78,6,165,2024-01-01 00:00:00
+383,NextGen Plant Pot Small Plus,Best-selling plant pot small with outstanding reviews,Home & Garden,Home Essentials,2543.31,6,451,2024-01-01 00:00:00
+384,Master Plant Pot Small Premium,Professional-grade plant pot small with advanced features,Home & Garden,Home Essentials,3089.58,15,412,2024-01-01 00:00:00
+385,Professional Plant Pot Medium,High-quality plant pot medium perfect for everyday use,Home & Garden,Home Essentials,1897.84,13,149,2024-01-01 00:00:00
+386,Supreme Plant Pot Large Standard,High-quality plant pot large perfect for everyday use,Home & Garden,Home Essentials,1145.03,36,97,2024-01-01 00:00:00
+387,Classic Plant Pot Large Plus,Professional-grade plant pot large with advanced features,Home & Garden,Home Essentials,2231.51,47,193,2024-01-01 00:00:00
+388,NextGen Plant Pot Large Premium,High-quality plant pot large perfect for everyday use,Home & Garden,Home Essentials,703.48,12,407,2024-01-01 00:00:00
+389,Premium Hanging Planter Standard,Affordable hanging planter with excellent value for money,Home & Garden,Home Essentials,1093.41,6,427,2024-01-01 00:00:00
+390,Master Hanging Planter Plus,Best-selling hanging planter with outstanding reviews,Home & Garden,Home Essentials,885.43,4,165,2024-01-01 00:00:00
+391,ProLine Patio Furniture Set,Professional-grade patio furniture set with advanced features,Home & Garden,Home Essentials,619.05,17,427,2024-01-01 00:00:00
+392,Classic Garden Bench,Best-selling garden bench with outstanding reviews,Home & Garden,Home Essentials,863.97,46,123,2024-01-01 00:00:00
+393,Master Outdoor Lounge Chair Standard,Award-winning outdoor lounge chair with innovative design,Home & Garden,Home Essentials,1800.83,37,164,2024-01-01 00:00:00
+394,Premium Outdoor Lounge Chair Plus,Affordable outdoor lounge chair with excellent value for money,Home & Garden,Home Essentials,367.88,34,60,2024-01-01 00:00:00
+395,SmartChoice Gas BBQ Grill Standard,Award-winning gas bbq grill with innovative design,Home & Garden,Home Essentials,1801.93,34,460,2024-01-01 00:00:00
+396,Elite Gas BBQ Grill Plus,Professional-grade gas bbq grill with advanced features,Home & Garden,Home Essentials,222.17,39,29,2024-01-01 00:00:00
+397,Elite Charcoal Grill Standard,Best-selling charcoal grill with outstanding reviews,Home & Garden,Home Essentials,63.27,25,92,2024-01-01 00:00:00
+398,Expert Charcoal Grill Plus,Best-selling charcoal grill with outstanding reviews,Home & Garden,Home Essentials,1356.89,9,272,2024-01-01 00:00:00
+399,ProLine Electric Grill Standard,Award-winning electric grill with innovative design,Home & Garden,Home Essentials,1518.15,23,381,2024-01-01 00:00:00
+400,Advanced Electric Grill Plus,Professional-grade electric grill with advanced features,Home & Garden,Home Essentials,435.42,12,294,2024-01-01 00:00:00
+401,Champion Electric Grill Premium,Affordable electric grill with excellent value for money,Home & Garden,Home Essentials,1079.12,27,255,2024-01-01 00:00:00
+402,Professional Portable Grill,Best-selling portable grill with outstanding reviews,Home & Garden,Home Essentials,1627.79,20,149,2024-01-01 00:00:00
+403,EliteGear Yoga Mat 6mm,Professional-grade yoga mat 6mm with advanced features,Sports,Sports & Outdoors,914.9,26,31,2024-01-01 00:00:00
+404,Classic Yoga Mat 8mm Standard,Top-rated yoga mat 8mm trusted by thousands,Sports,Sports & Outdoors,827.12,42,407,2024-01-01 00:00:00
+405,Premium Yoga Mat 8mm Plus,Best-selling yoga mat 8mm with outstanding reviews,Sports,Sports & Outdoors,861.16,2,89,2024-01-01 00:00:00
+406,Master Yoga Mat 8mm Premium,Affordable yoga mat 8mm with excellent value for money,Sports,Sports & Outdoors,1374.99,2,208,2024-01-01 00:00:00
+407,ValueBest Travel Yoga Mat,Premium travel yoga mat for discerning customers,Sports,Sports & Outdoors,193.87,30,84,2024-01-01 00:00:00
+408,EliteGear Eco Yoga Mat,Premium eco yoga mat for discerning customers,Sports,Sports & Outdoors,52.71,26,255,2024-01-01 00:00:00
+409,EliteGear Dumbbell Set 5kg Standard,Best-selling dumbbell set 5kg with outstanding reviews,Sports,Sports & Outdoors,163.03,48,280,2024-01-01 00:00:00
+410,Supreme Dumbbell Set 5kg Plus,Affordable dumbbell set 5kg with excellent value for money,Sports,Sports & Outdoors,1207.98,42,345,2024-01-01 00:00:00
+411,Classic Dumbbell Set 5kg Premium,Best-selling dumbbell set 5kg with outstanding reviews,Sports,Sports & Outdoors,1527.94,12,296,2024-01-01 00:00:00
+412,ProLine Dumbbell Set 10kg,Premium dumbbell set 10kg for discerning customers,Sports,Sports & Outdoors,27.79,6,101,2024-01-01 00:00:00
+413,Premium Adjustable Dumbbells,Top-rated adjustable dumbbells trusted by thousands,Sports,Sports & Outdoors,167.98,32,92,2024-01-01 00:00:00
+414,Essential Resistance Bands Set Standard,Premium resistance bands set for discerning customers,Sports,Sports & Outdoors,887.87,35,51,2024-01-01 00:00:00
+415,Premium Resistance Bands Set Plus,Affordable resistance bands set with excellent value for money,Sports,Sports & Outdoors,490.53,18,391,2024-01-01 00:00:00
+416,Classic Resistance Bands Set Premium,Best-selling resistance bands set with outstanding reviews,Sports,Sports & Outdoors,1656.96,20,158,2024-01-01 00:00:00
+417,EliteGear Pull-Up Bands Standard,High-quality pull-up bands perfect for everyday use,Sports,Sports & Outdoors,723.94,17,211,2024-01-01 00:00:00
+418,ProLine Pull-Up Bands Plus,Best-selling pull-up bands with outstanding reviews,Sports,Sports & Outdoors,1328.32,18,159,2024-01-01 00:00:00
+419,ValueBest Loop Bands,Affordable loop bands with excellent value for money,Sports,Sports & Outdoors,61.92,13,459,2024-01-01 00:00:00
+420,NextGen Exercise Bike Standard,High-quality exercise bike perfect for everyday use,Sports,Sports & Outdoors,67.24,45,298,2024-01-01 00:00:00
+421,Expert Exercise Bike Plus,High-quality exercise bike perfect for everyday use,Sports,Sports & Outdoors,878.65,27,18,2024-01-01 00:00:00
+422,ValueBest Exercise Bike Premium,Premium exercise bike for discerning customers,Sports,Sports & Outdoors,416.4,19,237,2024-01-01 00:00:00
+423,SmartChoice Spin Bike Standard,Top-rated spin bike trusted by thousands,Sports,Sports & Outdoors,841.21,25,413,2024-01-01 00:00:00
+424,NextGen Spin Bike Plus,Best-selling spin bike with outstanding reviews,Sports,Sports & Outdoors,33.11,38,490,2024-01-01 00:00:00
+425,TechPro Recumbent Bike,Best-selling recumbent bike with outstanding reviews,Sports,Sports & Outdoors,716.96,48,275,2024-01-01 00:00:00
+426,Expert Folding Bike,Affordable folding bike with excellent value for money,Sports,Sports & Outdoors,372.25,23,304,2024-01-01 00:00:00
+427,Essential Treadmill Standard,High-quality treadmill perfect for everyday use,Sports,Sports & Outdoors,57.96,3,418,2024-01-01 00:00:00
+428,Champion Treadmill Plus,Affordable treadmill with excellent value for money,Sports,Sports & Outdoors,112.62,7,160,2024-01-01 00:00:00
+429,SmartChoice Elliptical Machine,Award-winning elliptical machine with innovative design,Sports,Sports & Outdoors,706.71,31,485,2024-01-01 00:00:00
+430,Modern Rowing Machine,High-quality rowing machine perfect for everyday use,Sports,Sports & Outdoors,895.56,20,449,2024-01-01 00:00:00
+431,SmartChoice Stepper Standard,Premium stepper for discerning customers,Sports,Sports & Outdoors,12.88,6,303,2024-01-01 00:00:00
+432,Expert Stepper Plus,Award-winning stepper with innovative design,Sports,Sports & Outdoors,1105.83,36,310,2024-01-01 00:00:00
+433,Professional Stepper Premium,Top-rated stepper trusted by thousands,Sports,Sports & Outdoors,365.39,36,139,2024-01-01 00:00:00
+434,NextGen 2-Person Tent Standard,Affordable 2-person tent with excellent value for money,Sports,Sports & Outdoors,907.09,26,401,2024-01-01 00:00:00
+435,Expert 2-Person Tent Plus,High-quality 2-person tent perfect for everyday use,Sports,Sports & Outdoors,981.66,10,344,2024-01-01 00:00:00
+436,UltraMax 2-Person Tent Premium,Premium 2-person tent for discerning customers,Sports,Sports & Outdoors,964.34,2,20,2024-01-01 00:00:00
+437,EliteGear 4-Person Tent Standard,Professional-grade 4-person tent with advanced features,Sports,Sports & Outdoors,386.36,28,106,2024-01-01 00:00:00
+438,Modern 4-Person Tent Plus,Professional-grade 4-person tent with advanced features,Sports,Sports & Outdoors,1105.48,40,219,2024-01-01 00:00:00
+439,UltraMax Family Tent Standard,Best-selling family tent with outstanding reviews,Sports,Sports & Outdoors,206.99,42,488,2024-01-01 00:00:00
+440,Premium Family Tent Plus,Best-selling family tent with outstanding reviews,Sports,Sports & Outdoors,1128.27,11,469,2024-01-01 00:00:00
+441,Expert Family Tent Premium,Best-selling family tent with outstanding reviews,Sports,Sports & Outdoors,399.8,29,357,2024-01-01 00:00:00
+442,Classic Backpacking Tent Standard,Premium backpacking tent for discerning customers,Sports,Sports & Outdoors,753.82,13,360,2024-01-01 00:00:00
+443,ProLine Backpacking Tent Plus,Premium backpacking tent for discerning customers,Sports,Sports & Outdoors,971.21,22,323,2024-01-01 00:00:00
+444,ProLine Backpacking Tent Premium,Affordable backpacking tent with excellent value for money,Sports,Sports & Outdoors,351.87,26,499,2024-01-01 00:00:00
+445,Classic Hiking Backpack 30L Standard,Award-winning hiking backpack 30l with innovative design,Sports,Sports & Outdoors,699.98,42,469,2024-01-01 00:00:00
+446,Advanced Hiking Backpack 30L Plus,Affordable hiking backpack 30l with excellent value for money,Sports,Sports & Outdoors,224.9,2,143,2024-01-01 00:00:00
+447,Supreme Hiking Backpack 30L Premium,High-quality hiking backpack 30l perfect for everyday use,Sports,Sports & Outdoors,1383.8,15,457,2024-01-01 00:00:00
+448,EliteGear Hiking Backpack 50L,High-quality hiking backpack 50l perfect for everyday use,Sports,Sports & Outdoors,892.54,28,320,2024-01-01 00:00:00
+449,Advanced Day Pack Standard,Affordable day pack with excellent value for money,Sports,Sports & Outdoors,447.67,17,194,2024-01-01 00:00:00
+450,ProLine Day Pack Plus,High-quality day pack perfect for everyday use,Sports,Sports & Outdoors,222.61,39,315,2024-01-01 00:00:00
+451,Premium Travel Backpack Standard,Top-rated travel backpack trusted by thousands,Sports,Sports & Outdoors,569.07,24,409,2024-01-01 00:00:00
+452,Elite Travel Backpack Plus,Top-rated travel backpack trusted by thousands,Sports,Sports & Outdoors,375.36,48,40,2024-01-01 00:00:00
+453,ProLine Travel Backpack Premium,Best-selling travel backpack with outstanding reviews,Sports,Sports & Outdoors,1629.09,47,256,2024-01-01 00:00:00
+454,TechPro Sleeping Bag Summer,Best-selling sleeping bag summer with outstanding reviews,Sports,Sports & Outdoors,792.51,36,167,2024-01-01 00:00:00
+455,TechPro Sleeping Bag Winter,High-quality sleeping bag winter perfect for everyday use,Sports,Sports & Outdoors,883.78,49,229,2024-01-01 00:00:00
+456,Expert Mummy Sleeping Bag,High-quality mummy sleeping bag perfect for everyday use,Sports,Sports & Outdoors,272.51,14,300,2024-01-01 00:00:00
+457,Elite Camping Stove,Top-rated camping stove trusted by thousands,Sports,Sports & Outdoors,72.31,28,72,2024-01-01 00:00:00
+458,Master Portable Grill,Premium portable grill for discerning customers,Sports,Sports & Outdoors,122.88,43,313,2024-01-01 00:00:00
+459,Advanced Camping Cookware Standard,High-quality camping cookware perfect for everyday use,Sports,Sports & Outdoors,872.59,36,191,2024-01-01 00:00:00
+460,Supreme Camping Cookware Plus,Premium camping cookware for discerning customers,Sports,Sports & Outdoors,1376.62,12,234,2024-01-01 00:00:00
+461,Master Camping Cookware Premium,Best-selling camping cookware with outstanding reviews,Sports,Sports & Outdoors,1416.04,31,95,2024-01-01 00:00:00
+462,EliteGear Football Size 5,Award-winning football size 5 with innovative design,Sports,Sports & Outdoors,218.19,28,439,2024-01-01 00:00:00
+463,Premium Training Football Standard,Professional-grade training football with advanced features,Sports,Sports & Outdoors,583.13,40,49,2024-01-01 00:00:00
+464,SmartChoice Training Football Plus,Professional-grade training football with advanced features,Sports,Sports & Outdoors,1345.97,15,380,2024-01-01 00:00:00
+465,ProLine Indoor Football Standard,Premium indoor football for discerning customers,Sports,Sports & Outdoors,309.78,44,196,2024-01-01 00:00:00
+466,Champion Indoor Football Plus,Premium indoor football for discerning customers,Sports,Sports & Outdoors,663.66,32,7,2024-01-01 00:00:00
+467,Classic Basketball Official,High-quality basketball official perfect for everyday use,Sports,Sports & Outdoors,149.57,31,355,2024-01-01 00:00:00
+468,Modern Street Basketball,Premium street basketball for discerning customers,Sports,Sports & Outdoors,883.72,4,47,2024-01-01 00:00:00
+469,TechPro Mini Basketball,Best-selling mini basketball with outstanding reviews,Sports,Sports & Outdoors,273.19,11,491,2024-01-01 00:00:00
+470,Elite Tennis Racket Beginner Standard,Premium tennis racket beginner for discerning customers,Sports,Sports & Outdoors,402.04,13,226,2024-01-01 00:00:00
+471,Expert Tennis Racket Beginner Plus,Affordable tennis racket beginner with excellent value for money,Sports,Sports & Outdoors,948.75,45,276,2024-01-01 00:00:00
+472,Professional Tennis Racket Pro Standard,Premium tennis racket pro for discerning customers,Sports,Sports & Outdoors,142.97,31,377,2024-01-01 00:00:00
+473,Master Tennis Racket Pro Plus,Best-selling tennis racket pro with outstanding reviews,Sports,Sports & Outdoors,644.1,35,30,2024-01-01 00:00:00
+474,TechPro Tennis Balls,Premium tennis balls for discerning customers,Sports,Sports & Outdoors,314.69,14,149,2024-01-01 00:00:00
+475,Professional Cricket Bat English Willow Standard,Award-winning cricket bat english willow with innovative design,Sports,Sports & Outdoors,382.97,28,300,2024-01-01 00:00:00
+476,ValueBest Cricket Bat English Willow Plus,Award-winning cricket bat english willow with innovative design,Sports,Sports & Outdoors,1256.63,19,238,2024-01-01 00:00:00
+477,Supreme Cricket Bat Kashmir Willow Standard,Best-selling cricket bat kashmir willow with outstanding reviews,Sports,Sports & Outdoors,574.42,24,248,2024-01-01 00:00:00
+478,Advanced Cricket Bat Kashmir Willow Plus,High-quality cricket bat kashmir willow perfect for everyday use,Sports,Sports & Outdoors,310.0,39,109,2024-01-01 00:00:00
+479,NextGen Cricket Bat Kashmir Willow Premium,Premium cricket bat kashmir willow for discerning customers,Sports,Sports & Outdoors,752.2,12,231,2024-01-01 00:00:00
+480,Supreme Cricket Ball Standard,High-quality cricket ball perfect for everyday use,Sports,Sports & Outdoors,823.47,45,1,2024-01-01 00:00:00
+481,UltraMax Cricket Ball Plus,Affordable cricket ball with excellent value for money,Sports,Sports & Outdoors,157.78,14,346,2024-01-01 00:00:00
+482,Professional Cricket Ball Premium,High-quality cricket ball perfect for everyday use,Sports,Sports & Outdoors,1044.12,50,342,2024-01-01 00:00:00
+483,Master Golf Clubs Set Standard,Premium golf clubs set for discerning customers,Sports,Sports & Outdoors,719.7,15,42,2024-01-01 00:00:00
+484,Supreme Golf Clubs Set Plus,Award-winning golf clubs set with innovative design,Sports,Sports & Outdoors,251.23,37,337,2024-01-01 00:00:00
+485,NextGen Golf Balls Standard,Award-winning golf balls with innovative design,Sports,Sports & Outdoors,799.81,34,469,2024-01-01 00:00:00
+486,Modern Golf Balls Plus,Premium golf balls for discerning customers,Sports,Sports & Outdoors,1392.78,5,100,2024-01-01 00:00:00
+487,UltraMax Golf Balls Premium,High-quality golf balls perfect for everyday use,Sports,Sports & Outdoors,1298.34,38,122,2024-01-01 00:00:00
+488,Professional Golf Bag Standard,Best-selling golf bag with outstanding reviews,Sports,Sports & Outdoors,41.27,26,291,2024-01-01 00:00:00
+489,Supreme Golf Bag Plus,Professional-grade golf bag with advanced features,Sports,Sports & Outdoors,376.86,41,453,2024-01-01 00:00:00
+490,TechPro Golf Gloves,Best-selling golf gloves with outstanding reviews,Sports,Sports & Outdoors,790.8,15,278,2024-01-01 00:00:00
+491,Elite Bicycle Helmet Standard,Best-selling bicycle helmet with outstanding reviews,Sports,Sports & Outdoors,97.39,23,31,2024-01-01 00:00:00
+492,ValueBest Bicycle Helmet Plus,Affordable bicycle helmet with excellent value for money,Sports,Sports & Outdoors,459.95,25,377,2024-01-01 00:00:00
+493,ValueBest Bike Lock Standard,Top-rated bike lock trusted by thousands,Sports,Sports & Outdoors,884.49,32,74,2024-01-01 00:00:00
+494,Champion Bike Lock Plus,Premium bike lock for discerning customers,Sports,Sports & Outdoors,1271.8,18,136,2024-01-01 00:00:00
+495,Modern Bike Lights Standard,Best-selling bike lights with outstanding reviews,Sports,Sports & Outdoors,482.24,6,387,2024-01-01 00:00:00
+496,Expert Bike Lights Plus,Professional-grade bike lights with advanced features,Sports,Sports & Outdoors,1328.25,4,32,2024-01-01 00:00:00
+497,Supreme Water Bottle Standard,Top-rated water bottle trusted by thousands,Sports,Sports & Outdoors,510.12,23,68,2024-01-01 00:00:00
+498,ProLine Water Bottle Plus,Affordable water bottle with excellent value for money,Sports,Sports & Outdoors,1246.35,37,136,2024-01-01 00:00:00
+499,UltraMax Swimming Goggles Standard,Top-rated swimming goggles trusted by thousands,Sports,Sports & Outdoors,975.2,10,39,2024-01-01 00:00:00
+500,Advanced Swimming Goggles Plus,High-quality swimming goggles perfect for everyday use,Sports,Sports & Outdoors,354.11,24,329,2024-01-01 00:00:00
+501,Expert Swim Cap,Premium swim cap for discerning customers,Sports,Sports & Outdoors,829.8,5,286,2024-01-01 00:00:00
+502,Modern Kickboard,Top-rated kickboard trusted by thousands,Sports,Sports & Outdoors,906.83,26,69,2024-01-01 00:00:00
+503,Modern Pull Buoy Standard,Premium pull buoy for discerning customers,Sports,Sports & Outdoors,541.55,19,499,2024-01-01 00:00:00
+504,Professional Pull Buoy Plus,Award-winning pull buoy with innovative design,Sports,Sports & Outdoors,1153.23,22,142,2024-01-01 00:00:00
+505,Premium Pull Buoy Premium,Award-winning pull buoy with innovative design,Sports,Sports & Outdoors,1400.45,35,252,2024-01-01 00:00:00
+506,Professional Mystery Novel Standard,Premium mystery novel for discerning customers,Books,Books & Media,62.78,24,80,2024-01-01 00:00:00
+507,ProLine Mystery Novel Plus,Award-winning mystery novel with innovative design,Books,Books & Media,74.32,50,457,2024-01-01 00:00:00
+508,Supreme Mystery Novel Premium,Professional-grade mystery novel with advanced features,Books,Books & Media,125.36,16,218,2024-01-01 00:00:00
+509,TechPro Thriller Novel Standard,Professional-grade thriller novel with advanced features,Books,Books & Media,66.43,20,23,2024-01-01 00:00:00
+510,Advanced Thriller Novel Plus,High-quality thriller novel perfect for everyday use,Books,Books & Media,88.59,17,491,2024-01-01 00:00:00
+511,Premium Crime Fiction,Professional-grade crime fiction with advanced features,Books,Books & Media,15.74,43,377,2024-01-01 00:00:00
+512,Elite Detective Story Standard,Affordable detective story with excellent value for money,Books,Books & Media,7.07,49,172,2024-01-01 00:00:00
+513,Master Detective Story Plus,Professional-grade detective story with advanced features,Books,Books & Media,103.65,10,464,2024-01-01 00:00:00
+514,Essential Detective Story Premium,Premium detective story for discerning customers,Books,Books & Media,129.54,7,90,2024-01-01 00:00:00
+515,Elite Science Fiction Novel,Award-winning science fiction novel with innovative design,Books,Books & Media,71.72,3,46,2024-01-01 00:00:00
+516,Classic Fantasy Novel,Top-rated fantasy novel trusted by thousands,Books,Books & Media,51.87,45,278,2024-01-01 00:00:00
+517,Classic Dystopian Fiction Standard,Best-selling dystopian fiction with outstanding reviews,Books,Books & Media,25.46,35,227,2024-01-01 00:00:00
+518,UltraMax Dystopian Fiction Plus,Premium dystopian fiction for discerning customers,Books,Books & Media,48.6,42,413,2024-01-01 00:00:00
+519,Supreme Romance Novel Standard,Professional-grade romance novel with advanced features,Books,Books & Media,62.41,17,465,2024-01-01 00:00:00
+520,Expert Romance Novel Plus,Professional-grade romance novel with advanced features,Books,Books & Media,39.4,15,131,2024-01-01 00:00:00
+521,UltraMax Historical Romance Standard,High-quality historical romance perfect for everyday use,Books,Books & Media,38.31,34,173,2024-01-01 00:00:00
+522,Classic Historical Romance Plus,Top-rated historical romance trusted by thousands,Books,Books & Media,110.68,22,449,2024-01-01 00:00:00
+523,EliteGear Contemporary Romance Standard,Premium contemporary romance for discerning customers,Books,Books & Media,29.31,8,373,2024-01-01 00:00:00
+524,Professional Contemporary Romance Plus,Top-rated contemporary romance trusted by thousands,Books,Books & Media,34.72,11,29,2024-01-01 00:00:00
+525,SmartChoice Contemporary Romance Premium,High-quality contemporary romance perfect for everyday use,Books,Books & Media,121.08,18,452,2024-01-01 00:00:00
+526,UltraMax Literary Fiction Standard,Affordable literary fiction with excellent value for money,Books,Books & Media,35.68,24,159,2024-01-01 00:00:00
+527,Professional Literary Fiction Plus,Premium literary fiction for discerning customers,Books,Books & Media,54.34,32,416,2024-01-01 00:00:00
+528,Supreme Classic Literature Standard,Top-rated classic literature trusted by thousands,Books,Books & Media,10.77,48,133,2024-01-01 00:00:00
+529,Professional Classic Literature Plus,Top-rated classic literature trusted by thousands,Books,Books & Media,10.85,11,359,2024-01-01 00:00:00
+530,Essential Modern Classic Standard,Best-selling modern classic with outstanding reviews,Books,Books & Media,56.64,44,259,2024-01-01 00:00:00
+531,Professional Modern Classic Plus,Top-rated modern classic trusted by thousands,Books,Books & Media,39.18,8,429,2024-01-01 00:00:00
+532,Premium Biography,Best-selling biography with outstanding reviews,Books,Books & Media,78.01,5,236,2024-01-01 00:00:00
+533,Champion Autobiography,Award-winning autobiography with innovative design,Books,Books & Media,45.94,32,159,2024-01-01 00:00:00
+534,Professional Memoir Standard,Best-selling memoir with outstanding reviews,Books,Books & Media,9.16,46,449,2024-01-01 00:00:00
+535,NextGen Memoir Plus,Premium memoir for discerning customers,Books,Books & Media,13.35,42,350,2024-01-01 00:00:00
+536,Elite Memoir Premium,High-quality memoir perfect for everyday use,Books,Books & Media,94.88,43,487,2024-01-01 00:00:00
+537,EliteGear Celebrity Biography,Best-selling celebrity biography with outstanding reviews,Books,Books & Media,67.0,31,126,2024-01-01 00:00:00
+538,Elite Self-Help Book Standard,Affordable self-help book with excellent value for money,Books,Books & Media,26.59,3,0,2024-01-01 00:00:00
+539,TechPro Self-Help Book Plus,Professional-grade self-help book with advanced features,Books,Books & Media,39.31,34,73,2024-01-01 00:00:00
+540,Advanced Motivation Book,Professional-grade motivation book with advanced features,Books,Books & Media,59.97,24,28,2024-01-01 00:00:00
+541,ProLine Personal Development Standard,Top-rated personal development trusted by thousands,Books,Books & Media,6.69,17,400,2024-01-01 00:00:00
+542,Expert Personal Development Plus,Best-selling personal development with outstanding reviews,Books,Books & Media,46.14,30,203,2024-01-01 00:00:00
+543,Essential Personal Development Premium,Professional-grade personal development with advanced features,Books,Books & Media,61.04,41,283,2024-01-01 00:00:00
+544,EliteGear Business Book Standard,Affordable business book with excellent value for money,Books,Books & Media,79.49,49,473,2024-01-01 00:00:00
+545,ValueBest Business Book Plus,Professional-grade business book with advanced features,Books,Books & Media,40.5,48,321,2024-01-01 00:00:00
+546,Champion Business Book Premium,High-quality business book perfect for everyday use,Books,Books & Media,22.8,26,449,2024-01-01 00:00:00
+547,Master Entrepreneurship Standard,Top-rated entrepreneurship trusted by thousands,Books,Books & Media,76.49,19,384,2024-01-01 00:00:00
+548,NextGen Entrepreneurship Plus,Top-rated entrepreneurship trusted by thousands,Books,Books & Media,105.09,34,31,2024-01-01 00:00:00
+549,Professional Leadership Book,Best-selling leadership book with outstanding reviews,Books,Books & Media,67.43,26,371,2024-01-01 00:00:00
+550,Champion Management Standard,Top-rated management trusted by thousands,Books,Books & Media,63.8,8,59,2024-01-01 00:00:00
+551,Modern Management Plus,High-quality management perfect for everyday use,Books,Books & Media,8.36,14,445,2024-01-01 00:00:00
+552,Professional History Book Standard,High-quality history book perfect for everyday use,Books,Books & Media,27.87,40,297,2024-01-01 00:00:00
+553,Professional History Book Plus,Premium history book for discerning customers,Books,Books & Media,103.17,5,392,2024-01-01 00:00:00
+554,NextGen World History Standard,Best-selling world history with outstanding reviews,Books,Books & Media,52.66,20,393,2024-01-01 00:00:00
+555,Professional World History Plus,Award-winning world history with innovative design,Books,Books & Media,106.27,4,440,2024-01-01 00:00:00
+556,Classic British History Standard,Top-rated british history trusted by thousands,Books,Books & Media,62.77,36,27,2024-01-01 00:00:00
+557,EliteGear British History Plus,Top-rated british history trusted by thousands,Books,Books & Media,105.14,25,202,2024-01-01 00:00:00
+558,SmartChoice Military History,Affordable military history with excellent value for money,Books,Books & Media,56.53,45,253,2024-01-01 00:00:00
+559,Modern Cookbook International Standard,High-quality cookbook international perfect for everyday use,Books,Books & Media,6.41,1,124,2024-01-01 00:00:00
+560,Elite Cookbook International Plus,Professional-grade cookbook international with advanced features,Books,Books & Media,95.18,21,277,2024-01-01 00:00:00
+561,Expert Cookbook International Premium,Professional-grade cookbook international with advanced features,Books,Books & Media,54.97,18,41,2024-01-01 00:00:00
+562,ProLine Baking Cookbook Standard,Professional-grade baking cookbook with advanced features,Books,Books & Media,49.54,49,477,2024-01-01 00:00:00
+563,Expert Baking Cookbook Plus,Award-winning baking cookbook with innovative design,Books,Books & Media,8.05,41,397,2024-01-01 00:00:00
+564,Modern Baking Cookbook Premium,High-quality baking cookbook perfect for everyday use,Books,Books & Media,40.45,23,417,2024-01-01 00:00:00
+565,SmartChoice Vegan Cookbook Standard,Professional-grade vegan cookbook with advanced features,Books,Books & Media,23.69,16,232,2024-01-01 00:00:00
+566,SmartChoice Vegan Cookbook Plus,Top-rated vegan cookbook trusted by thousands,Books,Books & Media,31.81,48,270,2024-01-01 00:00:00
+567,EliteGear Quick Meals Standard,Premium quick meals for discerning customers,Books,Books & Media,70.05,35,492,2024-01-01 00:00:00
+568,Supreme Quick Meals Plus,Award-winning quick meals with innovative design,Books,Books & Media,33.84,49,265,2024-01-01 00:00:00
+569,Advanced Travel Guide Europe Standard,Premium travel guide europe for discerning customers,Books,Books & Media,40.13,35,60,2024-01-01 00:00:00
+570,Classic Travel Guide Europe Plus,Professional-grade travel guide europe with advanced features,Books,Books & Media,20.43,37,34,2024-01-01 00:00:00
+571,SmartChoice Travel Guide Europe Premium,High-quality travel guide europe perfect for everyday use,Books,Books & Media,45.28,12,49,2024-01-01 00:00:00
+572,ProLine Travel Guide Asia Standard,Award-winning travel guide asia with innovative design,Books,Books & Media,76.19,24,28,2024-01-01 00:00:00
+573,Classic Travel Guide Asia Plus,Professional-grade travel guide asia with advanced features,Books,Books & Media,64.4,23,291,2024-01-01 00:00:00
+574,Premium City Guide Standard,Award-winning city guide with innovative design,Books,Books & Media,67.19,24,304,2024-01-01 00:00:00
+575,Expert City Guide Plus,Top-rated city guide trusted by thousands,Books,Books & Media,73.0,45,212,2024-01-01 00:00:00
+576,SmartChoice City Guide Premium,Award-winning city guide with innovative design,Books,Books & Media,126.1,37,494,2024-01-01 00:00:00
+577,Elite Adventure Travel Standard,Award-winning adventure travel with innovative design,Books,Books & Media,63.6,35,415,2024-01-01 00:00:00
+578,SmartChoice Adventure Travel Plus,Best-selling adventure travel with outstanding reviews,Books,Books & Media,10.04,49,317,2024-01-01 00:00:00
+579,ProLine Adventure Travel Premium,Best-selling adventure travel with outstanding reviews,Books,Books & Media,139.42,6,31,2024-01-01 00:00:00
+580,Advanced Science Book Standard,Premium science book for discerning customers,Books,Books & Media,79.24,3,387,2024-01-01 00:00:00
+581,ProLine Science Book Plus,Award-winning science book with innovative design,Books,Books & Media,108.34,46,363,2024-01-01 00:00:00
+582,UltraMax Popular Science Standard,Best-selling popular science with outstanding reviews,Books,Books & Media,38.29,45,43,2024-01-01 00:00:00
+583,ValueBest Popular Science Plus,Professional-grade popular science with advanced features,Books,Books & Media,33.13,45,229,2024-01-01 00:00:00
+584,Master Popular Science Premium,Premium popular science for discerning customers,Books,Books & Media,31.98,27,257,2024-01-01 00:00:00
+585,ProLine Physics,Professional-grade physics with advanced features,Books,Books & Media,28.41,28,196,2024-01-01 00:00:00
+586,Essential Biology Standard,Top-rated biology trusted by thousands,Books,Books & Media,9.53,14,451,2024-01-01 00:00:00
+587,Professional Biology Plus,Affordable biology with excellent value for money,Books,Books & Media,11.38,39,243,2024-01-01 00:00:00
+588,UltraMax Biology Premium,Affordable biology with excellent value for money,Books,Books & Media,70.94,38,254,2024-01-01 00:00:00
+589,Modern Chemistry,High-quality chemistry perfect for everyday use,Books,Books & Media,47.39,23,330,2024-01-01 00:00:00
+590,Professional Mathematics Textbook Standard,High-quality mathematics textbook perfect for everyday use,Books,Books & Media,13.94,4,254,2024-01-01 00:00:00
+591,TechPro Mathematics Textbook Plus,Best-selling mathematics textbook with outstanding reviews,Books,Books & Media,95.86,41,208,2024-01-01 00:00:00
+592,Master Mathematics Textbook Premium,Top-rated mathematics textbook trusted by thousands,Books,Books & Media,35.57,36,423,2024-01-01 00:00:00
+593,Expert Programming Book Standard,Best-selling programming book with outstanding reviews,Books,Books & Media,45.35,11,338,2024-01-01 00:00:00
+594,UltraMax Programming Book Plus,Premium programming book for discerning customers,Books,Books & Media,55.75,15,20,2024-01-01 00:00:00
+595,Elite Programming Book Premium,Award-winning programming book with innovative design,Books,Books & Media,46.48,6,340,2024-01-01 00:00:00
+596,Master Engineering Book Standard,Award-winning engineering book with innovative design,Books,Books & Media,22.42,48,254,2024-01-01 00:00:00
+597,Classic Engineering Book Plus,High-quality engineering book perfect for everyday use,Books,Books & Media,48.26,37,273,2024-01-01 00:00:00
+598,UltraMax Engineering Book Premium,Affordable engineering book with excellent value for money,Books,Books & Media,123.94,36,152,2024-01-01 00:00:00
+599,Premium Language Learning English Standard,Award-winning language learning english with innovative design,Books,Books & Media,73.51,29,307,2024-01-01 00:00:00
+600,Elite Language Learning English Plus,Professional-grade language learning english with advanced features,Books,Books & Media,51.61,32,201,2024-01-01 00:00:00
+601,ValueBest Spanish Course Standard,Best-selling spanish course with outstanding reviews,Books,Books & Media,52.77,10,304,2024-01-01 00:00:00
+602,SmartChoice Spanish Course Plus,High-quality spanish course perfect for everyday use,Books,Books & Media,76.44,25,82,2024-01-01 00:00:00
+603,EliteGear Spanish Course Premium,Professional-grade spanish course with advanced features,Books,Books & Media,64.87,23,21,2024-01-01 00:00:00
+604,Advanced French Course,Professional-grade french course with advanced features,Books,Books & Media,26.73,1,356,2024-01-01 00:00:00
+605,Professional German Course Standard,Award-winning german course with innovative design,Books,Books & Media,24.39,28,130,2024-01-01 00:00:00
+606,ValueBest German Course Plus,Affordable german course with excellent value for money,Books,Books & Media,47.39,5,143,2024-01-01 00:00:00
+607,Modern Children's Picture Book Standard,Premium children's picture book for discerning customers,Books,Books & Media,21.27,9,80,2024-01-01 00:00:00
+608,EliteGear Children's Picture Book Plus,Affordable children's picture book with excellent value for money,Books,Books & Media,43.7,31,470,2024-01-01 00:00:00
+609,ProLine Young Adult Novel Standard,Affordable young adult novel with excellent value for money,Books,Books & Media,32.35,8,288,2024-01-01 00:00:00
+610,Essential Young Adult Novel Plus,Premium young adult novel for discerning customers,Books,Books & Media,65.05,47,499,2024-01-01 00:00:00
+611,Master Kids Activity Book Standard,Premium kids activity book for discerning customers,Books,Books & Media,76.19,29,159,2024-01-01 00:00:00
+612,SmartChoice Kids Activity Book Plus,Award-winning kids activity book with innovative design,Books,Books & Media,43.79,47,162,2024-01-01 00:00:00
+613,Advanced Kids Activity Book Premium,Award-winning kids activity book with innovative design,Books,Books & Media,103.66,17,318,2024-01-01 00:00:00
+614,SmartChoice Building Blocks 100pcs Standard,High-quality building blocks 100pcs perfect for everyday use,Toys,Toys & Games,13.84,38,481,2024-01-01 00:00:00
+615,Master Building Blocks 100pcs Plus,Affordable building blocks 100pcs with excellent value for money,Toys,Toys & Games,273.18,49,171,2024-01-01 00:00:00
+616,Master Building Blocks 500pcs Standard,High-quality building blocks 500pcs perfect for everyday use,Toys,Toys & Games,94.62,21,387,2024-01-01 00:00:00
+617,SmartChoice Building Blocks 500pcs Plus,Award-winning building blocks 500pcs with innovative design,Toys,Toys & Games,163.95,42,144,2024-01-01 00:00:00
+618,Elite Building Blocks 1000pcs Standard,Top-rated building blocks 1000pcs trusted by thousands,Toys,Toys & Games,191.99,1,204,2024-01-01 00:00:00
+619,UltraMax Building Blocks 1000pcs Plus,Top-rated building blocks 1000pcs trusted by thousands,Toys,Toys & Games,43.78,22,376,2024-01-01 00:00:00
+620,Advanced Building Blocks 1000pcs Premium,Professional-grade building blocks 1000pcs with advanced features,Toys,Toys & Games,305.69,29,372,2024-01-01 00:00:00
+621,Premium Jigsaw Puzzle 500pcs,Premium jigsaw puzzle 500pcs for discerning customers,Toys,Toys & Games,25.43,32,329,2024-01-01 00:00:00
+622,ValueBest Jigsaw Puzzle 1000pcs Standard,Affordable jigsaw puzzle 1000pcs with excellent value for money,Toys,Toys & Games,176.85,10,27,2024-01-01 00:00:00
+623,Supreme Jigsaw Puzzle 1000pcs Plus,Professional-grade jigsaw puzzle 1000pcs with advanced features,Toys,Toys & Games,142.3,4,235,2024-01-01 00:00:00
+624,NextGen 3D Puzzle,Award-winning 3d puzzle with innovative design,Toys,Toys & Games,96.68,7,244,2024-01-01 00:00:00
+625,Elite STEM Kit Robotics Standard,Affordable stem kit robotics with excellent value for money,Toys,Toys & Games,143.98,28,464,2024-01-01 00:00:00
+626,Champion STEM Kit Robotics Plus,Best-selling stem kit robotics with outstanding reviews,Toys,Toys & Games,19.03,7,288,2024-01-01 00:00:00
+627,Expert STEM Kit Electronics,High-quality stem kit electronics perfect for everyday use,Toys,Toys & Games,53.44,41,25,2024-01-01 00:00:00
+628,Elite STEM Kit Chemistry,Affordable stem kit chemistry with excellent value for money,Toys,Toys & Games,146.59,17,391,2024-01-01 00:00:00
+629,Essential Coding Robot,High-quality coding robot perfect for everyday use,Toys,Toys & Games,136.69,24,24,2024-01-01 00:00:00
+630,Essential Educational Board Game Standard,Top-rated educational board game trusted by thousands,Toys,Toys & Games,195.12,14,293,2024-01-01 00:00:00
+631,Essential Educational Board Game Plus,Professional-grade educational board game with advanced features,Toys,Toys & Games,20.79,14,399,2024-01-01 00:00:00
+632,Expert Memory Game,Premium memory game for discerning customers,Toys,Toys & Games,50.02,48,479,2024-01-01 00:00:00
+633,ProLine Logic Puzzle Standard,High-quality logic puzzle perfect for everyday use,Toys,Toys & Games,112.15,37,70,2024-01-01 00:00:00
+634,Master Logic Puzzle Plus,Best-selling logic puzzle with outstanding reviews,Toys,Toys & Games,56.49,48,322,2024-01-01 00:00:00
+635,Professional Logic Puzzle Premium,Professional-grade logic puzzle with advanced features,Toys,Toys & Games,301.06,27,105,2024-01-01 00:00:00
+636,SmartChoice Math Game Standard,High-quality math game perfect for everyday use,Toys,Toys & Games,172.2,28,135,2024-01-01 00:00:00
+637,NextGen Math Game Plus,High-quality math game perfect for everyday use,Toys,Toys & Games,47.41,33,324,2024-01-01 00:00:00
+638,Master Superhero Action Figure Standard,Affordable superhero action figure with excellent value for money,Toys,Toys & Games,64.87,10,370,2024-01-01 00:00:00
+639,Champion Superhero Action Figure Plus,Affordable superhero action figure with excellent value for money,Toys,Toys & Games,262.18,33,40,2024-01-01 00:00:00
+640,Modern Dinosaur Figure Standard,Affordable dinosaur figure with excellent value for money,Toys,Toys & Games,67.36,28,325,2024-01-01 00:00:00
+641,Supreme Dinosaur Figure Plus,Top-rated dinosaur figure trusted by thousands,Toys,Toys & Games,214.34,45,398,2024-01-01 00:00:00
+642,Expert Army Action Figure Standard,Premium army action figure for discerning customers,Toys,Toys & Games,149.98,10,402,2024-01-01 00:00:00
+643,Premium Army Action Figure Plus,Affordable army action figure with excellent value for money,Toys,Toys & Games,248.33,8,28,2024-01-01 00:00:00
+644,NextGen Remote Control Car,Best-selling remote control car with outstanding reviews,Toys,Toys & Games,194.77,4,472,2024-01-01 00:00:00
+645,Champion RC Monster Truck Standard,Premium rc monster truck for discerning customers,Toys,Toys & Games,165.13,41,456,2024-01-01 00:00:00
+646,TechPro RC Monster Truck Plus,Top-rated rc monster truck trusted by thousands,Toys,Toys & Games,149.32,26,435,2024-01-01 00:00:00
+647,SmartChoice RC Drone Standard,Award-winning rc drone with innovative design,Toys,Toys & Games,195.35,20,189,2024-01-01 00:00:00
+648,ProLine RC Drone Plus,Professional-grade rc drone with advanced features,Toys,Toys & Games,76.02,4,349,2024-01-01 00:00:00
+649,Master RC Drone Premium,Award-winning rc drone with innovative design,Toys,Toys & Games,47.03,46,279,2024-01-01 00:00:00
+650,NextGen RC Helicopter Standard,Premium rc helicopter for discerning customers,Toys,Toys & Games,99.07,5,8,2024-01-01 00:00:00
+651,Elite RC Helicopter Plus,Best-selling rc helicopter with outstanding reviews,Toys,Toys & Games,127.93,31,383,2024-01-01 00:00:00
+652,ProLine Board Game Family Standard,Best-selling board game family with outstanding reviews,Toys,Toys & Games,38.06,16,420,2024-01-01 00:00:00
+653,Elite Board Game Family Plus,High-quality board game family perfect for everyday use,Toys,Toys & Games,244.48,7,152,2024-01-01 00:00:00
+654,ProLine Board Game Family Premium,Best-selling board game family with outstanding reviews,Toys,Toys & Games,74.13,48,461,2024-01-01 00:00:00
+655,NextGen Strategy Board Game Standard,High-quality strategy board game perfect for everyday use,Toys,Toys & Games,98.67,16,102,2024-01-01 00:00:00
+656,Classic Strategy Board Game Plus,Award-winning strategy board game with innovative design,Toys,Toys & Games,165.75,45,52,2024-01-01 00:00:00
+657,Elite Party Game,High-quality party game perfect for everyday use,Toys,Toys & Games,122.54,22,318,2024-01-01 00:00:00
+658,Elite Trivia Game,Premium trivia game for discerning customers,Toys,Toys & Games,45.97,41,166,2024-01-01 00:00:00
+659,Premium Playing Cards Standard,Best-selling playing cards with outstanding reviews,Toys,Toys & Games,83.9,49,433,2024-01-01 00:00:00
+660,ProLine Playing Cards Plus,Top-rated playing cards trusted by thousands,Toys,Toys & Games,117.04,17,135,2024-01-01 00:00:00
+661,Advanced Playing Cards Premium,Premium playing cards for discerning customers,Toys,Toys & Games,338.89,6,184,2024-01-01 00:00:00
+662,UltraMax Card Game,Top-rated card game trusted by thousands,Toys,Toys & Games,136.1,7,351,2024-01-01 00:00:00
+663,ValueBest Collectible Cards,Professional-grade collectible cards with advanced features,Toys,Toys & Games,192.09,33,179,2024-01-01 00:00:00
+664,SmartChoice Magic Cards,Professional-grade magic cards with advanced features,Toys,Toys & Games,128.74,32,247,2024-01-01 00:00:00
+665,TechPro Art Set Complete Standard,Premium art set complete for discerning customers,Toys,Toys & Games,171.18,11,204,2024-01-01 00:00:00
+666,Elite Art Set Complete Plus,Best-selling art set complete with outstanding reviews,Toys,Toys & Games,129.97,48,164,2024-01-01 00:00:00
+667,Master Art Set Complete Premium,Best-selling art set complete with outstanding reviews,Toys,Toys & Games,132.27,6,303,2024-01-01 00:00:00
+668,Premium Watercolor Set,High-quality watercolor set perfect for everyday use,Toys,Toys & Games,54.72,21,19,2024-01-01 00:00:00
+669,Supreme Colored Pencils,Premium colored pencils for discerning customers,Toys,Toys & Games,88.67,21,118,2024-01-01 00:00:00
+670,ValueBest Markers Set Standard,Best-selling markers set with outstanding reviews,Toys,Toys & Games,91.94,42,168,2024-01-01 00:00:00
+671,Premium Markers Set Plus,Award-winning markers set with innovative design,Toys,Toys & Games,165.52,28,326,2024-01-01 00:00:00
+672,Professional Markers Set Premium,Award-winning markers set with innovative design,Toys,Toys & Games,348.76,31,265,2024-01-01 00:00:00
+673,Classic Craft Kit Jewelry Standard,Premium craft kit jewelry for discerning customers,Toys,Toys & Games,192.83,44,75,2024-01-01 00:00:00
+674,Premium Craft Kit Jewelry Plus,Professional-grade craft kit jewelry with advanced features,Toys,Toys & Games,78.06,40,242,2024-01-01 00:00:00
+675,Champion Craft Kit Pottery,Professional-grade craft kit pottery with advanced features,Toys,Toys & Games,185.76,13,51,2024-01-01 00:00:00
+676,Elite Origami Set Standard,Best-selling origami set with outstanding reviews,Toys,Toys & Games,67.9,49,244,2024-01-01 00:00:00
+677,Modern Origami Set Plus,Best-selling origami set with outstanding reviews,Toys,Toys & Games,86.14,28,303,2024-01-01 00:00:00
+678,Advanced Origami Set Premium,Professional-grade origami set with advanced features,Toys,Toys & Games,332.48,14,139,2024-01-01 00:00:00
+679,ValueBest Knitting Kit Standard,Affordable knitting kit with excellent value for money,Toys,Toys & Games,14.06,45,282,2024-01-01 00:00:00
+680,Advanced Knitting Kit Plus,Professional-grade knitting kit with advanced features,Toys,Toys & Games,243.85,48,165,2024-01-01 00:00:00
+681,Master Kids Guitar,Top-rated kids guitar trusted by thousands,Toys,Toys & Games,32.7,44,94,2024-01-01 00:00:00
+682,Champion Kids Keyboard Standard,Affordable kids keyboard with excellent value for money,Toys,Toys & Games,95.96,36,163,2024-01-01 00:00:00
+683,Supreme Kids Keyboard Plus,High-quality kids keyboard perfect for everyday use,Toys,Toys & Games,126.3,48,273,2024-01-01 00:00:00
+684,Elite Kids Drum Set,Top-rated kids drum set trusted by thousands,Toys,Toys & Games,54.49,13,260,2024-01-01 00:00:00
+685,Expert Toy Xylophone,Professional-grade toy xylophone with advanced features,Toys,Toys & Games,99.18,12,298,2024-01-01 00:00:00
+686,Modern Doll House,High-quality doll house perfect for everyday use,Toys,Toys & Games,193.05,4,406,2024-01-01 00:00:00
+687,Classic Fashion Doll Standard,Affordable fashion doll with excellent value for money,Toys,Toys & Games,178.99,35,319,2024-01-01 00:00:00
+688,Elite Fashion Doll Plus,Best-selling fashion doll with outstanding reviews,Toys,Toys & Games,161.93,40,156,2024-01-01 00:00:00
+689,ProLine Fashion Doll Premium,Professional-grade fashion doll with advanced features,Toys,Toys & Games,301.88,19,47,2024-01-01 00:00:00
+690,ValueBest Baby Doll,Award-winning baby doll with innovative design,Toys,Toys & Games,47.6,22,408,2024-01-01 00:00:00
+691,Modern Doll Accessories Standard,High-quality doll accessories perfect for everyday use,Toys,Toys & Games,59.86,10,286,2024-01-01 00:00:00
+692,Essential Doll Accessories Plus,Professional-grade doll accessories with advanced features,Toys,Toys & Games,128.21,37,344,2024-01-01 00:00:00
+693,Elite Doll Accessories Premium,High-quality doll accessories perfect for everyday use,Toys,Toys & Games,189.23,21,395,2024-01-01 00:00:00
+694,Master LEGO Set,Best-selling lego set with outstanding reviews,Toys,Toys & Games,121.77,42,437,2024-01-01 00:00:00
+695,NextGen Construction Set,Premium construction set for discerning customers,Toys,Toys & Games,154.29,23,96,2024-01-01 00:00:00
+696,Advanced Model Kit Standard,Professional-grade model kit with advanced features,Toys,Toys & Games,91.36,37,349,2024-01-01 00:00:00
+697,TechPro Model Kit Plus,Award-winning model kit with innovative design,Toys,Toys & Games,268.07,5,361,2024-01-01 00:00:00
+698,Elite Science Kit Standard,Top-rated science kit trusted by thousands,Toys,Toys & Games,145.47,46,46,2024-01-01 00:00:00
+699,Master Science Kit Plus,Best-selling science kit with outstanding reviews,Toys,Toys & Games,58.32,38,62,2024-01-01 00:00:00
+700,Professional Science Kit Premium,Affordable science kit with excellent value for money,Toys,Toys & Games,26.55,12,401,2024-01-01 00:00:00

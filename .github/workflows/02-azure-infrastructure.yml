@@ -1,0 +1,155 @@
+name: 02 - Azure Infrastructure Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy (dev, staging, prod)'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      destroy:
+        description: 'Destroy infrastructure instead of creating'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy-infrastructure:
+    name: Deploy UK South Azure Resources
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.0
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Configure Terraform Backend
+        working-directory: terraform
+        run: |
+          cat > backend.tf << EOF
+          terraform {
+            backend "azurerm" {
+              resource_group_name  = "rg-terraform-state"
+              storage_account_name = "stterraformstate${{ inputs.environment }}"
+              container_name       = "tfstate"
+              key                  = "neo4j-databricks-${{ inputs.environment }}.tfstate"
+            }
+          }
+          EOF
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
+
+      - name: Terraform Plan
+        if: ${{ !inputs.destroy }}
+        working-directory: terraform
+        env:
+          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
+          TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
+          TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+        run: |
+          terraform plan \
+            -var-file="environments/${{ inputs.environment }}.tfvars" \
+            -out=tfplan
+
+      - name: Terraform Apply
+        if: ${{ !inputs.destroy }}
+        working-directory: terraform
+        env:
+          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
+          TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
+          TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+        run: |
+          terraform apply -auto-approve tfplan
+
+      - name: Terraform Destroy
+        if: ${{ inputs.destroy }}
+        working-directory: terraform
+        env:
+          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
+          TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
+          TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+        run: |
+          terraform destroy -auto-approve \
+            -var-file="environments/${{ inputs.environment }}.tfvars"
+
+      - name: Export Terraform Outputs
+        if: ${{ !inputs.destroy }}
+        working-directory: terraform
+        run: |
+          terraform output -json > /tmp/terraform-outputs.json
+          echo "RESOURCE_GROUP=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT=$(terraform output -raw storage_account_name)" >> $GITHUB_ENV
+          echo "DATABRICKS_WORKSPACE_URL=$(terraform output -raw databricks_workspace_url)" >> $GITHUB_ENV
+
+      - name: Verify UK South Deployment
+        if: ${{ !inputs.destroy }}
+        run: |
+          echo "Verifying UK South region deployment..."
+          az group show --name ${{ env.RESOURCE_GROUP }} --query location -o tsv | grep "uksouth"
+          if [ $? -eq 0 ]; then
+            echo "✅ Resources deployed in UK South region"
+          else
+            echo "❌ Resources not in UK South region"
+            exit 1
+          fi
+
+      - name: Configure Network Optimization
+        if: ${{ !inputs.destroy }}
+        run: |
+          echo "Configuring network optimization for Neo4j traffic..."
+          # Add network security group rules for Neo4j
+          az network nsg rule create \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --nsg-name nsg-neo4j-${{ inputs.environment }} \
+            --name AllowNeo4jBolt \
+            --priority 100 \
+            --direction Inbound \
+            --access Allow \
+            --protocol Tcp \
+            --destination-port-range 7687 \
+            --description "Allow Neo4j Bolt traffic" \
+            || echo "NSG rule already exists or NSG not found"
+
+      - name: Upload Storage Sample Data
+        if: ${{ !inputs.destroy }}
+        run: |
+          echo "Uploading sample e-commerce data to Azure Storage..."
+          az storage blob upload-batch \
+            --account-name ${{ env.STORAGE_ACCOUNT }} \
+            --destination pipeline-data/sample-data \
+            --source sample-data/ \
+            --overwrite
+
+      - name: Infrastructure Summary
+        if: ${{ !inputs.destroy }}
+        run: |
+          echo "=================================="
+          echo "Infrastructure Deployment Complete"
+          echo "=================================="
+          echo ""
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Region: UK South"
+          echo "Resource Group: ${{ env.RESOURCE_GROUP }}"
+          echo "Storage Account: ${{ env.STORAGE_ACCOUNT }}"
+          echo "Databricks Workspace: ${{ env.DATABRICKS_WORKSPACE_URL }}"
+          echo ""
+          echo "✅ Azure infrastructure ready for Neo4j integration"

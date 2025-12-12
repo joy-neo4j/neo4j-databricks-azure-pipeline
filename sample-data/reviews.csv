@@ -1,0 +1,1501 @@
+id,customer_id,product_id,rating,review_text,review_date
+1,262,411,3,"Fair quality, could be better.",2024-11-24 00:00:00
+2,454,73,4,"Very good product, minor improvements needed.",2024-03-04 00:00:00
+3,74,668,4,"Nice product, met my expectations.",2023-04-11 00:00:00
+4,281,441,4,"Quality is good, delivery was fast.",2023-01-13 00:00:00
+5,530,557,4,"Nice product, met my expectations.",2024-07-01 00:00:00
+6,325,123,5,Perfect! Exactly what I was looking for.,2023-01-21 00:00:00
+7,578,596,5,Absolutely love it! Will buy again.,2024-09-13 00:00:00
+8,805,417,5,Superb quality and fast delivery.,2023-05-06 00:00:00
+9,439,443,3,"Acceptable, but not impressed.",2023-10-12 00:00:00
+10,621,46,4,"Great quality, happy with my purchase.",2024-08-14 00:00:00
+11,517,419,4,"Quality is good, delivery was fast.",2024-07-03 00:00:00
+12,409,430,5,"Amazing product, worth every penny!",2023-09-20 00:00:00
+13,778,526,4,"Quality is good, delivery was fast.",2024-05-12 00:00:00
+14,575,597,3,"Acceptable, but not impressed.",2023-12-03 00:00:00
+15,30,517,5,Superb quality and fast delivery.,2023-08-03 00:00:00
+16,702,302,2,"Not as described, below expectations.",2024-11-08 00:00:00
+17,759,374,4,"Good value for money, would recommend.",2024-04-02 00:00:00
+18,753,270,5,Perfect! Exactly what I was looking for.,2024-07-20 00:00:00
+19,484,77,5,"Amazing product, worth every penny!",2024-10-17 00:00:00
+20,179,432,5,"Fantastic product, very satisfied!",2023-04-30 00:00:00
+21,332,511,5,Perfect! Exactly what I was looking for.,2023-11-10 00:00:00
+22,599,136,3,"Fair quality, could be better.",2024-03-22 00:00:00
+23,211,439,4,Happy with this purchase overall.,2024-07-18 00:00:00
+24,481,412,4,Happy with this purchase overall.,2024-05-26 00:00:00
+25,945,240,3,"Works as described, nothing more.",2024-08-12 00:00:00
+26,921,192,5,"Outstanding quality, highly recommended!",2023-03-15 00:00:00
+27,896,105,4,"Good value for money, would recommend.",2024-10-23 00:00:00
+28,262,1,5,Perfect! Exactly what I was looking for.,2023-07-24 00:00:00
+29,496,505,3,"Acceptable, but not impressed.",2023-07-13 00:00:00
+30,71,494,5,Excellent product! Exceeded my expectations.,2024-10-03 00:00:00
+31,106,319,3,"Acceptable, but not impressed.",2024-08-02 00:00:00
+32,380,90,3,Decent product for the price.,2024-10-16 00:00:00
+33,352,204,4,"Solid product, does what it promises.",2023-09-28 00:00:00
+34,310,186,2,Disappointed with the quality.,2023-12-09 00:00:00
+35,398,577,2,Several issues with this item.,2024-03-12 00:00:00
+36,219,304,4,Happy with this purchase overall.,2023-10-13 00:00:00
+37,39,539,4,"Quality is good, delivery was fast.",2023-11-15 00:00:00
+38,892,495,4,"Nice product, met my expectations.",2024-06-25 00:00:00
+39,885,576,2,Poor quality for the price.,2024-08-28 00:00:00
+40,667,419,5,Best purchase I've made in a long time!,2023-07-21 00:00:00
+41,830,455,5,Perfect! Exactly what I was looking for.,2023-08-17 00:00:00
+42,630,643,5,Best purchase I've made in a long time!,2024-03-09 00:00:00
+43,786,62,4,"Good value for money, would recommend.",2024-01-28 00:00:00
+44,404,141,3,"Works as described, nothing more.",2023-01-03 00:00:00
+45,143,14,4,"Good value for money, would recommend.",2024-11-29 00:00:00
+46,46,562,5,Absolutely love it! Will buy again.,2023-08-19 00:00:00
+47,247,196,4,"Quality is good, delivery was fast.",2024-03-18 00:00:00
+48,713,272,5,"Fantastic product, very satisfied!",2023-01-01 00:00:00
+49,349,553,3,"It's okay, meets basic requirements.",2024-05-08 00:00:00
+50,233,209,4,"Great quality, happy with my purchase.",2024-02-08 00:00:00
+51,162,105,4,"Great quality, happy with my purchase.",2023-08-28 00:00:00
+52,71,198,5,Excellent product! Exceeded my expectations.,2024-05-18 00:00:00
+53,535,175,5,Absolutely love it! Will buy again.,2024-04-26 00:00:00
+54,844,618,5,Superb quality and fast delivery.,2024-08-28 00:00:00
+55,365,40,5,Best purchase I've made in a long time!,2023-01-31 00:00:00
+56,76,246,5,"Fantastic product, very satisfied!",2023-12-07 00:00:00
+57,894,438,3,"Works as described, nothing more.",2023-04-26 00:00:00
+58,637,155,2,Would not recommend this product.,2023-02-18 00:00:00
+59,885,202,3,Decent product for the price.,2023-07-26 00:00:00
+60,93,519,5,Perfect! Exactly what I was looking for.,2023-09-22 00:00:00
+61,226,391,4,"Solid product, does what it promises.",2023-08-27 00:00:00
+62,802,366,5,Best purchase I've made in a long time!,2023-03-24 00:00:00
+63,596,548,5,Best purchase I've made in a long time!,2024-07-09 00:00:00
+64,93,40,1,"Extremely disappointed, returning it.",2023-07-02 00:00:00
+65,733,204,4,"Great quality, happy with my purchase.",2024-07-23 00:00:00
+66,927,553,4,"Very good product, minor improvements needed.",2023-05-24 00:00:00
+67,750,333,4,"Nice product, met my expectations.",2024-10-14 00:00:00
+68,168,317,3,"Fair quality, could be better.",2024-11-24 00:00:00
+69,541,456,4,"Very good product, minor improvements needed.",2024-08-15 00:00:00
+70,762,641,1,"Extremely disappointed, returning it.",2023-08-31 00:00:00
+71,497,139,5,"Fantastic product, very satisfied!",2024-02-24 00:00:00
+72,191,85,5,"Amazing product, worth every penny!",2024-07-31 00:00:00
+73,435,242,4,"Nice product, met my expectations.",2023-04-15 00:00:00
+74,700,429,1,"Complete waste, avoid this product.",2024-05-31 00:00:00
+75,504,109,4,"Good value for money, would recommend.",2024-08-07 00:00:00
+76,462,664,5,Superb quality and fast delivery.,2024-08-13 00:00:00
+77,631,7,4,"Very good product, minor improvements needed.",2023-03-23 00:00:00
+78,987,235,3,"Fair quality, could be better.",2024-03-13 00:00:00
+79,604,528,3,"It's okay, meets basic requirements.",2023-07-02 00:00:00
+80,764,257,5,Absolutely love it! Will buy again.,2023-11-07 00:00:00
+81,141,14,4,"Good value for money, would recommend.",2024-04-27 00:00:00
+82,638,699,5,Perfect! Exactly what I was looking for.,2024-10-03 00:00:00
+83,761,293,4,"Good value for money, would recommend.",2023-10-05 00:00:00
+84,883,358,2,Not satisfied with my purchase.,2023-09-28 00:00:00
+85,942,529,4,"Nice product, met my expectations.",2024-10-20 00:00:00
+86,733,413,2,Poor quality for the price.,2023-08-18 00:00:00
+87,445,514,4,"Nice product, met my expectations.",2023-01-28 00:00:00
+88,729,329,4,"Good value for money, would recommend.",2023-04-30 00:00:00
+89,549,204,5,"Outstanding quality, highly recommended!",2024-11-22 00:00:00
+90,27,551,5,Superb quality and fast delivery.,2024-11-12 00:00:00
+91,637,508,5,"Amazing product, worth every penny!",2024-05-07 00:00:00
+92,245,289,4,"Good value for money, would recommend.",2024-11-28 00:00:00
+93,595,94,2,Disappointed with the quality.,2023-01-18 00:00:00
+94,601,53,5,Best purchase I've made in a long time!,2024-07-04 00:00:00
+95,823,180,5,Superb quality and fast delivery.,2024-11-18 00:00:00
+96,683,534,5,"Amazing product, worth every penny!",2023-09-30 00:00:00
+97,7,144,4,Happy with this purchase overall.,2023-06-06 00:00:00
+98,522,664,3,"Acceptable, but not impressed.",2023-06-23 00:00:00
+99,762,585,1,Worst purchase ever made.,2024-01-15 00:00:00
+100,746,457,4,"Nice product, met my expectations.",2024-08-11 00:00:00
+101,968,616,5,Perfect! Exactly what I was looking for.,2024-05-07 00:00:00
+102,597,146,5,Best purchase I've made in a long time!,2023-09-08 00:00:00
+103,330,312,5,Perfect! Exactly what I was looking for.,2024-05-04 00:00:00
+104,366,699,5,Perfect! Exactly what I was looking for.,2024-07-24 00:00:00
+105,330,315,4,"Very good product, minor improvements needed.",2024-07-24 00:00:00
+106,202,651,4,"Very good product, minor improvements needed.",2023-05-21 00:00:00
+107,23,622,5,Superb quality and fast delivery.,2024-03-24 00:00:00
+108,953,284,4,"Solid product, does what it promises.",2024-10-03 00:00:00
+109,889,315,5,Excellent product! Exceeded my expectations.,2023-09-09 00:00:00
+110,202,183,4,"Quality is good, delivery was fast.",2023-06-20 00:00:00
+111,746,387,4,"Nice product, met my expectations.",2024-06-23 00:00:00
+112,612,493,5,Excellent product! Exceeded my expectations.,2024-05-04 00:00:00
+113,891,300,4,"Great quality, happy with my purchase.",2024-02-02 00:00:00
+114,423,538,4,"Great quality, happy with my purchase.",2024-02-15 00:00:00
+115,542,698,5,Best purchase I've made in a long time!,2024-07-25 00:00:00
+116,530,56,4,"Very good product, minor improvements needed.",2023-01-03 00:00:00
+117,885,556,3,"It's okay, meets basic requirements.",2024-06-26 00:00:00
+118,648,273,5,"Fantastic product, very satisfied!",2023-10-01 00:00:00
+119,801,668,4,"Great quality, happy with my purchase.",2024-08-06 00:00:00
+120,263,226,5,Perfect! Exactly what I was looking for.,2023-02-14 00:00:00
+121,609,392,4,"Very good product, minor improvements needed.",2023-06-28 00:00:00
+122,345,376,4,"Nice product, met my expectations.",2023-12-01 00:00:00
+123,152,416,5,"Outstanding quality, highly recommended!",2023-02-09 00:00:00
+124,871,113,5,Absolutely love it! Will buy again.,2023-04-21 00:00:00
+125,592,411,4,"Very good product, minor improvements needed.",2023-04-22 00:00:00
+126,193,547,2,Several issues with this item.,2024-05-14 00:00:00
+127,137,68,5,"Fantastic product, very satisfied!",2023-04-05 00:00:00
+128,679,217,1,"Awful quality, very unhappy.",2024-03-07 00:00:00
+129,374,76,4,Happy with this purchase overall.,2024-02-27 00:00:00
+130,169,677,5,Superb quality and fast delivery.,2024-07-15 00:00:00
+131,63,342,4,"Great quality, happy with my purchase.",2023-11-04 00:00:00
+132,914,523,1,"Awful quality, very unhappy.",2023-11-15 00:00:00
+133,557,166,4,"Quality is good, delivery was fast.",2023-03-26 00:00:00
+134,188,225,2,Would not recommend this product.,2024-01-23 00:00:00
+135,611,700,1,"Complete waste, avoid this product.",2024-04-05 00:00:00
+136,330,134,5,"Amazing product, worth every penny!",2023-06-03 00:00:00
+137,327,88,4,Happy with this purchase overall.,2024-08-23 00:00:00
+138,107,77,5,Absolutely love it! Will buy again.,2023-11-21 00:00:00
+139,147,276,4,"Nice product, met my expectations.",2023-07-18 00:00:00
+140,377,376,5,Perfect! Exactly what I was looking for.,2024-11-29 00:00:00
+141,295,564,5,Superb quality and fast delivery.,2023-11-15 00:00:00
+142,904,50,5,Absolutely love it! Will buy again.,2024-11-17 00:00:00
+143,744,324,5,Superb quality and fast delivery.,2023-05-18 00:00:00
+144,655,543,5,Perfect! Exactly what I was looking for.,2024-09-01 00:00:00
+145,9,248,5,Excellent product! Exceeded my expectations.,2024-09-22 00:00:00
+146,894,499,5,Absolutely love it! Will buy again.,2023-09-15 00:00:00
+147,702,130,3,Decent product for the price.,2024-01-14 00:00:00
+148,831,635,5,Perfect! Exactly what I was looking for.,2023-12-27 00:00:00
+149,222,103,4,"Good value for money, would recommend.",2023-11-29 00:00:00
+150,720,424,5,Perfect! Exactly what I was looking for.,2024-05-08 00:00:00
+151,923,281,4,"Very good product, minor improvements needed.",2024-03-31 00:00:00
+152,70,226,5,Superb quality and fast delivery.,2024-01-14 00:00:00
+153,844,117,5,Superb quality and fast delivery.,2024-03-17 00:00:00
+154,785,23,4,Happy with this purchase overall.,2023-03-27 00:00:00
+155,101,608,2,Disappointed with the quality.,2023-11-18 00:00:00
+156,671,98,3,Decent product for the price.,2023-03-09 00:00:00
+157,452,667,3,"Acceptable, but not impressed.",2024-01-27 00:00:00
+158,717,466,2,Poor quality for the price.,2024-10-15 00:00:00
+159,479,299,5,Excellent product! Exceeded my expectations.,2024-11-02 00:00:00
+160,953,279,5,Perfect! Exactly what I was looking for.,2023-07-06 00:00:00
+161,430,654,2,Disappointed with the quality.,2023-12-06 00:00:00
+162,837,693,4,"Quality is good, delivery was fast.",2023-09-28 00:00:00
+163,157,22,4,Happy with this purchase overall.,2023-03-01 00:00:00
+164,567,328,3,"Acceptable, but not impressed.",2023-12-10 00:00:00
+165,649,299,5,Best purchase I've made in a long time!,2024-10-02 00:00:00
+166,637,441,5,Excellent product! Exceeded my expectations.,2024-03-31 00:00:00
+167,774,324,4,"Great quality, happy with my purchase.",2023-04-28 00:00:00
+168,801,116,4,"Good value for money, would recommend.",2024-02-18 00:00:00
+169,20,175,3,"It's okay, meets basic requirements.",2024-11-12 00:00:00
+170,866,394,5,Perfect! Exactly what I was looking for.,2023-11-02 00:00:00
+171,681,189,5,Perfect! Exactly what I was looking for.,2023-11-24 00:00:00
+172,341,179,5,"Outstanding quality, highly recommended!",2024-01-04 00:00:00
+173,640,182,5,Best purchase I've made in a long time!,2023-06-01 00:00:00
+174,636,508,5,"Outstanding quality, highly recommended!",2023-05-10 00:00:00
+175,622,222,5,Superb quality and fast delivery.,2023-05-27 00:00:00
+176,511,556,2,Several issues with this item.,2024-03-02 00:00:00
+177,914,510,4,"Solid product, does what it promises.",2023-08-07 00:00:00
+178,103,325,3,"Average product, nothing special.",2024-01-13 00:00:00
+179,669,329,4,"Very good product, minor improvements needed.",2023-04-22 00:00:00
+180,425,197,5,Superb quality and fast delivery.,2024-06-26 00:00:00
+181,604,437,4,"Nice product, met my expectations.",2023-11-27 00:00:00
+182,783,301,3,"Works as described, nothing more.",2024-11-26 00:00:00
+183,269,337,5,"Amazing product, worth every penny!",2023-06-21 00:00:00
+184,62,288,4,"Very good product, minor improvements needed.",2023-03-01 00:00:00
+185,708,374,4,Happy with this purchase overall.,2024-05-31 00:00:00
+186,315,534,4,"Very good product, minor improvements needed.",2023-05-08 00:00:00
+187,862,27,4,"Solid product, does what it promises.",2023-06-07 00:00:00
+188,576,248,4,Happy with this purchase overall.,2024-11-22 00:00:00
+189,503,44,4,Happy with this purchase overall.,2023-02-03 00:00:00
+190,344,262,4,"Nice product, met my expectations.",2024-06-11 00:00:00
+191,541,516,4,"Solid product, does what it promises.",2024-11-12 00:00:00
+192,299,294,2,"Not as described, below expectations.",2023-08-29 00:00:00
+193,479,531,5,Best purchase I've made in a long time!,2024-04-17 00:00:00
+194,414,198,4,Happy with this purchase overall.,2024-09-25 00:00:00
+195,944,329,5,Best purchase I've made in a long time!,2024-02-02 00:00:00
+196,320,611,4,"Very good product, minor improvements needed.",2023-04-24 00:00:00
+197,724,586,4,"Very good product, minor improvements needed.",2023-12-07 00:00:00
+198,848,384,4,Happy with this purchase overall.,2024-10-13 00:00:00
+199,15,371,5,Absolutely love it! Will buy again.,2023-03-03 00:00:00
+200,563,278,5,"Outstanding quality, highly recommended!",2023-06-20 00:00:00
+201,527,20,5,Excellent product! Exceeded my expectations.,2024-09-22 00:00:00
+202,406,117,5,Superb quality and fast delivery.,2023-11-17 00:00:00
+203,830,181,4,"Quality is good, delivery was fast.",2023-05-15 00:00:00
+204,345,18,5,"Outstanding quality, highly recommended!",2023-03-14 00:00:00
+205,919,157,5,Perfect! Exactly what I was looking for.,2023-07-25 00:00:00
+206,153,509,5,Excellent product! Exceeded my expectations.,2024-02-11 00:00:00
+207,379,182,4,"Very good product, minor improvements needed.",2023-12-30 00:00:00
+208,229,83,3,"Acceptable, but not impressed.",2024-06-03 00:00:00
+209,224,474,5,Excellent product! Exceeded my expectations.,2023-10-15 00:00:00
+210,621,254,5,"Outstanding quality, highly recommended!",2024-07-04 00:00:00
+211,169,446,4,"Good value for money, would recommend.",2024-10-01 00:00:00
+212,287,51,2,Not satisfied with my purchase.,2024-07-29 00:00:00
+213,79,137,5,Superb quality and fast delivery.,2023-02-21 00:00:00
+214,181,494,5,"Outstanding quality, highly recommended!",2024-04-29 00:00:00
+215,828,323,5,"Fantastic product, very satisfied!",2023-06-16 00:00:00
+216,160,388,3,"Fair quality, could be better.",2024-04-15 00:00:00
+217,355,684,5,"Outstanding quality, highly recommended!",2024-03-03 00:00:00
+218,412,543,5,Perfect! Exactly what I was looking for.,2023-09-02 00:00:00
+219,321,648,2,"Not as described, below expectations.",2023-06-05 00:00:00
+220,451,671,4,"Solid product, does what it promises.",2024-02-14 00:00:00
+221,356,134,5,"Fantastic product, very satisfied!",2024-02-16 00:00:00
+222,567,620,5,Perfect! Exactly what I was looking for.,2023-06-09 00:00:00
+223,161,20,3,"Works as described, nothing more.",2024-11-03 00:00:00
+224,267,481,2,Would not recommend this product.,2023-12-11 00:00:00
+225,547,113,3,"Acceptable, but not impressed.",2023-12-11 00:00:00
+226,511,327,4,"Great quality, happy with my purchase.",2023-09-24 00:00:00
+227,16,685,4,"Very good product, minor improvements needed.",2023-09-16 00:00:00
+228,829,526,4,"Good value for money, would recommend.",2024-01-27 00:00:00
+229,81,551,3,"It's okay, meets basic requirements.",2024-07-04 00:00:00
+230,864,401,5,Excellent product! Exceeded my expectations.,2024-02-07 00:00:00
+231,232,394,4,"Very good product, minor improvements needed.",2024-08-12 00:00:00
+232,24,508,5,Absolutely love it! Will buy again.,2023-09-17 00:00:00
+233,443,681,4,"Solid product, does what it promises.",2024-09-15 00:00:00
+234,816,599,5,"Outstanding quality, highly recommended!",2023-07-22 00:00:00
+235,875,533,5,"Outstanding quality, highly recommended!",2024-08-25 00:00:00
+236,123,479,5,Excellent product! Exceeded my expectations.,2024-01-31 00:00:00
+237,347,229,5,Superb quality and fast delivery.,2024-03-01 00:00:00
+238,178,63,4,"Very good product, minor improvements needed.",2024-04-01 00:00:00
+239,663,538,5,"Fantastic product, very satisfied!",2024-03-12 00:00:00
+240,274,244,5,Best purchase I've made in a long time!,2023-10-16 00:00:00
+241,322,687,4,"Very good product, minor improvements needed.",2024-11-28 00:00:00
+242,150,434,4,"Quality is good, delivery was fast.",2024-05-24 00:00:00
+243,124,181,3,"Average product, nothing special.",2023-09-17 00:00:00
+244,947,446,5,Best purchase I've made in a long time!,2023-11-13 00:00:00
+245,530,478,4,"Good value for money, would recommend.",2023-03-22 00:00:00
+246,158,372,3,"It's okay, meets basic requirements.",2024-08-28 00:00:00
+247,214,567,5,Superb quality and fast delivery.,2024-05-10 00:00:00
+248,646,278,4,"Quality is good, delivery was fast.",2024-03-16 00:00:00
+249,560,378,5,Superb quality and fast delivery.,2023-07-30 00:00:00
+250,946,152,5,Excellent product! Exceeded my expectations.,2023-12-22 00:00:00
+251,244,496,5,"Amazing product, worth every penny!",2023-06-25 00:00:00
+252,481,187,5,Excellent product! Exceeded my expectations.,2024-02-12 00:00:00
+253,61,507,4,"Nice product, met my expectations.",2023-10-18 00:00:00
+254,670,63,5,"Fantastic product, very satisfied!",2023-10-23 00:00:00
+255,382,92,4,"Solid product, does what it promises.",2023-02-14 00:00:00
+256,295,631,5,Absolutely love it! Will buy again.,2024-07-14 00:00:00
+257,612,417,4,Happy with this purchase overall.,2023-06-29 00:00:00
+258,961,26,4,"Solid product, does what it promises.",2024-01-13 00:00:00
+259,340,262,5,"Fantastic product, very satisfied!",2023-03-08 00:00:00
+260,196,367,5,Absolutely love it! Will buy again.,2023-01-15 00:00:00
+261,581,574,5,"Fantastic product, very satisfied!",2023-06-03 00:00:00
+262,650,35,5,Superb quality and fast delivery.,2023-08-07 00:00:00
+263,304,572,5,Absolutely love it! Will buy again.,2024-11-01 00:00:00
+264,587,553,4,"Solid product, does what it promises.",2024-09-04 00:00:00
+265,102,700,3,"Works as described, nothing more.",2023-07-17 00:00:00
+266,346,378,5,Best purchase I've made in a long time!,2023-12-04 00:00:00
+267,972,200,4,"Very good product, minor improvements needed.",2023-07-17 00:00:00
+268,584,310,1,"Very poor quality, do not buy.",2023-03-07 00:00:00
+269,399,269,4,"Quality is good, delivery was fast.",2024-07-18 00:00:00
+270,990,667,3,"Fair quality, could be better.",2024-01-04 00:00:00
+271,511,385,4,"Quality is good, delivery was fast.",2023-01-27 00:00:00
+272,30,182,3,"It's okay, meets basic requirements.",2023-09-19 00:00:00
+273,520,262,5,"Amazing product, worth every penny!",2024-03-09 00:00:00
+274,538,582,4,"Quality is good, delivery was fast.",2023-07-14 00:00:00
+275,940,177,4,"Great quality, happy with my purchase.",2023-12-30 00:00:00
+276,415,355,3,"Works as described, nothing more.",2023-10-17 00:00:00
+277,836,454,4,"Great quality, happy with my purchase.",2024-04-14 00:00:00
+278,732,16,5,Perfect! Exactly what I was looking for.,2023-05-26 00:00:00
+279,745,661,4,"Nice product, met my expectations.",2024-03-25 00:00:00
+280,616,314,3,"Works as described, nothing more.",2024-11-02 00:00:00
+281,549,41,3,"Average product, nothing special.",2024-03-22 00:00:00
+282,719,449,4,"Good value for money, would recommend.",2023-06-03 00:00:00
+283,211,303,4,"Great quality, happy with my purchase.",2024-10-25 00:00:00
+284,962,127,3,"Fair quality, could be better.",2023-09-18 00:00:00
+285,617,104,1,Worst purchase ever made.,2024-03-13 00:00:00
+286,497,197,4,"Solid product, does what it promises.",2023-03-02 00:00:00
+287,282,18,5,Superb quality and fast delivery.,2024-08-13 00:00:00
+288,226,577,5,Perfect! Exactly what I was looking for.,2023-02-27 00:00:00
+289,532,544,5,Perfect! Exactly what I was looking for.,2023-08-19 00:00:00
+290,228,352,4,"Solid product, does what it promises.",2023-04-05 00:00:00
+291,312,251,4,"Nice product, met my expectations.",2023-03-29 00:00:00
+292,234,520,4,"Nice product, met my expectations.",2023-03-22 00:00:00
+293,936,31,4,"Very good product, minor improvements needed.",2024-07-14 00:00:00
+294,974,648,4,Happy with this purchase overall.,2023-09-09 00:00:00
+295,198,350,4,"Very good product, minor improvements needed.",2024-05-23 00:00:00
+296,148,214,2,Would not recommend this product.,2024-03-05 00:00:00
+297,286,674,5,Superb quality and fast delivery.,2024-10-10 00:00:00
+298,135,581,5,Perfect! Exactly what I was looking for.,2024-01-26 00:00:00
+299,20,211,4,Happy with this purchase overall.,2023-08-31 00:00:00
+300,290,540,4,"Very good product, minor improvements needed.",2023-11-25 00:00:00
+301,614,106,4,"Great quality, happy with my purchase.",2023-12-31 00:00:00
+302,234,67,5,Absolutely love it! Will buy again.,2023-01-14 00:00:00
+303,347,22,5,"Fantastic product, very satisfied!",2024-05-10 00:00:00
+304,877,273,3,"Average product, nothing special.",2023-05-15 00:00:00
+305,653,358,1,Worst purchase ever made.,2024-04-28 00:00:00
+306,207,416,4,"Good value for money, would recommend.",2023-12-01 00:00:00
+307,637,333,4,Happy with this purchase overall.,2024-01-07 00:00:00
+308,398,82,4,"Good value for money, would recommend.",2024-03-27 00:00:00
+309,599,524,4,Happy with this purchase overall.,2023-08-29 00:00:00
+310,336,412,5,Absolutely love it! Will buy again.,2024-10-06 00:00:00
+311,986,361,5,Best purchase I've made in a long time!,2023-07-16 00:00:00
+312,590,411,4,"Great quality, happy with my purchase.",2023-07-08 00:00:00
+313,529,493,4,"Good value for money, would recommend.",2024-01-08 00:00:00
+314,524,232,4,"Quality is good, delivery was fast.",2024-07-20 00:00:00
+315,118,152,5,Perfect! Exactly what I was looking for.,2024-02-02 00:00:00
+316,111,17,5,Excellent product! Exceeded my expectations.,2023-04-23 00:00:00
+317,627,369,5,Perfect! Exactly what I was looking for.,2024-02-05 00:00:00
+318,307,99,4,"Nice product, met my expectations.",2024-01-31 00:00:00
+319,705,609,2,Poor quality for the price.,2023-04-06 00:00:00
+320,107,211,5,"Amazing product, worth every penny!",2023-09-11 00:00:00
+321,819,659,3,Decent product for the price.,2024-05-14 00:00:00
+322,269,609,1,"Extremely disappointed, returning it.",2023-03-01 00:00:00
+323,554,54,3,"Acceptable, but not impressed.",2023-04-06 00:00:00
+324,275,463,4,"Great quality, happy with my purchase.",2024-03-10 00:00:00
+325,286,289,4,"Solid product, does what it promises.",2024-08-21 00:00:00
+326,180,274,2,Disappointed with the quality.,2023-04-02 00:00:00
+327,763,450,5,"Fantastic product, very satisfied!",2024-01-03 00:00:00
+328,431,200,5,"Fantastic product, very satisfied!",2023-04-26 00:00:00
+329,245,611,5,"Amazing product, worth every penny!",2023-02-04 00:00:00
+330,863,254,5,Excellent product! Exceeded my expectations.,2023-01-15 00:00:00
+331,970,408,3,"Acceptable, but not impressed.",2023-03-30 00:00:00
+332,839,7,4,"Quality is good, delivery was fast.",2024-07-17 00:00:00
+333,318,189,5,Excellent product! Exceeded my expectations.,2023-12-24 00:00:00
+334,897,424,4,"Great quality, happy with my purchase.",2023-11-11 00:00:00
+335,779,128,4,"Very good product, minor improvements needed.",2024-11-11 00:00:00
+336,669,328,5,"Amazing product, worth every penny!",2023-04-19 00:00:00
+337,665,490,3,"Fair quality, could be better.",2024-09-15 00:00:00
+338,387,67,2,Not satisfied with my purchase.,2023-03-28 00:00:00
+339,922,18,3,"Fair quality, could be better.",2024-05-05 00:00:00
+340,754,537,5,Absolutely love it! Will buy again.,2023-06-10 00:00:00
+341,366,670,5,Perfect! Exactly what I was looking for.,2023-03-18 00:00:00
+342,952,684,4,Happy with this purchase overall.,2024-05-22 00:00:00
+343,636,51,5,Perfect! Exactly what I was looking for.,2023-05-20 00:00:00
+344,248,496,5,"Outstanding quality, highly recommended!",2023-07-24 00:00:00
+345,953,11,4,Happy with this purchase overall.,2023-09-06 00:00:00
+346,992,652,5,Superb quality and fast delivery.,2023-08-10 00:00:00
+347,796,222,4,Happy with this purchase overall.,2024-08-12 00:00:00
+348,466,425,4,"Solid product, does what it promises.",2024-07-27 00:00:00
+349,965,336,4,"Good value for money, would recommend.",2024-07-20 00:00:00
+350,39,314,2,Several issues with this item.,2024-06-26 00:00:00
+351,756,103,5,"Outstanding quality, highly recommended!",2024-06-23 00:00:00
+352,935,222,4,"Great quality, happy with my purchase.",2023-07-29 00:00:00
+353,883,11,5,Superb quality and fast delivery.,2023-10-07 00:00:00
+354,39,595,2,Would not recommend this product.,2024-01-17 00:00:00
+355,795,535,5,Excellent product! Exceeded my expectations.,2023-08-19 00:00:00
+356,90,358,5,"Outstanding quality, highly recommended!",2023-08-02 00:00:00
+357,332,650,5,Excellent product! Exceeded my expectations.,2024-03-02 00:00:00
+358,68,5,5,"Fantastic product, very satisfied!",2024-02-17 00:00:00
+359,377,629,5,"Amazing product, worth every penny!",2023-12-16 00:00:00
+360,365,592,4,"Good value for money, would recommend.",2024-01-09 00:00:00
+361,349,193,4,Happy with this purchase overall.,2024-04-11 00:00:00
+362,259,595,4,"Good value for money, would recommend.",2023-04-02 00:00:00
+363,465,699,4,"Nice product, met my expectations.",2023-11-19 00:00:00
+364,322,425,5,Excellent product! Exceeded my expectations.,2023-10-30 00:00:00
+365,795,695,4,"Great quality, happy with my purchase.",2023-09-20 00:00:00
+366,481,264,5,"Fantastic product, very satisfied!",2024-05-12 00:00:00
+367,603,286,4,"Good value for money, would recommend.",2024-04-30 00:00:00
+368,174,447,3,"Acceptable, but not impressed.",2023-11-27 00:00:00
+369,361,363,5,Absolutely love it! Will buy again.,2023-02-28 00:00:00
+370,458,72,3,"It's okay, meets basic requirements.",2023-01-12 00:00:00
+371,463,650,5,"Outstanding quality, highly recommended!",2024-01-20 00:00:00
+372,1,469,4,"Solid product, does what it promises.",2023-03-18 00:00:00
+373,535,695,2,Not satisfied with my purchase.,2023-06-29 00:00:00
+374,350,674,5,Excellent product! Exceeded my expectations.,2024-04-17 00:00:00
+375,360,42,3,"It's okay, meets basic requirements.",2024-02-28 00:00:00
+376,60,365,5,Perfect! Exactly what I was looking for.,2024-10-11 00:00:00
+377,757,692,3,"Works as described, nothing more.",2024-01-28 00:00:00
+378,900,559,2,Not satisfied with my purchase.,2023-11-09 00:00:00
+379,150,29,3,"Fair quality, could be better.",2023-05-01 00:00:00
+380,120,75,5,"Amazing product, worth every penny!",2024-08-25 00:00:00
+381,270,557,5,Best purchase I've made in a long time!,2023-07-15 00:00:00
+382,772,506,4,"Good value for money, would recommend.",2024-11-08 00:00:00
+383,921,159,3,"Acceptable, but not impressed.",2023-11-27 00:00:00
+384,303,105,4,"Good value for money, would recommend.",2023-06-02 00:00:00
+385,425,459,5,Excellent product! Exceeded my expectations.,2024-01-12 00:00:00
+386,207,324,5,Perfect! Exactly what I was looking for.,2023-10-08 00:00:00
+387,327,492,4,"Good value for money, would recommend.",2024-03-18 00:00:00
+388,412,167,4,"Good value for money, would recommend.",2023-08-25 00:00:00
+389,770,349,4,"Very good product, minor improvements needed.",2023-12-30 00:00:00
+390,541,502,3,"It's okay, meets basic requirements.",2024-05-04 00:00:00
+391,566,209,3,"Fair quality, could be better.",2024-10-01 00:00:00
+392,590,539,4,"Good value for money, would recommend.",2023-05-17 00:00:00
+393,665,528,5,Superb quality and fast delivery.,2024-11-13 00:00:00
+394,28,209,5,Perfect! Exactly what I was looking for.,2024-05-24 00:00:00
+395,369,172,5,Excellent product! Exceeded my expectations.,2024-09-03 00:00:00
+396,608,386,4,"Good value for money, would recommend.",2023-03-23 00:00:00
+397,868,163,5,"Outstanding quality, highly recommended!",2024-11-21 00:00:00
+398,901,397,4,"Great quality, happy with my purchase.",2023-10-31 00:00:00
+399,359,276,5,Excellent product! Exceeded my expectations.,2023-10-30 00:00:00
+400,169,686,5,"Amazing product, worth every penny!",2023-01-15 00:00:00
+401,563,504,3,"Fair quality, could be better.",2023-03-05 00:00:00
+402,373,183,5,Superb quality and fast delivery.,2024-08-18 00:00:00
+403,558,625,3,"Fair quality, could be better.",2023-05-21 00:00:00
+404,733,323,3,Decent product for the price.,2024-09-19 00:00:00
+405,827,537,5,Superb quality and fast delivery.,2024-05-04 00:00:00
+406,46,684,5,Absolutely love it! Will buy again.,2023-11-30 00:00:00
+407,396,190,5,Perfect! Exactly what I was looking for.,2024-09-14 00:00:00
+408,570,117,3,Decent product for the price.,2023-01-14 00:00:00
+409,676,395,3,"It's okay, meets basic requirements.",2023-01-02 00:00:00
+410,237,66,5,Superb quality and fast delivery.,2024-03-25 00:00:00
+411,392,578,3,Decent product for the price.,2024-01-24 00:00:00
+412,375,58,5,Absolutely love it! Will buy again.,2024-04-18 00:00:00
+413,938,556,3,"Average product, nothing special.",2023-08-16 00:00:00
+414,281,547,5,Perfect! Exactly what I was looking for.,2023-04-25 00:00:00
+415,563,317,3,"Works as described, nothing more.",2023-02-26 00:00:00
+416,651,311,5,"Amazing product, worth every penny!",2024-08-10 00:00:00
+417,554,241,2,Would not recommend this product.,2023-08-01 00:00:00
+418,504,496,4,"Very good product, minor improvements needed.",2023-03-16 00:00:00
+419,372,78,5,"Fantastic product, very satisfied!",2024-07-30 00:00:00
+420,703,415,3,Decent product for the price.,2024-08-06 00:00:00
+421,107,506,4,"Solid product, does what it promises.",2024-04-16 00:00:00
+422,334,354,5,Excellent product! Exceeded my expectations.,2023-11-19 00:00:00
+423,844,446,5,Best purchase I've made in a long time!,2024-04-26 00:00:00
+424,985,293,2,Not satisfied with my purchase.,2024-05-06 00:00:00
+425,683,524,5,Superb quality and fast delivery.,2024-05-18 00:00:00
+426,386,101,3,"Average product, nothing special.",2024-09-03 00:00:00
+427,144,612,2,Disappointed with the quality.,2023-06-15 00:00:00
+428,54,93,3,"Average product, nothing special.",2024-11-27 00:00:00
+429,896,222,5,"Fantastic product, very satisfied!",2023-09-08 00:00:00
+430,422,49,5,"Amazing product, worth every penny!",2024-07-23 00:00:00
+431,657,178,4,"Solid product, does what it promises.",2023-09-11 00:00:00
+432,429,590,4,"Good value for money, would recommend.",2023-04-01 00:00:00
+433,953,91,3,Decent product for the price.,2024-08-13 00:00:00
+434,253,367,4,"Solid product, does what it promises.",2023-03-15 00:00:00
+435,672,397,3,Decent product for the price.,2024-09-10 00:00:00
+436,376,645,4,"Very good product, minor improvements needed.",2024-05-27 00:00:00
+437,979,362,4,"Very good product, minor improvements needed.",2024-10-03 00:00:00
+438,927,167,4,"Quality is good, delivery was fast.",2023-07-09 00:00:00
+439,174,679,4,Happy with this purchase overall.,2023-03-24 00:00:00
+440,312,513,3,"Works as described, nothing more.",2024-08-17 00:00:00
+441,7,637,5,Superb quality and fast delivery.,2024-09-30 00:00:00
+442,356,587,3,"Acceptable, but not impressed.",2023-09-26 00:00:00
+443,997,544,5,Superb quality and fast delivery.,2024-05-30 00:00:00
+444,989,567,4,"Very good product, minor improvements needed.",2023-11-18 00:00:00
+445,143,534,4,"Very good product, minor improvements needed.",2024-08-17 00:00:00
+446,630,651,5,Superb quality and fast delivery.,2023-08-30 00:00:00
+447,741,209,4,"Nice product, met my expectations.",2023-12-09 00:00:00
+448,121,312,4,"Great quality, happy with my purchase.",2023-12-06 00:00:00
+449,855,402,3,"It's okay, meets basic requirements.",2024-11-20 00:00:00
+450,261,428,3,"Average product, nothing special.",2024-01-10 00:00:00
+451,262,122,4,Happy with this purchase overall.,2024-08-07 00:00:00
+452,155,496,1,"Complete waste, avoid this product.",2024-10-27 00:00:00
+453,475,620,3,"Fair quality, could be better.",2023-08-25 00:00:00
+454,804,375,4,"Great quality, happy with my purchase.",2024-11-02 00:00:00
+455,306,114,4,"Solid product, does what it promises.",2023-05-17 00:00:00
+456,624,203,3,"Average product, nothing special.",2024-08-18 00:00:00
+457,611,314,4,"Solid product, does what it promises.",2023-04-09 00:00:00
+458,391,6,3,"Acceptable, but not impressed.",2024-08-22 00:00:00
+459,237,196,5,"Amazing product, worth every penny!",2024-02-21 00:00:00
+460,1,668,4,"Good value for money, would recommend.",2023-11-21 00:00:00
+461,771,53,4,"Great quality, happy with my purchase.",2024-01-27 00:00:00
+462,462,70,4,"Solid product, does what it promises.",2023-09-26 00:00:00
+463,638,548,5,"Fantastic product, very satisfied!",2023-06-23 00:00:00
+464,671,135,4,"Quality is good, delivery was fast.",2024-04-13 00:00:00
+465,929,406,5,Superb quality and fast delivery.,2024-11-08 00:00:00
+466,299,68,5,Excellent product! Exceeded my expectations.,2024-06-08 00:00:00
+467,446,434,4,"Great quality, happy with my purchase.",2024-10-16 00:00:00
+468,15,195,5,Absolutely love it! Will buy again.,2024-04-30 00:00:00
+469,334,411,5,Excellent product! Exceeded my expectations.,2024-05-22 00:00:00
+470,284,508,5,"Amazing product, worth every penny!",2023-09-28 00:00:00
+471,870,590,4,"Solid product, does what it promises.",2024-06-01 00:00:00
+472,300,552,4,"Good value for money, would recommend.",2024-08-12 00:00:00
+473,471,520,3,"Acceptable, but not impressed.",2024-11-19 00:00:00
+474,754,616,4,Happy with this purchase overall.,2024-07-11 00:00:00
+475,264,617,5,Superb quality and fast delivery.,2024-01-19 00:00:00
+476,513,586,4,"Nice product, met my expectations.",2024-10-09 00:00:00
+477,965,223,5,"Amazing product, worth every penny!",2023-10-14 00:00:00
+478,163,373,3,"Fair quality, could be better.",2023-12-28 00:00:00
+479,523,517,5,"Outstanding quality, highly recommended!",2024-09-09 00:00:00
+480,910,52,5,Absolutely love it! Will buy again.,2023-10-06 00:00:00
+481,137,187,4,"Great quality, happy with my purchase.",2023-02-06 00:00:00
+482,628,679,4,"Great quality, happy with my purchase.",2024-03-08 00:00:00
+483,468,506,5,Absolutely love it! Will buy again.,2024-07-06 00:00:00
+484,335,26,2,Several issues with this item.,2023-10-28 00:00:00
+485,822,483,4,"Solid product, does what it promises.",2023-08-02 00:00:00
+486,430,636,5,Excellent product! Exceeded my expectations.,2023-05-21 00:00:00
+487,333,121,5,"Amazing product, worth every penny!",2024-03-04 00:00:00
+488,303,518,3,"Average product, nothing special.",2023-02-26 00:00:00
+489,12,634,2,Poor quality for the price.,2024-11-25 00:00:00
+490,99,697,5,"Amazing product, worth every penny!",2024-05-16 00:00:00
+491,465,516,4,"Solid product, does what it promises.",2024-02-08 00:00:00
+492,816,86,5,Best purchase I've made in a long time!,2024-08-19 00:00:00
+493,652,514,3,"It's okay, meets basic requirements.",2023-02-23 00:00:00
+494,971,524,1,"Very poor quality, do not buy.",2023-12-01 00:00:00
+495,655,542,5,Superb quality and fast delivery.,2023-07-15 00:00:00
+496,375,326,3,"Fair quality, could be better.",2024-09-30 00:00:00
+497,129,523,3,"It's okay, meets basic requirements.",2024-11-06 00:00:00
+498,349,269,4,"Great quality, happy with my purchase.",2024-11-06 00:00:00
+499,54,294,3,"It's okay, meets basic requirements.",2023-09-02 00:00:00
+500,892,657,3,Decent product for the price.,2024-10-09 00:00:00
+501,34,637,5,"Outstanding quality, highly recommended!",2024-03-12 00:00:00
+502,993,237,2,Disappointed with the quality.,2023-02-03 00:00:00
+503,751,279,5,Excellent product! Exceeded my expectations.,2023-12-27 00:00:00
+504,713,619,5,Superb quality and fast delivery.,2024-01-13 00:00:00
+505,274,495,5,Best purchase I've made in a long time!,2023-06-19 00:00:00
+506,506,139,5,"Fantastic product, very satisfied!",2023-03-20 00:00:00
+507,19,337,3,"It's okay, meets basic requirements.",2024-04-11 00:00:00
+508,633,506,4,"Nice product, met my expectations.",2024-02-27 00:00:00
+509,540,182,1,"Very poor quality, do not buy.",2023-01-17 00:00:00
+510,886,530,5,"Outstanding quality, highly recommended!",2023-06-02 00:00:00
+511,860,488,5,Excellent product! Exceeded my expectations.,2023-08-31 00:00:00
+512,367,84,5,Excellent product! Exceeded my expectations.,2023-02-05 00:00:00
+513,818,11,4,"Great quality, happy with my purchase.",2024-06-04 00:00:00
+514,919,113,1,"Awful quality, very unhappy.",2023-07-27 00:00:00
+515,160,609,2,"Not as described, below expectations.",2024-03-26 00:00:00
+516,235,551,4,"Solid product, does what it promises.",2024-04-04 00:00:00
+517,672,137,4,"Nice product, met my expectations.",2023-01-30 00:00:00
+518,80,11,3,"It's okay, meets basic requirements.",2023-08-02 00:00:00
+519,74,226,3,"Acceptable, but not impressed.",2024-04-28 00:00:00
+520,396,329,4,"Nice product, met my expectations.",2024-09-09 00:00:00
+521,379,502,5,"Amazing product, worth every penny!",2024-01-16 00:00:00
+522,790,454,3,"It's okay, meets basic requirements.",2023-11-07 00:00:00
+523,482,629,4,"Very good product, minor improvements needed.",2023-02-01 00:00:00
+524,990,418,3,"It's okay, meets basic requirements.",2024-02-02 00:00:00
+525,842,401,2,"Not as described, below expectations.",2023-06-19 00:00:00
+526,564,509,5,Perfect! Exactly what I was looking for.,2024-08-11 00:00:00
+527,582,14,5,Absolutely love it! Will buy again.,2024-04-25 00:00:00
+528,259,623,5,"Outstanding quality, highly recommended!",2023-04-01 00:00:00
+529,135,351,5,"Amazing product, worth every penny!",2024-08-01 00:00:00
+530,407,611,5,Perfect! Exactly what I was looking for.,2024-10-15 00:00:00
+531,941,149,5,"Fantastic product, very satisfied!",2024-06-11 00:00:00
+532,659,528,2,Would not recommend this product.,2024-03-04 00:00:00
+533,59,693,3,"Average product, nothing special.",2024-04-22 00:00:00
+534,96,670,5,"Amazing product, worth every penny!",2023-07-04 00:00:00
+535,263,362,4,"Good value for money, would recommend.",2023-04-30 00:00:00
+536,991,640,4,Happy with this purchase overall.,2023-10-14 00:00:00
+537,855,404,5,"Fantastic product, very satisfied!",2024-11-03 00:00:00
+538,908,133,4,"Very good product, minor improvements needed.",2024-09-08 00:00:00
+539,842,667,2,"Not as described, below expectations.",2023-01-12 00:00:00
+540,323,269,5,"Outstanding quality, highly recommended!",2023-11-08 00:00:00
+541,456,7,5,Best purchase I've made in a long time!,2024-09-11 00:00:00
+542,713,492,3,"Fair quality, could be better.",2023-06-07 00:00:00
+543,748,642,5,"Outstanding quality, highly recommended!",2023-05-26 00:00:00
+544,678,315,3,"It's okay, meets basic requirements.",2024-02-03 00:00:00
+545,429,570,4,Happy with this purchase overall.,2024-10-22 00:00:00
+546,150,366,1,"Complete waste, avoid this product.",2023-07-06 00:00:00
+547,746,235,5,"Fantastic product, very satisfied!",2024-09-18 00:00:00
+548,464,593,3,"Works as described, nothing more.",2023-09-11 00:00:00
+549,124,69,4,"Quality is good, delivery was fast.",2023-08-17 00:00:00
+550,161,516,2,Would not recommend this product.,2024-06-26 00:00:00
+551,367,366,5,Superb quality and fast delivery.,2024-11-21 00:00:00
+552,834,420,5,Superb quality and fast delivery.,2024-03-08 00:00:00
+553,399,78,3,"Average product, nothing special.",2023-12-20 00:00:00
+554,329,631,1,Worst purchase ever made.,2024-08-15 00:00:00
+555,948,99,4,Happy with this purchase overall.,2023-07-25 00:00:00
+556,192,88,4,"Good value for money, would recommend.",2023-04-04 00:00:00
+557,184,576,3,"Average product, nothing special.",2023-08-16 00:00:00
+558,185,666,1,"Awful quality, very unhappy.",2024-06-29 00:00:00
+559,252,609,4,Happy with this purchase overall.,2023-04-30 00:00:00
+560,87,429,4,"Quality is good, delivery was fast.",2024-10-17 00:00:00
+561,336,409,4,"Great quality, happy with my purchase.",2024-02-23 00:00:00
+562,280,184,5,Perfect! Exactly what I was looking for.,2024-05-16 00:00:00
+563,883,663,1,"Awful quality, very unhappy.",2024-11-27 00:00:00
+564,627,370,5,Superb quality and fast delivery.,2024-08-02 00:00:00
+565,850,214,5,Superb quality and fast delivery.,2023-11-05 00:00:00
+566,238,484,5,Absolutely love it! Will buy again.,2024-09-30 00:00:00
+567,673,37,4,"Solid product, does what it promises.",2023-03-21 00:00:00
+568,772,5,2,Not satisfied with my purchase.,2023-09-29 00:00:00
+569,800,358,5,"Amazing product, worth every penny!",2023-10-24 00:00:00
+570,562,239,4,"Solid product, does what it promises.",2023-03-12 00:00:00
+571,864,270,4,"Quality is good, delivery was fast.",2024-08-25 00:00:00
+572,559,587,5,Superb quality and fast delivery.,2024-11-25 00:00:00
+573,71,631,4,"Great quality, happy with my purchase.",2024-05-05 00:00:00
+574,868,83,1,"Complete waste, avoid this product.",2024-04-19 00:00:00
+575,223,627,5,Absolutely love it! Will buy again.,2024-05-26 00:00:00
+576,885,230,5,"Outstanding quality, highly recommended!",2024-10-23 00:00:00
+577,527,381,4,Happy with this purchase overall.,2023-10-19 00:00:00
+578,996,611,4,"Very good product, minor improvements needed.",2023-11-06 00:00:00
+579,601,540,4,Happy with this purchase overall.,2023-12-13 00:00:00
+580,181,328,2,Would not recommend this product.,2024-07-13 00:00:00
+581,27,548,5,Best purchase I've made in a long time!,2023-07-02 00:00:00
+582,895,153,5,Best purchase I've made in a long time!,2023-06-29 00:00:00
+583,802,7,3,"Average product, nothing special.",2024-04-26 00:00:00
+584,747,12,3,"Fair quality, could be better.",2023-03-06 00:00:00
+585,606,501,5,Absolutely love it! Will buy again.,2024-07-04 00:00:00
+586,809,288,5,"Fantastic product, very satisfied!",2023-05-30 00:00:00
+587,200,153,4,"Very good product, minor improvements needed.",2024-04-19 00:00:00
+588,360,64,3,"Average product, nothing special.",2024-05-14 00:00:00
+589,678,135,4,"Good value for money, would recommend.",2024-05-06 00:00:00
+590,916,439,5,"Outstanding quality, highly recommended!",2023-04-27 00:00:00
+591,107,438,5,Best purchase I've made in a long time!,2023-09-21 00:00:00
+592,765,234,3,"Acceptable, but not impressed.",2023-03-11 00:00:00
+593,431,182,2,Would not recommend this product.,2023-10-20 00:00:00
+594,493,278,3,Decent product for the price.,2023-10-06 00:00:00
+595,720,326,4,"Solid product, does what it promises.",2024-05-15 00:00:00
+596,269,379,4,"Great quality, happy with my purchase.",2023-04-04 00:00:00
+597,125,490,2,Not satisfied with my purchase.,2023-08-03 00:00:00
+598,104,329,5,"Amazing product, worth every penny!",2024-06-14 00:00:00
+599,763,218,5,"Fantastic product, very satisfied!",2023-07-05 00:00:00
+600,692,428,5,"Fantastic product, very satisfied!",2024-08-03 00:00:00
+601,346,592,4,"Great quality, happy with my purchase.",2023-01-25 00:00:00
+602,443,626,5,"Amazing product, worth every penny!",2023-05-27 00:00:00
+603,903,252,5,Excellent product! Exceeded my expectations.,2023-08-15 00:00:00
+604,846,698,5,"Outstanding quality, highly recommended!",2023-05-17 00:00:00
+605,20,34,5,Excellent product! Exceeded my expectations.,2023-10-08 00:00:00
+606,104,167,5,"Amazing product, worth every penny!",2024-01-12 00:00:00
+607,85,152,5,"Outstanding quality, highly recommended!",2023-07-25 00:00:00
+608,812,381,4,"Quality is good, delivery was fast.",2024-10-04 00:00:00
+609,785,539,2,"Not as described, below expectations.",2023-05-30 00:00:00
+610,25,166,2,Several issues with this item.,2023-10-29 00:00:00
+611,534,618,2,"Not as described, below expectations.",2023-12-05 00:00:00
+612,312,184,4,"Nice product, met my expectations.",2024-11-26 00:00:00
+613,251,241,3,"It's okay, meets basic requirements.",2024-03-29 00:00:00
+614,211,593,5,"Fantastic product, very satisfied!",2023-02-17 00:00:00
+615,229,535,2,Would not recommend this product.,2023-04-18 00:00:00
+616,939,485,5,"Amazing product, worth every penny!",2023-02-16 00:00:00
+617,873,343,4,"Quality is good, delivery was fast.",2023-06-11 00:00:00
+618,584,470,4,"Good value for money, would recommend.",2024-07-04 00:00:00
+619,252,170,5,"Outstanding quality, highly recommended!",2024-03-24 00:00:00
+620,153,143,4,Happy with this purchase overall.,2023-08-02 00:00:00
+621,39,28,5,Perfect! Exactly what I was looking for.,2023-06-11 00:00:00
+622,14,570,5,"Amazing product, worth every penny!",2023-08-12 00:00:00
+623,493,590,5,Best purchase I've made in a long time!,2023-11-18 00:00:00
+624,286,437,1,"Terrible product, waste of money.",2024-09-16 00:00:00
+625,801,309,4,Happy with this purchase overall.,2023-06-04 00:00:00
+626,918,557,5,Perfect! Exactly what I was looking for.,2023-03-21 00:00:00
+627,557,401,5,Excellent product! Exceeded my expectations.,2023-11-10 00:00:00
+628,502,219,3,"Fair quality, could be better.",2023-04-26 00:00:00
+629,173,583,4,"Very good product, minor improvements needed.",2024-08-09 00:00:00
+630,496,527,5,"Outstanding quality, highly recommended!",2024-10-23 00:00:00
+631,947,234,3,"Average product, nothing special.",2023-09-05 00:00:00
+632,488,492,4,"Great quality, happy with my purchase.",2023-05-21 00:00:00
+633,173,365,5,Absolutely love it! Will buy again.,2024-10-16 00:00:00
+634,5,377,4,"Solid product, does what it promises.",2023-01-15 00:00:00
+635,522,513,4,Happy with this purchase overall.,2024-11-02 00:00:00
+636,812,403,3,"It's okay, meets basic requirements.",2024-11-17 00:00:00
+637,557,198,3,Decent product for the price.,2023-09-28 00:00:00
+638,666,499,4,"Good value for money, would recommend.",2024-01-28 00:00:00
+639,912,281,5,"Amazing product, worth every penny!",2024-01-29 00:00:00
+640,492,193,5,Superb quality and fast delivery.,2024-05-10 00:00:00
+641,751,588,4,"Solid product, does what it promises.",2024-09-01 00:00:00
+642,388,135,4,"Very good product, minor improvements needed.",2023-01-23 00:00:00
+643,341,434,5,Excellent product! Exceeded my expectations.,2023-12-04 00:00:00
+644,876,646,2,"Not as described, below expectations.",2024-10-18 00:00:00
+645,785,208,4,Happy with this purchase overall.,2024-05-17 00:00:00
+646,874,416,5,Excellent product! Exceeded my expectations.,2024-07-31 00:00:00
+647,197,161,5,Absolutely love it! Will buy again.,2024-04-29 00:00:00
+648,728,130,5,Excellent product! Exceeded my expectations.,2023-10-24 00:00:00
+649,382,342,5,"Outstanding quality, highly recommended!",2024-01-16 00:00:00
+650,421,132,5,Best purchase I've made in a long time!,2023-05-20 00:00:00
+651,690,112,5,Best purchase I've made in a long time!,2024-01-11 00:00:00
+652,831,319,4,"Very good product, minor improvements needed.",2024-03-02 00:00:00
+653,676,246,4,"Good value for money, would recommend.",2023-04-30 00:00:00
+654,696,675,3,"Average product, nothing special.",2024-10-30 00:00:00
+655,509,147,3,"Acceptable, but not impressed.",2024-11-01 00:00:00
+656,756,400,5,Perfect! Exactly what I was looking for.,2024-07-27 00:00:00
+657,730,647,2,"Not as described, below expectations.",2024-02-14 00:00:00
+658,452,517,4,"Very good product, minor improvements needed.",2024-03-11 00:00:00
+659,527,260,3,Decent product for the price.,2023-07-02 00:00:00
+660,555,199,4,"Good value for money, would recommend.",2023-05-06 00:00:00
+661,367,455,4,"Nice product, met my expectations.",2023-10-21 00:00:00
+662,657,245,5,Perfect! Exactly what I was looking for.,2023-12-17 00:00:00
+663,813,692,3,"Works as described, nothing more.",2023-08-05 00:00:00
+664,246,34,5,Absolutely love it! Will buy again.,2024-04-21 00:00:00
+665,180,350,4,"Quality is good, delivery was fast.",2024-07-13 00:00:00
+666,493,35,4,"Quality is good, delivery was fast.",2023-08-12 00:00:00
+667,192,496,4,"Solid product, does what it promises.",2023-12-13 00:00:00
+668,405,510,4,"Good value for money, would recommend.",2023-07-02 00:00:00
+669,833,199,4,"Quality is good, delivery was fast.",2024-08-12 00:00:00
+670,992,108,5,"Outstanding quality, highly recommended!",2024-03-28 00:00:00
+671,192,103,5,"Amazing product, worth every penny!",2023-04-10 00:00:00
+672,548,192,3,Decent product for the price.,2024-11-06 00:00:00
+673,239,602,5,Best purchase I've made in a long time!,2023-12-15 00:00:00
+674,271,133,5,"Fantastic product, very satisfied!",2023-12-27 00:00:00
+675,522,14,5,"Outstanding quality, highly recommended!",2023-05-16 00:00:00
+676,480,32,5,Perfect! Exactly what I was looking for.,2024-02-20 00:00:00
+677,865,343,5,Perfect! Exactly what I was looking for.,2023-09-09 00:00:00
+678,833,605,3,Decent product for the price.,2024-10-04 00:00:00
+679,266,213,5,"Fantastic product, very satisfied!",2024-04-12 00:00:00
+680,951,301,5,Absolutely love it! Will buy again.,2024-07-07 00:00:00
+681,33,653,5,Excellent product! Exceeded my expectations.,2023-11-09 00:00:00
+682,798,679,5,"Fantastic product, very satisfied!",2024-07-16 00:00:00
+683,956,628,4,"Quality is good, delivery was fast.",2024-03-07 00:00:00
+684,8,82,1,Worst purchase ever made.,2023-12-17 00:00:00
+685,527,424,4,"Good value for money, would recommend.",2024-09-14 00:00:00
+686,52,19,4,"Quality is good, delivery was fast.",2023-03-14 00:00:00
+687,163,159,5,"Outstanding quality, highly recommended!",2023-08-25 00:00:00
+688,885,369,4,"Good value for money, would recommend.",2023-05-03 00:00:00
+689,211,589,5,Perfect! Exactly what I was looking for.,2024-09-03 00:00:00
+690,120,484,5,"Amazing product, worth every penny!",2023-04-02 00:00:00
+691,748,669,4,Happy with this purchase overall.,2023-01-23 00:00:00
+692,957,513,5,Absolutely love it! Will buy again.,2023-12-16 00:00:00
+693,351,379,5,Excellent product! Exceeded my expectations.,2023-06-16 00:00:00
+694,662,280,3,"Fair quality, could be better.",2024-10-12 00:00:00
+695,38,391,4,"Solid product, does what it promises.",2023-05-22 00:00:00
+696,232,635,4,"Nice product, met my expectations.",2023-12-15 00:00:00
+697,248,608,5,Best purchase I've made in a long time!,2024-01-22 00:00:00
+698,311,541,4,"Great quality, happy with my purchase.",2024-10-17 00:00:00
+699,125,265,5,Best purchase I've made in a long time!,2023-05-05 00:00:00
+700,312,454,5,Best purchase I've made in a long time!,2024-02-08 00:00:00
+701,253,408,4,Happy with this purchase overall.,2023-06-13 00:00:00
+702,659,249,3,"Average product, nothing special.",2024-11-09 00:00:00
+703,769,1,5,Absolutely love it! Will buy again.,2023-01-31 00:00:00
+704,673,670,1,"Very poor quality, do not buy.",2024-04-18 00:00:00
+705,228,232,2,Would not recommend this product.,2023-06-27 00:00:00
+706,124,497,4,"Great quality, happy with my purchase.",2023-12-14 00:00:00
+707,459,93,5,Excellent product! Exceeded my expectations.,2023-03-30 00:00:00
+708,943,653,3,"It's okay, meets basic requirements.",2024-09-03 00:00:00
+709,361,204,4,"Great quality, happy with my purchase.",2024-08-29 00:00:00
+710,455,657,5,Best purchase I've made in a long time!,2024-04-26 00:00:00
+711,828,509,5,"Outstanding quality, highly recommended!",2024-09-04 00:00:00
+712,417,676,5,"Outstanding quality, highly recommended!",2024-01-21 00:00:00
+713,59,312,3,"Fair quality, could be better.",2024-07-04 00:00:00
+714,504,414,4,"Great quality, happy with my purchase.",2024-09-06 00:00:00
+715,241,325,4,"Solid product, does what it promises.",2023-06-02 00:00:00
+716,762,342,5,"Amazing product, worth every penny!",2024-02-14 00:00:00
+717,454,9,2,Disappointed with the quality.,2023-12-21 00:00:00
+718,534,64,5,"Amazing product, worth every penny!",2023-06-26 00:00:00
+719,189,519,4,"Very good product, minor improvements needed.",2024-10-16 00:00:00
+720,579,288,5,Perfect! Exactly what I was looking for.,2023-05-04 00:00:00
+721,931,624,5,Superb quality and fast delivery.,2023-02-23 00:00:00
+722,252,416,5,"Fantastic product, very satisfied!",2023-01-13 00:00:00
+723,94,356,4,"Great quality, happy with my purchase.",2024-03-24 00:00:00
+724,591,591,4,"Very good product, minor improvements needed.",2023-06-28 00:00:00
+725,820,350,1,Worst purchase ever made.,2023-11-25 00:00:00
+726,281,625,3,"Works as described, nothing more.",2023-06-24 00:00:00
+727,939,357,4,"Solid product, does what it promises.",2023-03-13 00:00:00
+728,262,121,1,"Complete waste, avoid this product.",2024-10-20 00:00:00
+729,818,89,5,"Fantastic product, very satisfied!",2023-10-12 00:00:00
+730,664,18,5,Superb quality and fast delivery.,2023-08-15 00:00:00
+731,249,571,5,"Fantastic product, very satisfied!",2023-02-19 00:00:00
+732,695,611,4,"Nice product, met my expectations.",2023-01-03 00:00:00
+733,956,578,2,Several issues with this item.,2024-10-03 00:00:00
+734,298,316,4,Happy with this purchase overall.,2024-09-01 00:00:00
+735,388,483,1,"Very poor quality, do not buy.",2024-11-17 00:00:00
+736,847,243,5,Absolutely love it! Will buy again.,2024-02-09 00:00:00
+737,365,55,3,"Acceptable, but not impressed.",2023-04-06 00:00:00
+738,223,109,5,Superb quality and fast delivery.,2023-01-18 00:00:00
+739,54,546,5,Excellent product! Exceeded my expectations.,2024-08-28 00:00:00
+740,263,316,3,"It's okay, meets basic requirements.",2023-03-13 00:00:00
+741,507,250,5,Excellent product! Exceeded my expectations.,2023-04-02 00:00:00
+742,301,679,5,Perfect! Exactly what I was looking for.,2023-09-04 00:00:00
+743,219,653,4,"Great quality, happy with my purchase.",2023-01-02 00:00:00
+744,241,251,4,"Quality is good, delivery was fast.",2024-07-09 00:00:00
+745,161,1,4,"Quality is good, delivery was fast.",2023-08-17 00:00:00
+746,19,501,4,"Solid product, does what it promises.",2024-08-04 00:00:00
+747,990,627,5,"Outstanding quality, highly recommended!",2023-09-03 00:00:00
+748,32,511,5,"Outstanding quality, highly recommended!",2024-04-18 00:00:00
+749,210,104,5,Best purchase I've made in a long time!,2023-07-24 00:00:00
+750,49,677,4,"Nice product, met my expectations.",2023-10-30 00:00:00
+751,899,428,5,Perfect! Exactly what I was looking for.,2023-10-20 00:00:00
+752,580,438,4,"Solid product, does what it promises.",2023-06-14 00:00:00
+753,600,141,1,"Awful quality, very unhappy.",2023-04-04 00:00:00
+754,216,64,4,"Solid product, does what it promises.",2023-09-21 00:00:00
+755,560,556,3,Decent product for the price.,2023-02-14 00:00:00
+756,741,646,5,"Fantastic product, very satisfied!",2024-02-17 00:00:00
+757,496,182,5,Superb quality and fast delivery.,2023-01-03 00:00:00
+758,225,625,4,"Good value for money, would recommend.",2023-04-08 00:00:00
+759,159,9,5,"Outstanding quality, highly recommended!",2024-03-28 00:00:00
+760,184,114,5,Excellent product! Exceeded my expectations.,2023-11-26 00:00:00
+761,190,187,5,Excellent product! Exceeded my expectations.,2024-08-27 00:00:00
+762,101,50,4,"Great quality, happy with my purchase.",2023-04-02 00:00:00
+763,329,430,4,"Great quality, happy with my purchase.",2024-04-18 00:00:00
+764,238,195,5,"Outstanding quality, highly recommended!",2024-10-16 00:00:00
+765,32,668,4,"Great quality, happy with my purchase.",2024-02-07 00:00:00
+766,694,535,4,Happy with this purchase overall.,2024-09-21 00:00:00
+767,102,502,4,"Nice product, met my expectations.",2024-07-14 00:00:00
+768,857,354,1,"Awful quality, very unhappy.",2023-04-28 00:00:00
+769,110,218,2,Poor quality for the price.,2023-02-28 00:00:00
+770,846,316,4,"Very good product, minor improvements needed.",2024-07-29 00:00:00
+771,901,270,4,"Quality is good, delivery was fast.",2023-01-18 00:00:00
+772,750,112,5,"Fantastic product, very satisfied!",2023-03-25 00:00:00
+773,509,446,3,Decent product for the price.,2024-01-01 00:00:00
+774,615,560,4,"Good value for money, would recommend.",2023-06-17 00:00:00
+775,883,428,3,"Average product, nothing special.",2024-10-31 00:00:00
+776,432,224,5,Excellent product! Exceeded my expectations.,2024-07-11 00:00:00
+777,742,544,3,"Fair quality, could be better.",2024-07-25 00:00:00
+778,345,3,5,Absolutely love it! Will buy again.,2023-10-22 00:00:00
+779,649,217,3,"Fair quality, could be better.",2024-11-22 00:00:00
+780,880,632,4,"Nice product, met my expectations.",2023-07-21 00:00:00
+781,895,61,4,"Very good product, minor improvements needed.",2023-10-05 00:00:00
+782,170,66,5,"Outstanding quality, highly recommended!",2024-09-16 00:00:00
+783,999,245,3,"Acceptable, but not impressed.",2023-08-05 00:00:00
+784,288,514,5,Best purchase I've made in a long time!,2024-06-25 00:00:00
+785,333,507,4,"Great quality, happy with my purchase.",2024-08-24 00:00:00
+786,793,588,4,"Quality is good, delivery was fast.",2024-09-12 00:00:00
+787,385,307,2,Several issues with this item.,2023-06-10 00:00:00
+788,330,158,3,"It's okay, meets basic requirements.",2023-06-22 00:00:00
+789,102,614,3,"Average product, nothing special.",2024-01-28 00:00:00
+790,198,425,4,"Good value for money, would recommend.",2023-01-26 00:00:00
+791,476,230,5,"Amazing product, worth every penny!",2023-08-17 00:00:00
+792,38,690,4,"Nice product, met my expectations.",2024-03-16 00:00:00
+793,44,519,4,Happy with this purchase overall.,2023-05-10 00:00:00
+794,954,529,4,"Quality is good, delivery was fast.",2024-11-12 00:00:00
+795,310,478,4,"Good value for money, would recommend.",2023-02-23 00:00:00
+796,320,554,5,Perfect! Exactly what I was looking for.,2023-04-10 00:00:00
+797,459,276,5,Best purchase I've made in a long time!,2024-09-08 00:00:00
+798,49,276,3,"It's okay, meets basic requirements.",2023-06-18 00:00:00
+799,689,223,4,"Quality is good, delivery was fast.",2024-08-24 00:00:00
+800,176,671,4,"Very good product, minor improvements needed.",2024-01-21 00:00:00
+801,499,84,4,Happy with this purchase overall.,2024-04-30 00:00:00
+802,756,301,4,"Great quality, happy with my purchase.",2023-11-24 00:00:00
+803,660,82,5,Perfect! Exactly what I was looking for.,2024-08-09 00:00:00
+804,319,661,5,"Amazing product, worth every penny!",2023-04-26 00:00:00
+805,508,111,4,"Great quality, happy with my purchase.",2024-05-08 00:00:00
+806,479,75,4,"Good value for money, would recommend.",2023-02-22 00:00:00
+807,885,494,3,"Fair quality, could be better.",2023-05-27 00:00:00
+808,525,301,4,"Very good product, minor improvements needed.",2023-12-24 00:00:00
+809,284,39,4,"Good value for money, would recommend.",2024-02-03 00:00:00
+810,611,345,4,"Nice product, met my expectations.",2024-02-02 00:00:00
+811,554,125,4,"Great quality, happy with my purchase.",2024-10-31 00:00:00
+812,727,314,4,"Very good product, minor improvements needed.",2024-01-17 00:00:00
+813,362,377,5,"Fantastic product, very satisfied!",2023-08-04 00:00:00
+814,13,624,5,Superb quality and fast delivery.,2024-03-27 00:00:00
+815,902,501,4,"Great quality, happy with my purchase.",2024-08-18 00:00:00
+816,690,31,4,"Solid product, does what it promises.",2024-09-14 00:00:00
+817,731,202,5,Superb quality and fast delivery.,2023-05-20 00:00:00
+818,129,470,3,"Acceptable, but not impressed.",2024-04-21 00:00:00
+819,429,322,5,"Fantastic product, very satisfied!",2023-05-02 00:00:00
+820,792,72,5,Best purchase I've made in a long time!,2024-02-26 00:00:00
+821,301,174,1,"Extremely disappointed, returning it.",2023-02-10 00:00:00
+822,896,177,3,Decent product for the price.,2023-12-24 00:00:00
+823,739,421,5,Excellent product! Exceeded my expectations.,2024-10-12 00:00:00
+824,364,651,4,"Good value for money, would recommend.",2023-12-16 00:00:00
+825,798,388,4,"Nice product, met my expectations.",2024-06-03 00:00:00
+826,510,121,5,Best purchase I've made in a long time!,2024-08-24 00:00:00
+827,261,119,4,"Good value for money, would recommend.",2024-07-18 00:00:00
+828,583,126,4,"Great quality, happy with my purchase.",2023-01-08 00:00:00
+829,963,386,5,"Amazing product, worth every penny!",2024-02-07 00:00:00
+830,81,368,4,"Nice product, met my expectations.",2023-03-02 00:00:00
+831,927,474,5,"Fantastic product, very satisfied!",2023-11-11 00:00:00
+832,939,85,4,"Nice product, met my expectations.",2023-09-12 00:00:00
+833,79,89,1,Worst purchase ever made.,2024-06-24 00:00:00
+834,879,126,2,Disappointed with the quality.,2023-04-02 00:00:00
+835,939,529,5,"Amazing product, worth every penny!",2024-01-25 00:00:00
+836,505,577,5,"Amazing product, worth every penny!",2024-02-11 00:00:00
+837,35,444,4,"Good value for money, would recommend.",2024-07-22 00:00:00
+838,420,266,5,Absolutely love it! Will buy again.,2024-03-25 00:00:00
+839,33,594,2,Poor quality for the price.,2024-08-27 00:00:00
+840,171,237,5,"Fantastic product, very satisfied!",2024-06-27 00:00:00
+841,643,223,4,"Very good product, minor improvements needed.",2024-10-06 00:00:00
+842,48,378,5,"Amazing product, worth every penny!",2024-02-09 00:00:00
+843,377,335,2,Disappointed with the quality.,2024-03-11 00:00:00
+844,340,179,3,"Average product, nothing special.",2023-10-24 00:00:00
+845,966,465,5,"Fantastic product, very satisfied!",2023-06-16 00:00:00
+846,355,650,5,Superb quality and fast delivery.,2024-01-22 00:00:00
+847,83,349,4,"Great quality, happy with my purchase.",2024-08-16 00:00:00
+848,267,692,5,Perfect! Exactly what I was looking for.,2023-12-08 00:00:00
+849,53,424,4,"Very good product, minor improvements needed.",2024-04-27 00:00:00
+850,910,645,3,"Average product, nothing special.",2024-05-05 00:00:00
+851,401,75,3,"Acceptable, but not impressed.",2023-08-08 00:00:00
+852,72,506,5,"Fantastic product, very satisfied!",2023-06-30 00:00:00
+853,231,41,4,"Solid product, does what it promises.",2023-02-08 00:00:00
+854,299,305,4,"Quality is good, delivery was fast.",2023-09-03 00:00:00
+855,960,400,2,Disappointed with the quality.,2023-08-06 00:00:00
+856,794,173,3,"Average product, nothing special.",2024-06-05 00:00:00
+857,461,339,4,"Very good product, minor improvements needed.",2024-03-12 00:00:00
+858,727,674,4,"Very good product, minor improvements needed.",2023-10-15 00:00:00
+859,756,474,2,"Not as described, below expectations.",2024-02-17 00:00:00
+860,612,147,4,"Very good product, minor improvements needed.",2024-06-01 00:00:00
+861,754,249,3,Decent product for the price.,2024-06-25 00:00:00
+862,484,123,5,"Fantastic product, very satisfied!",2023-01-11 00:00:00
+863,941,243,4,"Solid product, does what it promises.",2024-05-04 00:00:00
+864,244,81,5,Best purchase I've made in a long time!,2023-10-12 00:00:00
+865,343,17,3,"It's okay, meets basic requirements.",2023-01-12 00:00:00
+866,696,386,5,Absolutely love it! Will buy again.,2023-04-18 00:00:00
+867,241,343,5,Excellent product! Exceeded my expectations.,2023-06-19 00:00:00
+868,668,344,5,Superb quality and fast delivery.,2023-04-05 00:00:00
+869,873,181,4,"Great quality, happy with my purchase.",2023-04-07 00:00:00
+870,643,475,4,"Good value for money, would recommend.",2024-05-10 00:00:00
+871,382,508,3,"Fair quality, could be better.",2024-09-20 00:00:00
+872,95,289,5,"Outstanding quality, highly recommended!",2023-01-02 00:00:00
+873,412,439,5,Absolutely love it! Will buy again.,2023-03-08 00:00:00
+874,602,332,3,"Acceptable, but not impressed.",2024-09-12 00:00:00
+875,351,128,5,Superb quality and fast delivery.,2024-10-17 00:00:00
+876,817,636,3,"It's okay, meets basic requirements.",2023-03-20 00:00:00
+877,447,541,1,"Very poor quality, do not buy.",2024-06-22 00:00:00
+878,428,458,4,"Very good product, minor improvements needed.",2023-04-29 00:00:00
+879,1000,638,4,"Good value for money, would recommend.",2024-02-20 00:00:00
+880,994,305,3,"It's okay, meets basic requirements.",2023-07-10 00:00:00
+881,161,187,2,Disappointed with the quality.,2024-02-13 00:00:00
+882,32,466,3,"Acceptable, but not impressed.",2023-08-29 00:00:00
+883,368,569,2,Poor quality for the price.,2023-10-23 00:00:00
+884,245,131,4,"Quality is good, delivery was fast.",2024-04-22 00:00:00
+885,751,587,4,Happy with this purchase overall.,2024-06-23 00:00:00
+886,913,60,3,"It's okay, meets basic requirements.",2024-09-29 00:00:00
+887,222,231,4,"Very good product, minor improvements needed.",2023-07-01 00:00:00
+888,91,57,5,"Fantastic product, very satisfied!",2024-07-06 00:00:00
+889,320,620,4,"Great quality, happy with my purchase.",2024-11-10 00:00:00
+890,982,111,4,"Very good product, minor improvements needed.",2024-07-04 00:00:00
+891,375,524,5,Absolutely love it! Will buy again.,2023-05-28 00:00:00
+892,773,224,5,"Amazing product, worth every penny!",2024-11-05 00:00:00
+893,126,215,3,"Fair quality, could be better.",2024-09-29 00:00:00
+894,887,459,5,Best purchase I've made in a long time!,2023-02-11 00:00:00
+895,979,220,5,"Fantastic product, very satisfied!",2023-08-24 00:00:00
+896,579,171,5,Perfect! Exactly what I was looking for.,2023-06-18 00:00:00
+897,783,359,4,"Very good product, minor improvements needed.",2024-08-08 00:00:00
+898,884,54,5,Absolutely love it! Will buy again.,2023-07-24 00:00:00
+899,390,676,4,"Nice product, met my expectations.",2024-02-04 00:00:00
+900,331,23,4,"Good value for money, would recommend.",2023-03-08 00:00:00
+901,450,619,3,"Acceptable, but not impressed.",2024-02-02 00:00:00
+902,380,278,3,"Works as described, nothing more.",2023-11-28 00:00:00
+903,246,27,3,Decent product for the price.,2023-01-18 00:00:00
+904,258,415,3,Decent product for the price.,2023-11-27 00:00:00
+905,216,650,4,"Quality is good, delivery was fast.",2024-05-03 00:00:00
+906,212,491,4,"Solid product, does what it promises.",2023-08-01 00:00:00
+907,866,78,3,"It's okay, meets basic requirements.",2024-11-13 00:00:00
+908,872,166,5,Best purchase I've made in a long time!,2024-05-20 00:00:00
+909,532,105,5,Superb quality and fast delivery.,2024-06-18 00:00:00
+910,780,395,5,Perfect! Exactly what I was looking for.,2023-04-16 00:00:00
+911,174,606,5,Best purchase I've made in a long time!,2023-02-19 00:00:00
+912,177,220,4,"Solid product, does what it promises.",2023-05-30 00:00:00
+913,346,168,1,"Very poor quality, do not buy.",2023-05-25 00:00:00
+914,235,482,3,"Works as described, nothing more.",2023-03-16 00:00:00
+915,267,534,5,Excellent product! Exceeded my expectations.,2024-02-12 00:00:00
+916,419,675,4,"Nice product, met my expectations.",2024-11-19 00:00:00
+917,786,235,5,Absolutely love it! Will buy again.,2023-12-16 00:00:00
+918,379,422,2,Disappointed with the quality.,2024-05-18 00:00:00
+919,171,127,4,"Nice product, met my expectations.",2023-07-31 00:00:00
+920,633,83,5,Absolutely love it! Will buy again.,2023-06-26 00:00:00
+921,97,348,2,Not satisfied with my purchase.,2024-07-06 00:00:00
+922,816,422,5,"Fantastic product, very satisfied!",2024-02-21 00:00:00
+923,80,78,5,Perfect! Exactly what I was looking for.,2024-06-19 00:00:00
+924,680,113,3,"It's okay, meets basic requirements.",2023-12-03 00:00:00
+925,52,218,4,"Very good product, minor improvements needed.",2023-01-24 00:00:00
+926,394,42,4,"Good value for money, would recommend.",2023-12-20 00:00:00
+927,813,334,5,Perfect! Exactly what I was looking for.,2023-04-07 00:00:00
+928,205,697,4,"Good value for money, would recommend.",2023-04-26 00:00:00
+929,517,541,5,Best purchase I've made in a long time!,2023-03-01 00:00:00
+930,840,182,2,"Not as described, below expectations.",2024-05-24 00:00:00
+931,795,315,4,"Very good product, minor improvements needed.",2023-03-21 00:00:00
+932,693,449,4,"Nice product, met my expectations.",2024-04-24 00:00:00
+933,503,33,5,Excellent product! Exceeded my expectations.,2024-04-04 00:00:00
+934,817,167,4,"Quality is good, delivery was fast.",2023-05-13 00:00:00
+935,947,379,5,"Fantastic product, very satisfied!",2023-12-08 00:00:00
+936,800,55,4,"Great quality, happy with my purchase.",2023-07-20 00:00:00
+937,643,132,2,Would not recommend this product.,2024-09-21 00:00:00
+938,820,439,3,"Works as described, nothing more.",2023-05-26 00:00:00
+939,223,645,5,"Amazing product, worth every penny!",2023-02-02 00:00:00
+940,183,97,3,"It's okay, meets basic requirements.",2024-07-18 00:00:00
+941,763,504,5,"Amazing product, worth every penny!",2023-07-27 00:00:00
+942,583,504,5,Excellent product! Exceeded my expectations.,2023-03-02 00:00:00
+943,818,359,5,"Amazing product, worth every penny!",2024-07-04 00:00:00
+944,784,408,2,Several issues with this item.,2024-02-09 00:00:00
+945,914,337,3,"Works as described, nothing more.",2023-05-26 00:00:00
+946,911,155,5,"Outstanding quality, highly recommended!",2023-08-02 00:00:00
+947,577,335,4,"Nice product, met my expectations.",2023-01-27 00:00:00
+948,140,85,5,"Fantastic product, very satisfied!",2024-07-09 00:00:00
+949,201,111,5,Superb quality and fast delivery.,2023-06-13 00:00:00
+950,278,559,4,"Good value for money, would recommend.",2023-08-16 00:00:00
+951,811,378,2,"Not as described, below expectations.",2023-02-16 00:00:00
+952,185,542,4,"Quality is good, delivery was fast.",2024-10-23 00:00:00
+953,196,282,4,"Nice product, met my expectations.",2024-08-29 00:00:00
+954,582,659,1,"Terrible product, waste of money.",2023-01-14 00:00:00
+955,563,361,4,"Quality is good, delivery was fast.",2023-05-16 00:00:00
+956,432,124,5,Perfect! Exactly what I was looking for.,2023-03-14 00:00:00
+957,160,642,3,"It's okay, meets basic requirements.",2023-05-12 00:00:00
+958,383,31,4,"Good value for money, would recommend.",2024-11-23 00:00:00
+959,600,687,3,Decent product for the price.,2023-04-18 00:00:00
+960,986,338,5,Superb quality and fast delivery.,2023-09-15 00:00:00
+961,875,683,5,Best purchase I've made in a long time!,2023-10-26 00:00:00
+962,86,159,5,"Amazing product, worth every penny!",2023-10-16 00:00:00
+963,185,606,3,"Acceptable, but not impressed.",2023-07-28 00:00:00
+964,805,278,5,Superb quality and fast delivery.,2023-09-21 00:00:00
+965,412,508,4,"Quality is good, delivery was fast.",2024-02-20 00:00:00
+966,276,499,4,Happy with this purchase overall.,2023-01-24 00:00:00
+967,519,102,5,Perfect! Exactly what I was looking for.,2023-11-13 00:00:00
+968,872,211,3,"Works as described, nothing more.",2024-05-03 00:00:00
+969,313,73,4,"Very good product, minor improvements needed.",2024-09-04 00:00:00
+970,548,79,5,"Fantastic product, very satisfied!",2024-10-01 00:00:00
+971,540,217,5,Best purchase I've made in a long time!,2024-02-07 00:00:00
+972,440,62,4,"Nice product, met my expectations.",2024-05-22 00:00:00
+973,908,104,5,"Fantastic product, very satisfied!",2024-02-13 00:00:00
+974,593,108,5,Superb quality and fast delivery.,2024-01-30 00:00:00
+975,137,369,5,Excellent product! Exceeded my expectations.,2024-05-09 00:00:00
+976,936,2,5,Excellent product! Exceeded my expectations.,2024-07-24 00:00:00
+977,830,237,5,"Outstanding quality, highly recommended!",2023-04-30 00:00:00
+978,695,181,5,Excellent product! Exceeded my expectations.,2023-11-28 00:00:00
+979,355,398,4,"Great quality, happy with my purchase.",2024-09-09 00:00:00
+980,644,164,2,Disappointed with the quality.,2023-10-28 00:00:00
+981,132,674,5,Best purchase I've made in a long time!,2024-11-01 00:00:00
+982,269,140,5,"Outstanding quality, highly recommended!",2023-12-23 00:00:00
+983,242,491,4,"Quality is good, delivery was fast.",2024-04-16 00:00:00
+984,252,171,5,"Outstanding quality, highly recommended!",2024-02-21 00:00:00
+985,979,494,4,"Solid product, does what it promises.",2024-07-05 00:00:00
+986,147,355,5,Excellent product! Exceeded my expectations.,2024-01-13 00:00:00
+987,694,296,5,Best purchase I've made in a long time!,2023-07-30 00:00:00
+988,317,30,5,"Fantastic product, very satisfied!",2023-09-05 00:00:00
+989,797,162,4,"Nice product, met my expectations.",2024-07-09 00:00:00
+990,759,539,5,"Amazing product, worth every penny!",2024-08-01 00:00:00
+991,632,159,5,"Amazing product, worth every penny!",2023-08-26 00:00:00
+992,101,410,5,Absolutely love it! Will buy again.,2024-07-17 00:00:00
+993,792,171,2,Poor quality for the price.,2023-10-01 00:00:00
+994,56,637,5,Excellent product! Exceeded my expectations.,2024-03-07 00:00:00
+995,758,628,5,Absolutely love it! Will buy again.,2023-03-13 00:00:00
+996,953,193,1,"Complete waste, avoid this product.",2024-05-07 00:00:00
+997,318,200,4,"Very good product, minor improvements needed.",2024-11-04 00:00:00
+998,420,99,4,"Solid product, does what it promises.",2023-12-05 00:00:00
+999,18,689,3,"Acceptable, but not impressed.",2024-04-06 00:00:00
+1000,318,237,5,Excellent product! Exceeded my expectations.,2023-09-29 00:00:00
+1001,575,457,5,"Amazing product, worth every penny!",2023-07-19 00:00:00
+1002,283,158,2,Would not recommend this product.,2024-09-06 00:00:00
+1003,69,281,5,Excellent product! Exceeded my expectations.,2023-02-23 00:00:00
+1004,286,186,3,"Fair quality, could be better.",2024-03-09 00:00:00
+1005,533,479,2,Disappointed with the quality.,2024-01-12 00:00:00
+1006,904,399,4,"Solid product, does what it promises.",2023-01-31 00:00:00
+1007,827,507,4,"Nice product, met my expectations.",2023-07-04 00:00:00
+1008,870,575,5,Perfect! Exactly what I was looking for.,2023-12-05 00:00:00
+1009,764,453,3,"Fair quality, could be better.",2023-10-29 00:00:00
+1010,340,343,4,"Nice product, met my expectations.",2023-04-17 00:00:00
+1011,135,691,5,"Amazing product, worth every penny!",2024-02-11 00:00:00
+1012,51,310,5,"Amazing product, worth every penny!",2024-08-05 00:00:00
+1013,985,357,4,"Nice product, met my expectations.",2023-12-23 00:00:00
+1014,782,80,5,Excellent product! Exceeded my expectations.,2023-11-13 00:00:00
+1015,26,550,4,"Solid product, does what it promises.",2023-05-31 00:00:00
+1016,160,508,4,"Very good product, minor improvements needed.",2023-05-29 00:00:00
+1017,370,96,4,"Nice product, met my expectations.",2024-06-07 00:00:00
+1018,787,448,5,"Amazing product, worth every penny!",2024-01-27 00:00:00
+1019,97,126,5,"Outstanding quality, highly recommended!",2024-06-07 00:00:00
+1020,557,682,4,"Very good product, minor improvements needed.",2024-05-20 00:00:00
+1021,928,347,5,Absolutely love it! Will buy again.,2024-01-05 00:00:00
+1022,100,609,4,"Quality is good, delivery was fast.",2024-02-05 00:00:00
+1023,518,411,3,Decent product for the price.,2024-04-22 00:00:00
+1024,327,398,4,"Very good product, minor improvements needed.",2024-06-17 00:00:00
+1025,796,431,4,Happy with this purchase overall.,2024-07-24 00:00:00
+1026,677,128,5,"Outstanding quality, highly recommended!",2024-10-05 00:00:00
+1027,914,133,5,Excellent product! Exceeded my expectations.,2024-05-23 00:00:00
+1028,673,397,5,Perfect! Exactly what I was looking for.,2023-04-01 00:00:00
+1029,70,371,2,"Not as described, below expectations.",2024-09-30 00:00:00
+1030,980,84,3,"It's okay, meets basic requirements.",2024-02-09 00:00:00
+1031,580,257,5,Best purchase I've made in a long time!,2023-06-14 00:00:00
+1032,56,325,5,"Amazing product, worth every penny!",2023-04-25 00:00:00
+1033,536,680,5,"Outstanding quality, highly recommended!",2023-05-26 00:00:00
+1034,888,635,5,"Amazing product, worth every penny!",2023-04-28 00:00:00
+1035,806,429,4,"Great quality, happy with my purchase.",2024-01-14 00:00:00
+1036,208,344,4,"Quality is good, delivery was fast.",2023-10-27 00:00:00
+1037,569,305,4,"Quality is good, delivery was fast.",2023-10-20 00:00:00
+1038,947,539,2,Disappointed with the quality.,2024-10-28 00:00:00
+1039,314,491,5,Perfect! Exactly what I was looking for.,2023-06-14 00:00:00
+1040,974,22,5,"Outstanding quality, highly recommended!",2023-01-28 00:00:00
+1041,717,280,5,Excellent product! Exceeded my expectations.,2024-07-12 00:00:00
+1042,26,366,5,Superb quality and fast delivery.,2024-11-24 00:00:00
+1043,799,170,4,"Nice product, met my expectations.",2024-06-06 00:00:00
+1044,581,226,5,Excellent product! Exceeded my expectations.,2023-08-29 00:00:00
+1045,642,127,4,"Very good product, minor improvements needed.",2024-09-19 00:00:00
+1046,809,61,3,"Fair quality, could be better.",2024-03-24 00:00:00
+1047,192,601,5,Perfect! Exactly what I was looking for.,2023-03-14 00:00:00
+1048,899,423,4,"Good value for money, would recommend.",2023-12-24 00:00:00
+1049,299,486,5,Best purchase I've made in a long time!,2024-05-22 00:00:00
+1050,118,539,4,"Nice product, met my expectations.",2023-05-28 00:00:00
+1051,659,620,5,"Amazing product, worth every penny!",2023-03-08 00:00:00
+1052,702,578,5,Best purchase I've made in a long time!,2024-03-10 00:00:00
+1053,26,446,4,"Very good product, minor improvements needed.",2024-03-25 00:00:00
+1054,293,374,2,Disappointed with the quality.,2023-02-03 00:00:00
+1055,552,450,4,"Nice product, met my expectations.",2024-09-12 00:00:00
+1056,875,272,1,"Extremely disappointed, returning it.",2024-02-28 00:00:00
+1057,503,14,3,"It's okay, meets basic requirements.",2024-09-16 00:00:00
+1058,465,538,3,"It's okay, meets basic requirements.",2023-12-14 00:00:00
+1059,796,423,2,Disappointed with the quality.,2023-02-04 00:00:00
+1060,352,356,4,Happy with this purchase overall.,2024-12-01 00:00:00
+1061,579,678,4,"Very good product, minor improvements needed.",2023-08-31 00:00:00
+1062,693,564,4,"Great quality, happy with my purchase.",2024-03-20 00:00:00
+1063,635,547,5,Excellent product! Exceeded my expectations.,2024-06-05 00:00:00
+1064,243,296,4,"Good value for money, would recommend.",2024-07-13 00:00:00
+1065,773,597,4,"Solid product, does what it promises.",2023-06-12 00:00:00
+1066,444,24,3,"Acceptable, but not impressed.",2024-03-02 00:00:00
+1067,1,616,4,"Great quality, happy with my purchase.",2023-06-17 00:00:00
+1068,584,674,5,"Amazing product, worth every penny!",2024-03-18 00:00:00
+1069,659,489,1,"Terrible product, waste of money.",2024-05-01 00:00:00
+1070,883,364,5,Excellent product! Exceeded my expectations.,2023-12-01 00:00:00
+1071,681,324,3,Decent product for the price.,2023-02-18 00:00:00
+1072,965,241,5,Absolutely love it! Will buy again.,2023-07-04 00:00:00
+1073,209,410,5,Best purchase I've made in a long time!,2024-05-27 00:00:00
+1074,823,578,4,"Quality is good, delivery was fast.",2023-10-06 00:00:00
+1075,276,571,4,"Great quality, happy with my purchase.",2024-10-06 00:00:00
+1076,813,21,5,Perfect! Exactly what I was looking for.,2024-03-04 00:00:00
+1077,228,69,5,Best purchase I've made in a long time!,2024-09-19 00:00:00
+1078,544,242,4,"Solid product, does what it promises.",2023-02-23 00:00:00
+1079,898,581,5,Superb quality and fast delivery.,2023-07-19 00:00:00
+1080,853,564,3,"Acceptable, but not impressed.",2023-10-26 00:00:00
+1081,494,148,3,Decent product for the price.,2024-02-11 00:00:00
+1082,148,62,4,"Solid product, does what it promises.",2023-03-27 00:00:00
+1083,644,577,5,Superb quality and fast delivery.,2024-07-09 00:00:00
+1084,27,247,4,"Solid product, does what it promises.",2023-05-26 00:00:00
+1085,853,676,3,"Works as described, nothing more.",2024-06-13 00:00:00
+1086,721,359,5,Best purchase I've made in a long time!,2023-02-16 00:00:00
+1087,684,408,4,"Great quality, happy with my purchase.",2024-02-17 00:00:00
+1088,90,246,4,"Great quality, happy with my purchase.",2024-09-26 00:00:00
+1089,989,61,3,"Works as described, nothing more.",2023-05-03 00:00:00
+1090,832,238,5,"Outstanding quality, highly recommended!",2023-11-12 00:00:00
+1091,357,90,4,"Good value for money, would recommend.",2024-07-30 00:00:00
+1092,91,59,3,Decent product for the price.,2023-09-27 00:00:00
+1093,364,607,5,Superb quality and fast delivery.,2023-05-09 00:00:00
+1094,541,244,2,"Not as described, below expectations.",2023-04-10 00:00:00
+1095,116,456,5,"Fantastic product, very satisfied!",2024-02-01 00:00:00
+1096,882,271,3,"Acceptable, but not impressed.",2024-02-20 00:00:00
+1097,611,328,5,Superb quality and fast delivery.,2024-09-28 00:00:00
+1098,247,679,4,"Very good product, minor improvements needed.",2023-07-21 00:00:00
+1099,254,494,5,Perfect! Exactly what I was looking for.,2023-01-06 00:00:00
+1100,547,478,4,"Very good product, minor improvements needed.",2024-04-02 00:00:00
+1101,133,226,4,Happy with this purchase overall.,2024-09-25 00:00:00
+1102,174,638,2,Poor quality for the price.,2024-08-01 00:00:00
+1103,787,380,2,Disappointed with the quality.,2023-03-16 00:00:00
+1104,13,484,3,"Average product, nothing special.",2023-11-23 00:00:00
+1105,869,447,5,"Outstanding quality, highly recommended!",2024-07-28 00:00:00
+1106,614,356,4,"Good value for money, would recommend.",2023-11-04 00:00:00
+1107,596,663,5,"Fantastic product, very satisfied!",2024-09-16 00:00:00
+1108,445,451,4,"Solid product, does what it promises.",2024-06-14 00:00:00
+1109,88,218,2,Would not recommend this product.,2024-03-15 00:00:00
+1110,417,20,5,"Amazing product, worth every penny!",2024-10-07 00:00:00
+1111,21,289,4,"Great quality, happy with my purchase.",2024-09-20 00:00:00
+1112,944,278,5,Best purchase I've made in a long time!,2023-12-28 00:00:00
+1113,376,87,4,"Solid product, does what it promises.",2024-01-05 00:00:00
+1114,230,411,4,Happy with this purchase overall.,2024-02-07 00:00:00
+1115,144,392,5,"Fantastic product, very satisfied!",2023-04-20 00:00:00
+1116,259,106,3,Decent product for the price.,2023-07-16 00:00:00
+1117,463,285,5,"Fantastic product, very satisfied!",2024-05-25 00:00:00
+1118,486,518,4,"Great quality, happy with my purchase.",2023-04-20 00:00:00
+1119,911,448,5,"Amazing product, worth every penny!",2023-03-01 00:00:00
+1120,131,302,5,"Amazing product, worth every penny!",2024-08-12 00:00:00
+1121,35,353,5,Superb quality and fast delivery.,2023-06-13 00:00:00
+1122,728,191,4,"Quality is good, delivery was fast.",2024-01-01 00:00:00
+1123,253,630,4,"Very good product, minor improvements needed.",2024-11-26 00:00:00
+1124,952,256,5,Perfect! Exactly what I was looking for.,2023-05-07 00:00:00
+1125,898,513,4,Happy with this purchase overall.,2024-12-01 00:00:00
+1126,64,4,5,"Amazing product, worth every penny!",2024-10-30 00:00:00
+1127,298,279,5,"Amazing product, worth every penny!",2023-04-23 00:00:00
+1128,680,634,5,Absolutely love it! Will buy again.,2024-06-06 00:00:00
+1129,921,118,4,"Quality is good, delivery was fast.",2023-09-20 00:00:00
+1130,993,347,2,Disappointed with the quality.,2024-05-18 00:00:00
+1131,461,696,5,Absolutely love it! Will buy again.,2024-03-19 00:00:00
+1132,646,315,5,"Outstanding quality, highly recommended!",2024-04-12 00:00:00
+1133,115,45,5,Excellent product! Exceeded my expectations.,2023-06-19 00:00:00
+1134,329,540,5,"Outstanding quality, highly recommended!",2023-01-11 00:00:00
+1135,681,277,5,Excellent product! Exceeded my expectations.,2024-04-11 00:00:00
+1136,16,45,2,Not satisfied with my purchase.,2023-05-21 00:00:00
+1137,725,352,5,"Fantastic product, very satisfied!",2023-06-05 00:00:00
+1138,644,481,4,"Nice product, met my expectations.",2023-09-09 00:00:00
+1139,334,20,4,"Very good product, minor improvements needed.",2023-08-22 00:00:00
+1140,948,34,4,"Great quality, happy with my purchase.",2024-06-20 00:00:00
+1141,907,537,5,Superb quality and fast delivery.,2024-09-28 00:00:00
+1142,339,216,2,Several issues with this item.,2024-08-08 00:00:00
+1143,400,694,4,"Very good product, minor improvements needed.",2023-10-31 00:00:00
+1144,865,68,4,"Nice product, met my expectations.",2024-04-14 00:00:00
+1145,593,472,3,"Average product, nothing special.",2024-05-26 00:00:00
+1146,364,406,4,"Very good product, minor improvements needed.",2023-09-26 00:00:00
+1147,687,372,4,"Nice product, met my expectations.",2023-11-28 00:00:00
+1148,24,106,5,"Outstanding quality, highly recommended!",2024-01-15 00:00:00
+1149,501,497,5,"Outstanding quality, highly recommended!",2024-04-16 00:00:00
+1150,427,332,5,"Fantastic product, very satisfied!",2024-01-01 00:00:00
+1151,561,479,4,"Great quality, happy with my purchase.",2023-04-30 00:00:00
+1152,398,241,4,Happy with this purchase overall.,2024-10-01 00:00:00
+1153,796,388,3,Decent product for the price.,2023-11-19 00:00:00
+1154,171,76,4,"Nice product, met my expectations.",2024-04-02 00:00:00
+1155,746,307,5,Absolutely love it! Will buy again.,2024-11-06 00:00:00
+1156,508,69,4,"Very good product, minor improvements needed.",2023-01-11 00:00:00
+1157,765,132,4,"Solid product, does what it promises.",2024-11-20 00:00:00
+1158,734,665,4,Happy with this purchase overall.,2023-12-21 00:00:00
+1159,380,42,4,"Quality is good, delivery was fast.",2023-08-21 00:00:00
+1160,254,75,3,"Works as described, nothing more.",2023-04-15 00:00:00
+1161,28,624,5,Best purchase I've made in a long time!,2024-10-24 00:00:00
+1162,323,421,2,Several issues with this item.,2023-10-21 00:00:00
+1163,598,416,1,Worst purchase ever made.,2023-12-15 00:00:00
+1164,95,104,4,"Great quality, happy with my purchase.",2024-01-01 00:00:00
+1165,67,266,5,Perfect! Exactly what I was looking for.,2024-08-22 00:00:00
+1166,698,164,5,Excellent product! Exceeded my expectations.,2023-02-27 00:00:00
+1167,33,419,5,Superb quality and fast delivery.,2023-03-15 00:00:00
+1168,394,572,4,"Great quality, happy with my purchase.",2024-03-04 00:00:00
+1169,725,291,4,"Nice product, met my expectations.",2024-08-18 00:00:00
+1170,642,372,1,"Complete waste, avoid this product.",2023-12-25 00:00:00
+1171,636,332,4,Happy with this purchase overall.,2024-07-07 00:00:00
+1172,744,371,4,"Solid product, does what it promises.",2023-02-06 00:00:00
+1173,418,607,4,"Very good product, minor improvements needed.",2024-03-06 00:00:00
+1174,129,460,3,"Works as described, nothing more.",2024-08-11 00:00:00
+1175,200,242,5,"Outstanding quality, highly recommended!",2024-04-25 00:00:00
+1176,591,436,4,"Great quality, happy with my purchase.",2024-11-01 00:00:00
+1177,67,23,4,"Solid product, does what it promises.",2024-08-22 00:00:00
+1178,681,651,5,Best purchase I've made in a long time!,2024-03-21 00:00:00
+1179,27,102,2,Would not recommend this product.,2023-07-10 00:00:00
+1180,795,211,3,"Average product, nothing special.",2024-06-30 00:00:00
+1181,884,219,5,Best purchase I've made in a long time!,2023-06-23 00:00:00
+1182,897,511,2,Would not recommend this product.,2023-10-25 00:00:00
+1183,185,663,5,Excellent product! Exceeded my expectations.,2023-01-21 00:00:00
+1184,257,201,4,"Great quality, happy with my purchase.",2023-11-30 00:00:00
+1185,694,504,4,"Very good product, minor improvements needed.",2023-07-27 00:00:00
+1186,639,26,5,"Outstanding quality, highly recommended!",2024-09-06 00:00:00
+1187,344,221,5,Absolutely love it! Will buy again.,2024-02-15 00:00:00
+1188,628,578,2,Not satisfied with my purchase.,2024-11-21 00:00:00
+1189,747,689,5,"Outstanding quality, highly recommended!",2024-07-25 00:00:00
+1190,272,426,5,Absolutely love it! Will buy again.,2023-11-07 00:00:00
+1191,290,653,4,"Quality is good, delivery was fast.",2023-03-31 00:00:00
+1192,383,632,2,Not satisfied with my purchase.,2024-06-09 00:00:00
+1193,892,6,3,Decent product for the price.,2023-10-05 00:00:00
+1194,314,359,5,Best purchase I've made in a long time!,2023-03-04 00:00:00
+1195,272,65,5,Perfect! Exactly what I was looking for.,2023-05-03 00:00:00
+1196,952,175,4,"Good value for money, would recommend.",2023-08-10 00:00:00
+1197,467,502,3,"Average product, nothing special.",2024-07-13 00:00:00
+1198,420,156,3,Decent product for the price.,2024-07-10 00:00:00
+1199,65,181,3,"Works as described, nothing more.",2023-07-16 00:00:00
+1200,339,635,4,"Nice product, met my expectations.",2023-07-21 00:00:00
+1201,412,535,4,Happy with this purchase overall.,2023-12-25 00:00:00
+1202,910,370,4,"Very good product, minor improvements needed.",2024-10-13 00:00:00
+1203,406,377,4,"Good value for money, would recommend.",2023-05-26 00:00:00
+1204,572,528,5,Absolutely love it! Will buy again.,2024-07-08 00:00:00
+1205,597,246,5,Perfect! Exactly what I was looking for.,2023-12-05 00:00:00
+1206,521,79,4,"Good value for money, would recommend.",2024-04-30 00:00:00
+1207,908,17,4,"Nice product, met my expectations.",2024-01-22 00:00:00
+1208,128,223,4,"Solid product, does what it promises.",2023-12-03 00:00:00
+1209,500,344,2,Would not recommend this product.,2024-06-03 00:00:00
+1210,822,274,4,"Solid product, does what it promises.",2023-03-08 00:00:00
+1211,854,615,4,"Quality is good, delivery was fast.",2023-08-10 00:00:00
+1212,25,90,4,"Good value for money, would recommend.",2024-02-16 00:00:00
+1213,988,675,4,"Solid product, does what it promises.",2023-02-06 00:00:00
+1214,314,358,5,Perfect! Exactly what I was looking for.,2024-05-24 00:00:00
+1215,335,448,4,"Great quality, happy with my purchase.",2024-04-05 00:00:00
+1216,519,540,4,"Quality is good, delivery was fast.",2023-10-08 00:00:00
+1217,210,141,5,"Outstanding quality, highly recommended!",2024-06-24 00:00:00
+1218,398,412,2,Would not recommend this product.,2023-09-30 00:00:00
+1219,814,282,4,"Solid product, does what it promises.",2023-12-31 00:00:00
+1220,641,263,5,"Outstanding quality, highly recommended!",2024-08-05 00:00:00
+1221,534,29,5,Excellent product! Exceeded my expectations.,2023-08-20 00:00:00
+1222,835,527,4,"Solid product, does what it promises.",2023-02-20 00:00:00
+1223,239,340,4,"Nice product, met my expectations.",2023-05-16 00:00:00
+1224,754,364,4,"Very good product, minor improvements needed.",2023-09-03 00:00:00
+1225,879,673,4,"Good value for money, would recommend.",2024-11-17 00:00:00
+1226,321,573,3,"Acceptable, but not impressed.",2024-07-27 00:00:00
+1227,530,127,4,"Solid product, does what it promises.",2023-07-18 00:00:00
+1228,364,10,5,Excellent product! Exceeded my expectations.,2023-03-29 00:00:00
+1229,180,539,2,Would not recommend this product.,2023-07-25 00:00:00
+1230,235,296,5,Best purchase I've made in a long time!,2024-07-30 00:00:00
+1231,433,489,3,"Works as described, nothing more.",2024-09-08 00:00:00
+1232,106,554,5,Best purchase I've made in a long time!,2024-11-13 00:00:00
+1233,812,469,4,"Solid product, does what it promises.",2023-08-12 00:00:00
+1234,363,562,3,"Fair quality, could be better.",2024-03-27 00:00:00
+1235,471,74,5,"Fantastic product, very satisfied!",2024-06-03 00:00:00
+1236,490,624,4,Happy with this purchase overall.,2024-09-17 00:00:00
+1237,848,540,2,Disappointed with the quality.,2023-05-27 00:00:00
+1238,32,389,4,"Nice product, met my expectations.",2023-11-28 00:00:00
+1239,916,283,4,"Good value for money, would recommend.",2024-03-22 00:00:00
+1240,180,694,5,"Outstanding quality, highly recommended!",2023-10-22 00:00:00
+1241,244,77,4,Happy with this purchase overall.,2024-11-06 00:00:00
+1242,103,53,4,"Quality is good, delivery was fast.",2023-01-18 00:00:00
+1243,737,141,5,Perfect! Exactly what I was looking for.,2023-02-19 00:00:00
+1244,501,483,1,"Very poor quality, do not buy.",2023-07-20 00:00:00
+1245,973,360,3,"It's okay, meets basic requirements.",2024-08-25 00:00:00
+1246,265,511,2,Disappointed with the quality.,2023-11-07 00:00:00
+1247,988,280,1,"Awful quality, very unhappy.",2023-11-26 00:00:00
+1248,882,482,4,"Good value for money, would recommend.",2023-04-05 00:00:00
+1249,712,619,5,Superb quality and fast delivery.,2024-04-07 00:00:00
+1250,783,515,4,"Great quality, happy with my purchase.",2023-04-01 00:00:00
+1251,155,116,5,Absolutely love it! Will buy again.,2024-08-11 00:00:00
+1252,86,142,5,Superb quality and fast delivery.,2023-06-04 00:00:00
+1253,505,261,5,"Fantastic product, very satisfied!",2024-09-15 00:00:00
+1254,675,614,4,"Very good product, minor improvements needed.",2024-07-30 00:00:00
+1255,762,289,3,"Acceptable, but not impressed.",2024-10-14 00:00:00
+1256,976,96,4,"Solid product, does what it promises.",2024-02-17 00:00:00
+1257,414,275,4,"Good value for money, would recommend.",2023-06-16 00:00:00
+1258,259,577,5,Best purchase I've made in a long time!,2023-05-07 00:00:00
+1259,532,513,5,"Outstanding quality, highly recommended!",2024-08-15 00:00:00
+1260,727,198,4,"Quality is good, delivery was fast.",2024-10-23 00:00:00
+1261,985,125,4,"Solid product, does what it promises.",2024-03-28 00:00:00
+1262,647,109,5,Perfect! Exactly what I was looking for.,2023-09-12 00:00:00
+1263,445,341,2,"Not as described, below expectations.",2024-01-27 00:00:00
+1264,498,446,5,"Amazing product, worth every penny!",2024-07-07 00:00:00
+1265,953,602,4,Happy with this purchase overall.,2023-01-28 00:00:00
+1266,12,568,5,Absolutely love it! Will buy again.,2024-07-10 00:00:00
+1267,550,88,4,"Good value for money, would recommend.",2023-10-08 00:00:00
+1268,846,609,5,"Fantastic product, very satisfied!",2023-06-26 00:00:00
+1269,236,613,5,Perfect! Exactly what I was looking for.,2023-08-25 00:00:00
+1270,174,406,5,Absolutely love it! Will buy again.,2023-02-19 00:00:00
+1271,87,111,1,"Awful quality, very unhappy.",2023-09-17 00:00:00
+1272,121,192,5,"Amazing product, worth every penny!",2024-06-03 00:00:00
+1273,429,427,5,"Outstanding quality, highly recommended!",2023-06-30 00:00:00
+1274,368,358,5,Perfect! Exactly what I was looking for.,2023-12-27 00:00:00
+1275,34,388,2,"Not as described, below expectations.",2023-10-27 00:00:00
+1276,381,89,5,"Outstanding quality, highly recommended!",2024-06-28 00:00:00
+1277,381,252,4,"Very good product, minor improvements needed.",2023-05-20 00:00:00
+1278,965,23,5,Perfect! Exactly what I was looking for.,2023-11-10 00:00:00
+1279,676,255,4,Happy with this purchase overall.,2023-07-22 00:00:00
+1280,567,318,5,"Fantastic product, very satisfied!",2024-02-21 00:00:00
+1281,104,381,4,"Very good product, minor improvements needed.",2023-11-06 00:00:00
+1282,736,391,4,"Great quality, happy with my purchase.",2023-09-04 00:00:00
+1283,595,585,4,"Quality is good, delivery was fast.",2024-09-01 00:00:00
+1284,282,645,3,Decent product for the price.,2024-09-13 00:00:00
+1285,626,300,2,Several issues with this item.,2024-08-13 00:00:00
+1286,351,438,5,Excellent product! Exceeded my expectations.,2023-09-25 00:00:00
+1287,591,536,5,"Outstanding quality, highly recommended!",2024-06-28 00:00:00
+1288,559,298,4,"Very good product, minor improvements needed.",2024-06-05 00:00:00
+1289,380,65,4,"Nice product, met my expectations.",2023-11-13 00:00:00
+1290,812,322,5,"Fantastic product, very satisfied!",2023-06-30 00:00:00
+1291,654,165,4,"Very good product, minor improvements needed.",2023-10-16 00:00:00
+1292,558,73,4,"Solid product, does what it promises.",2023-12-09 00:00:00
+1293,189,211,1,"Terrible product, waste of money.",2024-08-11 00:00:00
+1294,309,603,3,"Acceptable, but not impressed.",2024-10-02 00:00:00
+1295,514,613,5,Excellent product! Exceeded my expectations.,2024-10-23 00:00:00
+1296,481,419,3,"Fair quality, could be better.",2024-06-13 00:00:00
+1297,714,123,4,"Very good product, minor improvements needed.",2024-08-25 00:00:00
+1298,37,119,5,Perfect! Exactly what I was looking for.,2023-06-02 00:00:00
+1299,710,247,4,Happy with this purchase overall.,2024-02-12 00:00:00
+1300,604,52,4,Happy with this purchase overall.,2024-09-04 00:00:00
+1301,496,175,4,"Very good product, minor improvements needed.",2024-09-28 00:00:00
+1302,406,360,4,"Solid product, does what it promises.",2024-06-22 00:00:00
+1303,912,118,4,"Great quality, happy with my purchase.",2023-04-06 00:00:00
+1304,633,602,4,"Great quality, happy with my purchase.",2024-04-26 00:00:00
+1305,159,248,5,Superb quality and fast delivery.,2024-09-29 00:00:00
+1306,669,94,4,"Very good product, minor improvements needed.",2023-12-06 00:00:00
+1307,478,485,5,"Amazing product, worth every penny!",2024-05-19 00:00:00
+1308,39,511,4,"Good value for money, would recommend.",2024-08-20 00:00:00
+1309,884,375,5,Superb quality and fast delivery.,2024-02-12 00:00:00
+1310,14,119,4,Happy with this purchase overall.,2024-04-10 00:00:00
+1311,839,698,4,"Very good product, minor improvements needed.",2023-06-28 00:00:00
+1312,451,480,4,"Very good product, minor improvements needed.",2023-01-13 00:00:00
+1313,753,69,4,"Good value for money, would recommend.",2024-11-17 00:00:00
+1314,684,565,5,"Fantastic product, very satisfied!",2024-11-21 00:00:00
+1315,224,175,5,"Outstanding quality, highly recommended!",2024-01-17 00:00:00
+1316,301,389,5,Best purchase I've made in a long time!,2023-05-10 00:00:00
+1317,633,131,3,"It's okay, meets basic requirements.",2024-02-06 00:00:00
+1318,959,404,5,"Amazing product, worth every penny!",2023-08-13 00:00:00
+1319,907,4,4,"Great quality, happy with my purchase.",2024-08-28 00:00:00
+1320,56,213,5,Best purchase I've made in a long time!,2023-12-18 00:00:00
+1321,343,340,2,Poor quality for the price.,2023-03-30 00:00:00
+1322,215,494,5,Absolutely love it! Will buy again.,2024-05-24 00:00:00
+1323,815,53,5,"Outstanding quality, highly recommended!",2024-02-08 00:00:00
+1324,152,247,5,Excellent product! Exceeded my expectations.,2024-01-11 00:00:00
+1325,749,674,5,Best purchase I've made in a long time!,2024-09-01 00:00:00
+1326,310,459,5,Absolutely love it! Will buy again.,2023-10-08 00:00:00
+1327,680,528,5,Best purchase I've made in a long time!,2024-03-02 00:00:00
+1328,615,643,1,"Extremely disappointed, returning it.",2024-08-08 00:00:00
+1329,590,39,4,Happy with this purchase overall.,2024-09-03 00:00:00
+1330,721,162,5,Best purchase I've made in a long time!,2023-12-26 00:00:00
+1331,424,92,5,Perfect! Exactly what I was looking for.,2024-09-11 00:00:00
+1332,216,239,5,"Amazing product, worth every penny!",2023-10-12 00:00:00
+1333,92,79,3,"Acceptable, but not impressed.",2024-05-17 00:00:00
+1334,297,36,4,"Very good product, minor improvements needed.",2023-09-08 00:00:00
+1335,972,681,5,Superb quality and fast delivery.,2023-05-11 00:00:00
+1336,587,430,1,"Complete waste, avoid this product.",2024-09-26 00:00:00
+1337,752,605,5,Excellent product! Exceeded my expectations.,2024-05-25 00:00:00
+1338,288,351,4,"Very good product, minor improvements needed.",2023-12-25 00:00:00
+1339,828,151,5,Best purchase I've made in a long time!,2023-10-25 00:00:00
+1340,283,33,5,Superb quality and fast delivery.,2024-10-19 00:00:00
+1341,538,588,3,"Acceptable, but not impressed.",2023-06-10 00:00:00
+1342,143,540,2,Would not recommend this product.,2023-12-22 00:00:00
+1343,713,154,5,"Outstanding quality, highly recommended!",2023-08-16 00:00:00
+1344,875,431,4,"Quality is good, delivery was fast.",2024-09-28 00:00:00
+1345,72,329,3,"Acceptable, but not impressed.",2024-01-10 00:00:00
+1346,69,671,5,Excellent product! Exceeded my expectations.,2023-11-02 00:00:00
+1347,798,58,5,"Fantastic product, very satisfied!",2023-05-14 00:00:00
+1348,536,322,5,Absolutely love it! Will buy again.,2024-09-26 00:00:00
+1349,515,15,4,"Very good product, minor improvements needed.",2023-08-29 00:00:00
+1350,714,436,4,"Solid product, does what it promises.",2023-11-24 00:00:00
+1351,186,157,3,"It's okay, meets basic requirements.",2023-07-20 00:00:00
+1352,885,625,5,"Fantastic product, very satisfied!",2023-09-18 00:00:00
+1353,228,173,3,"Fair quality, could be better.",2024-02-02 00:00:00
+1354,765,309,5,Perfect! Exactly what I was looking for.,2023-06-13 00:00:00
+1355,541,434,5,Excellent product! Exceeded my expectations.,2024-09-03 00:00:00
+1356,522,102,5,Excellent product! Exceeded my expectations.,2023-12-16 00:00:00
+1357,755,85,5,"Outstanding quality, highly recommended!",2024-07-29 00:00:00
+1358,427,294,3,"Average product, nothing special.",2023-09-30 00:00:00
+1359,906,11,5,Perfect! Exactly what I was looking for.,2024-08-13 00:00:00
+1360,594,604,4,"Quality is good, delivery was fast.",2023-08-04 00:00:00
+1361,807,175,4,"Solid product, does what it promises.",2024-05-28 00:00:00
+1362,252,90,5,"Amazing product, worth every penny!",2024-01-05 00:00:00
+1363,905,667,2,Poor quality for the price.,2024-07-05 00:00:00
+1364,961,642,4,Happy with this purchase overall.,2023-05-07 00:00:00
+1365,749,213,5,Perfect! Exactly what I was looking for.,2023-01-18 00:00:00
+1366,333,190,4,"Good value for money, would recommend.",2024-08-02 00:00:00
+1367,123,433,5,Excellent product! Exceeded my expectations.,2024-11-12 00:00:00
+1368,5,448,4,"Very good product, minor improvements needed.",2024-05-23 00:00:00
+1369,983,334,4,"Quality is good, delivery was fast.",2024-08-24 00:00:00
+1370,537,7,3,"Fair quality, could be better.",2024-11-21 00:00:00
+1371,474,619,4,Happy with this purchase overall.,2023-01-08 00:00:00
+1372,624,643,4,"Great quality, happy with my purchase.",2023-01-18 00:00:00
+1373,703,669,5,"Fantastic product, very satisfied!",2024-04-14 00:00:00
+1374,512,47,4,"Nice product, met my expectations.",2024-09-30 00:00:00
+1375,776,236,2,Poor quality for the price.,2024-05-28 00:00:00
+1376,437,27,5,Excellent product! Exceeded my expectations.,2023-06-17 00:00:00
+1377,704,135,4,"Nice product, met my expectations.",2024-10-18 00:00:00
+1378,352,634,5,"Fantastic product, very satisfied!",2023-07-24 00:00:00
+1379,88,269,4,"Very good product, minor improvements needed.",2023-11-15 00:00:00
+1380,28,558,2,Poor quality for the price.,2023-06-11 00:00:00
+1381,108,410,3,"Fair quality, could be better.",2024-06-13 00:00:00
+1382,534,628,4,"Quality is good, delivery was fast.",2024-05-18 00:00:00
+1383,785,534,5,"Fantastic product, very satisfied!",2023-05-03 00:00:00
+1384,358,89,4,Happy with this purchase overall.,2024-05-10 00:00:00
+1385,390,653,4,"Solid product, does what it promises.",2023-06-16 00:00:00
+1386,410,20,5,Perfect! Exactly what I was looking for.,2023-11-09 00:00:00
+1387,382,210,5,Superb quality and fast delivery.,2024-11-08 00:00:00
+1388,38,256,3,"Works as described, nothing more.",2024-05-29 00:00:00
+1389,812,374,5,"Outstanding quality, highly recommended!",2024-04-12 00:00:00
+1390,510,22,2,Several issues with this item.,2024-01-09 00:00:00
+1391,424,473,3,Decent product for the price.,2024-01-13 00:00:00
+1392,895,271,3,"Fair quality, could be better.",2024-01-02 00:00:00
+1393,463,399,5,Absolutely love it! Will buy again.,2024-02-15 00:00:00
+1394,465,640,5,Absolutely love it! Will buy again.,2023-10-15 00:00:00
+1395,549,214,5,Absolutely love it! Will buy again.,2024-01-08 00:00:00
+1396,840,344,5,Best purchase I've made in a long time!,2023-12-13 00:00:00
+1397,185,383,5,Perfect! Exactly what I was looking for.,2024-03-05 00:00:00
+1398,437,101,2,Would not recommend this product.,2024-06-28 00:00:00
+1399,356,663,4,"Great quality, happy with my purchase.",2023-11-25 00:00:00
+1400,841,399,3,Decent product for the price.,2024-10-12 00:00:00
+1401,884,189,4,"Good value for money, would recommend.",2024-02-28 00:00:00
+1402,808,24,5,Best purchase I've made in a long time!,2024-04-23 00:00:00
+1403,391,373,3,"It's okay, meets basic requirements.",2024-04-17 00:00:00
+1404,784,386,5,Excellent product! Exceeded my expectations.,2024-10-20 00:00:00
+1405,502,164,5,Best purchase I've made in a long time!,2024-03-12 00:00:00
+1406,949,402,5,"Outstanding quality, highly recommended!",2023-09-29 00:00:00
+1407,760,546,5,Excellent product! Exceeded my expectations.,2024-09-22 00:00:00
+1408,636,323,5,"Outstanding quality, highly recommended!",2024-08-21 00:00:00
+1409,152,173,3,Decent product for the price.,2024-10-24 00:00:00
+1410,604,646,5,Superb quality and fast delivery.,2023-02-13 00:00:00
+1411,755,296,2,Several issues with this item.,2024-04-29 00:00:00
+1412,959,96,5,"Amazing product, worth every penny!",2023-10-03 00:00:00
+1413,693,113,5,Superb quality and fast delivery.,2024-07-03 00:00:00
+1414,21,423,2,"Not as described, below expectations.",2023-09-15 00:00:00
+1415,433,437,5,"Outstanding quality, highly recommended!",2023-03-19 00:00:00
+1416,233,675,5,"Fantastic product, very satisfied!",2024-11-17 00:00:00
+1417,277,465,2,Would not recommend this product.,2024-11-30 00:00:00
+1418,125,357,4,"Very good product, minor improvements needed.",2023-06-23 00:00:00
+1419,554,313,1,"Terrible product, waste of money.",2024-06-28 00:00:00
+1420,935,460,5,Superb quality and fast delivery.,2023-12-14 00:00:00
+1421,568,32,5,Excellent product! Exceeded my expectations.,2024-10-19 00:00:00
+1422,186,495,3,"Acceptable, but not impressed.",2023-12-22 00:00:00
+1423,441,141,4,"Solid product, does what it promises.",2023-02-04 00:00:00
+1424,560,586,2,Poor quality for the price.,2024-08-02 00:00:00
+1425,875,635,5,"Amazing product, worth every penny!",2024-11-05 00:00:00
+1426,484,68,5,Excellent product! Exceeded my expectations.,2023-10-26 00:00:00
+1427,220,8,5,Best purchase I've made in a long time!,2024-10-23 00:00:00
+1428,433,484,3,"Works as described, nothing more.",2024-07-31 00:00:00
+1429,807,198,4,"Very good product, minor improvements needed.",2024-10-20 00:00:00
+1430,967,656,4,"Good value for money, would recommend.",2024-07-14 00:00:00
+1431,250,368,3,Decent product for the price.,2023-09-07 00:00:00
+1432,763,534,4,"Great quality, happy with my purchase.",2024-05-15 00:00:00
+1433,556,294,5,Absolutely love it! Will buy again.,2024-01-06 00:00:00
+1434,589,586,3,"Works as described, nothing more.",2024-06-10 00:00:00
+1435,553,319,3,"Works as described, nothing more.",2023-02-26 00:00:00
+1436,324,274,4,Happy with this purchase overall.,2024-09-11 00:00:00
+1437,812,593,4,"Quality is good, delivery was fast.",2023-10-16 00:00:00
+1438,941,63,3,"It's okay, meets basic requirements.",2023-09-27 00:00:00
+1439,254,73,2,Disappointed with the quality.,2024-06-06 00:00:00
+1440,594,603,3,"Works as described, nothing more.",2024-06-02 00:00:00
+1441,493,674,3,"Fair quality, could be better.",2023-09-05 00:00:00
+1442,72,344,4,"Nice product, met my expectations.",2023-09-29 00:00:00
+1443,237,236,4,"Solid product, does what it promises.",2023-09-16 00:00:00
+1444,332,65,5,"Outstanding quality, highly recommended!",2023-08-14 00:00:00
+1445,291,209,5,Absolutely love it! Will buy again.,2024-07-07 00:00:00
+1446,824,270,3,"Average product, nothing special.",2023-03-27 00:00:00
+1447,778,529,2,Poor quality for the price.,2023-01-24 00:00:00
+1448,492,378,5,"Outstanding quality, highly recommended!",2024-01-20 00:00:00
+1449,3,255,5,Perfect! Exactly what I was looking for.,2023-04-24 00:00:00
+1450,621,102,3,"Works as described, nothing more.",2023-11-02 00:00:00
+1451,522,503,4,"Nice product, met my expectations.",2023-11-05 00:00:00
+1452,588,395,4,"Quality is good, delivery was fast.",2024-06-05 00:00:00
+1453,728,84,4,"Quality is good, delivery was fast.",2023-08-05 00:00:00
+1454,286,328,4,"Good value for money, would recommend.",2023-10-01 00:00:00
+1455,661,611,5,Absolutely love it! Will buy again.,2024-07-14 00:00:00
+1456,321,587,5,"Amazing product, worth every penny!",2023-06-16 00:00:00
+1457,713,357,4,"Great quality, happy with my purchase.",2024-01-25 00:00:00
+1458,372,551,5,Best purchase I've made in a long time!,2023-01-25 00:00:00
+1459,722,67,4,"Great quality, happy with my purchase.",2023-06-25 00:00:00
+1460,74,75,5,Perfect! Exactly what I was looking for.,2023-12-07 00:00:00
+1461,566,667,5,"Amazing product, worth every penny!",2023-02-22 00:00:00
+1462,430,620,5,Best purchase I've made in a long time!,2023-06-04 00:00:00
+1463,726,486,2,Would not recommend this product.,2024-04-19 00:00:00
+1464,934,324,5,Excellent product! Exceeded my expectations.,2023-12-29 00:00:00
+1465,157,265,4,"Good value for money, would recommend.",2023-09-24 00:00:00
+1466,534,353,5,"Fantastic product, very satisfied!",2023-09-03 00:00:00
+1467,643,490,5,"Outstanding quality, highly recommended!",2023-06-02 00:00:00
+1468,592,479,4,"Solid product, does what it promises.",2023-10-27 00:00:00
+1469,741,281,5,Best purchase I've made in a long time!,2023-12-30 00:00:00
+1470,491,199,4,"Great quality, happy with my purchase.",2023-09-07 00:00:00
+1471,951,200,3,Decent product for the price.,2023-12-28 00:00:00
+1472,840,558,5,Absolutely love it! Will buy again.,2024-02-16 00:00:00
+1473,39,657,5,Excellent product! Exceeded my expectations.,2023-12-30 00:00:00
+1474,340,164,4,"Quality is good, delivery was fast.",2024-10-15 00:00:00
+1475,806,125,3,"Fair quality, could be better.",2024-10-17 00:00:00
+1476,559,332,4,"Solid product, does what it promises.",2024-08-07 00:00:00
+1477,349,90,5,Perfect! Exactly what I was looking for.,2024-04-19 00:00:00
+1478,678,376,4,Happy with this purchase overall.,2023-11-04 00:00:00
+1479,115,117,4,Happy with this purchase overall.,2024-01-31 00:00:00
+1480,973,215,4,"Solid product, does what it promises.",2024-09-05 00:00:00
+1481,690,168,4,Happy with this purchase overall.,2024-05-27 00:00:00
+1482,295,54,5,Excellent product! Exceeded my expectations.,2024-03-12 00:00:00
+1483,688,579,5,Absolutely love it! Will buy again.,2023-07-17 00:00:00
+1484,687,58,4,"Good value for money, would recommend.",2024-02-01 00:00:00
+1485,696,555,5,Absolutely love it! Will buy again.,2024-03-16 00:00:00
+1486,75,539,5,Excellent product! Exceeded my expectations.,2024-07-10 00:00:00
+1487,662,60,5,Superb quality and fast delivery.,2023-09-02 00:00:00
+1488,723,637,3,"Average product, nothing special.",2023-03-24 00:00:00
+1489,600,66,2,Disappointed with the quality.,2023-10-11 00:00:00
+1490,96,52,4,"Very good product, minor improvements needed.",2023-02-16 00:00:00
+1491,247,337,3,"Acceptable, but not impressed.",2024-07-29 00:00:00
+1492,137,419,5,Perfect! Exactly what I was looking for.,2024-02-28 00:00:00
+1493,966,452,4,"Great quality, happy with my purchase.",2023-01-08 00:00:00
+1494,581,417,5,"Fantastic product, very satisfied!",2023-04-11 00:00:00
+1495,657,39,4,"Very good product, minor improvements needed.",2024-07-09 00:00:00
+1496,419,696,5,Excellent product! Exceeded my expectations.,2023-01-03 00:00:00
+1497,99,469,4,"Nice product, met my expectations.",2024-03-13 00:00:00
+1498,912,672,3,Decent product for the price.,2024-07-31 00:00:00
+1499,655,329,4,Happy with this purchase overall.,2023-05-04 00:00:00
+1500,569,490,2,Not satisfied with my purchase.,2024-11-26 00:00:00
