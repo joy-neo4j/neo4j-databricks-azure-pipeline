@@ -1,29 +1,33 @@
 name: Scheduled ETL Pipeline
 
 on:
-  schedule:
-    # Run daily at 2 AM UTC
-    - cron: '0 2 * * *'
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to run'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
-        default: 'prod'
 
 permissions:
   contents: read
 
 jobs:
+  validate-secrets:
+    name: Validate Required Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Databricks and Neo4j secrets
+        shell: bash
+        run: |
+          missing=0
+          host="${{ secrets.DATABRICKS_HOST }}"
+          token="${{ secrets.DATABRICKS_TOKEN }}"
+          if [ -z "$host" ]; then echo "::error::Missing secret: DATABRICKS_HOST"; missing=1; fi
+          if [ -z "$token" ]; then echo "::error::Missing secret: DATABRICKS_TOKEN"; missing=1; fi
+          if [ -z "${{ secrets.NEO4J_URI }}" ]; then echo "::error::Missing secret: NEO4J_URI"; missing=1; fi
+          if [ -z "${{ secrets.NEO4J_USER }}" ]; then echo "::error::Missing secret: NEO4J_USER"; missing=1; fi
+          if [ -z "${{ secrets.NEO4J_PASSWORD }}" ]; then echo "::error::Missing secret: NEO4J_PASSWORD"; missing=1; fi
+          if [ $missing -ne 0 ]; then echo "Secrets missing"; exit 1; fi
   run-etl:
     name: Run ETL Pipeline
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'prod' }}
+    environment: dev
+    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,8 +43,8 @@ jobs:
 
       - name: Configure Databricks
         env:
-          DATABRICKS_HOST: ${{ secrets[format('{0}_DATABRICKS_HOST', inputs.environment)] || secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.environment)] || secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           mkdir -p ~/.databrickscfg
           cat > ~/.databrickscfg << EOF
@@ -53,7 +57,7 @@ jobs:
         id: trigger_job
         run: |
           chmod +x scripts/run-etl-pipeline.sh
-          ./scripts/run-etl-pipeline.sh ${{ inputs.environment || 'prod' }}
+          ./scripts/run-etl-pipeline.sh dev
 
       - name: Monitor job execution
         run: |
@@ -65,7 +69,7 @@ jobs:
         run: |
           echo "## ETL Pipeline Execution" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Environment:** ${{ inputs.environment || 'prod' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** dev" >> $GITHUB_STEP_SUMMARY
           echo "**Triggered at:** $(date -u)" >> $GITHUB_STEP_SUMMARY
           echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
 
@@ -80,7 +84,7 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: failure
-          text: 'ETL Pipeline failed in ${{ inputs.environment || 'prod' }} environment'
+          text: 'ETL Pipeline failed in dev environment'
           webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Send email notification
@@ -95,7 +99,7 @@ jobs:
           to: ${{ secrets.NOTIFICATION_EMAIL }}
           from: GitHub Actions
           body: |
-            The scheduled ETL pipeline has failed in ${{ inputs.environment || 'prod' }} environment.
+            The scheduled ETL pipeline has failed in dev environment.
             
             Please check the GitHub Actions logs for details:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

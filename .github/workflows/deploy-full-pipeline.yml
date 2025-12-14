@@ -17,6 +17,10 @@ on:
         type: boolean
         default: false
 
+concurrency:
+  group: full-pipeline-${{ github.ref }}-${{ inputs.environment }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   id-token: write

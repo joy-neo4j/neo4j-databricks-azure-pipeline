@@ -2,7 +2,7 @@
 # Run ETL Pipeline Script
 # Triggers the ETL pipeline job in Databricks
 
-set -e
+set -euo pipefail
 
 ENVIRONMENT=${1:-prod}
 JOB_NAME="Neo4j ETL Pipeline - ${ENVIRONMENT}"
@@ -10,8 +10,12 @@ JOB_NAME="Neo4j ETL Pipeline - ${ENVIRONMENT}"
 echo "🚀 Running ETL Pipeline for ${ENVIRONMENT}"
 
 # Check prerequisites
-if [ -z "$DATABRICKS_HOST" ] || [ -z "$DATABRICKS_TOKEN" ]; then
+if [ -z "${DATABRICKS_HOST:-}" ] || [ -z "${DATABRICKS_TOKEN:-}" ]; then
     echo "❌ Error: DATABRICKS_HOST and DATABRICKS_TOKEN must be set"
+    exit 1
+fi
+if [ -z "${NEO4J_URI:-}" ] || [ -z "${NEO4J_USER:-}" ] || [ -z "${NEO4J_PASSWORD:-}" ]; then
+    echo "❌ Error: NEO4J_URI, NEO4J_USER and NEO4J_PASSWORD must be set"
     exit 1
 fi
 

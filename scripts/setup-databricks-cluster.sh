@@ -2,7 +2,7 @@
 # Setup Databricks Cluster Script
 # Creates or updates Databricks cluster with Neo4j connector
 
-set -e
+set -euo pipefail
 
 ENVIRONMENT=${1:-dev}
 CLUSTER_NAME="neo4j-pipeline-${ENVIRONMENT}"
@@ -10,9 +10,9 @@ CLUSTER_NAME="neo4j-pipeline-${ENVIRONMENT}"
 echo "🚀 Setting up Databricks cluster for ${ENVIRONMENT}"
 
 # Check prerequisites
-if [ -z "$DATABRICKS_HOST" ] || [ -z "$DATABRICKS_TOKEN" ]; then
-    echo "❌ Error: DATABRICKS_HOST and DATABRICKS_TOKEN environment variables must be set"
-    exit 1
+if [ -z "${DATABRICKS_HOST:-}" ] || [ -z "${DATABRICKS_TOKEN:-}" ]; then
+  echo "❌ Error: DATABRICKS_HOST and DATABRICKS_TOKEN environment variables must be set"
+  exit 1
 fi
 
 # Load cluster configuration

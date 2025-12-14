@@ -16,11 +16,26 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: databricks-config-${{ github.ref }}-${{ inputs.environment }}
+  cancel-in-progress: true
+
 jobs:
+  validate-secrets:
+    name: Validate Databricks Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check DATABRICKS_HOST/TOKEN
+        shell: bash
+        run: |
+          host="${{ secrets[format('{0}_DATABRICKS_HOST', inputs.environment)] || secrets.DATABRICKS_HOST }}"
+          token="${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.environment)] || secrets.DATABRICKS_TOKEN }}"
+          if [ -z "$host" ] || [ -z "$token" ]; then echo "::error::Missing Databricks host/token secrets"; exit 1; fi
   setup-neo4j-cluster:
     name: Setup Neo4j-Dedicated Cluster
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

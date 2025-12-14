@@ -2,30 +2,35 @@ name: Deploy Data Pipeline
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
-  push:
-    branches:
-      - main
-    paths:
-      - 'databricks/**'
-      - 'scripts/**'
+
+concurrency:
+  group: deploy-data-pipeline-${{ github.ref }}-dev
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
+  validate-secrets:
+    name: Validate Required Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check environment-scoped or default secrets
+        shell: bash
+        run: |
+          missing=0
+          # Prefer environment-scoped secrets like DEV_DATABRICKS_HOST, fallback to default
+          host="${{ secrets.DATABRICKS_HOST }}"
+          token="${{ secrets.DATABRICKS_TOKEN }}"
+          if [ -z "$host" ]; then echo "::error::Missing secret: DATABRICKS_HOST (or env-scoped)"; missing=1; fi
+          if [ -z "$token" ]; then echo "::error::Missing secret: DATABRICKS_TOKEN (or env-scoped)"; missing=1; fi
+          if [ $missing -ne 0 ]; then echo "Secrets missing"; exit 1; fi
+
   deploy-notebooks:
     name: Deploy Databricks Notebooks
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'dev' }}
+    environment: dev
+    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,8 +45,8 @@ jobs:
 
       - name: Configure Databricks
         env:
-          DATABRICKS_HOST: ${{ secrets[format('{0}_DATABRICKS_HOST', inputs.environment)] || secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.environment)] || secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           mkdir -p ~/.databrickscfg
           cat > ~/.databrickscfg << EOF
@@ -58,7 +63,7 @@ jobs:
       - name: Update job configurations
         run: |
           chmod +x scripts/create-databricks-jobs.sh
-          ./scripts/create-databricks-jobs.sh ${{ inputs.environment || 'dev' }}
+          ./scripts/create-databricks-jobs.sh dev
 
   validate-notebooks:
     name: Validate Notebooks

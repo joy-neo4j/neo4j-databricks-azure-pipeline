@@ -2,25 +2,30 @@ name: Deploy Infrastructure Only
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
+
+concurrency:
+  group: infra-${{ github.ref }}-dev
+  cancel-in-progress: true
 
 permissions:
   contents: read
   id-token: write
 
 jobs:
+  validate-secrets:
+    name: Validate Required Azure Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Azure credentials secret
+        shell: bash
+        run: |
+          creds="${{ secrets.AZURE_CREDENTIALS }}"
+          if [ -z "$creds" ]; then echo "::error::Missing secret: AZURE_CREDENTIALS (or env-scoped)"; exit 1; fi
   deploy:
     name: Deploy Azure Infrastructure
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
+    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

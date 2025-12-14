@@ -25,11 +25,25 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: aura-setup-${{ github.ref }}-${{ inputs.environment }}
+  cancel-in-progress: true
+
 jobs:
+  validate-secrets:
+    name: Validate Aura Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check AURA credentials
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.AURA_CLIENT_ID }}" ] || [ -z "${{ secrets.AURA_CLIENT_SECRET }}" ]; then
+            echo "::error::Missing AURA_CLIENT_ID or AURA_CLIENT_SECRET"; exit 1; fi
   create-neo4j-instance:
     name: Create Performance-Optimized Neo4j Aura Instance
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    needs: validate-secrets
     outputs:
       neo4j_uri: ${{ steps.create-instance.outputs.uri }}
       neo4j_username: ${{ steps.create-instance.outputs.username }}

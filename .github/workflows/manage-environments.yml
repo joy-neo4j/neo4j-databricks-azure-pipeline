@@ -32,12 +32,34 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: manage-env-${{ github.ref }}-${{ inputs.action }}-${{ inputs.source_environment }}-${{ inputs.target_environment }}
+  cancel-in-progress: true
+
 jobs:
+  validate-secrets:
+    name: Validate Required Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Databricks secrets for source/target
+        shell: bash
+        run: |
+          missing=0
+          src_host="${{ secrets[format('{0}_DATABRICKS_HOST', inputs.source_environment)] }}"
+          src_token="${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.source_environment)] }}"
+          if [ -z "$src_host" ] || [ -z "$src_token" ]; then echo "::error::Missing source env Databricks secrets"; missing=1; fi
+          if [ "${{ inputs.action }}" = "promote" ]; then
+            tgt_host="${{ secrets[format('{0}_DATABRICKS_HOST', inputs.target_environment)] }}"
+            tgt_token="${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.target_environment)] }}"
+            if [ -z "$tgt_host" ] || [ -z "$tgt_token" ]; then echo "::error::Missing target env Databricks secrets"; missing=1; fi
+          fi
+          if [ $missing -ne 0 ]; then exit 1; fi
   promote:
     name: Promote Environment
     runs-on: ubuntu-latest
     if: ${{ inputs.action == 'promote' }}
     environment: ${{ inputs.target_environment }}
+    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -70,6 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.action == 'backup' }}
     environment: ${{ inputs.source_environment }}
+    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -102,6 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ inputs.action == 'rollback' }}
     environment: ${{ inputs.source_environment }}
+    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
