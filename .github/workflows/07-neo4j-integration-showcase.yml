@@ -2,25 +2,35 @@ name: 07 - Neo4j Integration Showcase
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to run showcase (dev, staging, prod)'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
 
 permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: showcase-${{ github.ref }}-dev
+  cancel-in-progress: true
+
 jobs:
+  validate-secrets:
+    name: Validate Databricks and Neo4j Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check secrets
+        shell: bash
+        run: |
+          missing=0
+          [ -z "${{ secrets.DATABRICKS_HOST }}" ] && echo "::error::Missing DATABRICKS_HOST" && missing=1
+          [ -z "${{ secrets.DATABRICKS_TOKEN }}" ] && echo "::error::Missing DATABRICKS_TOKEN" && missing=1
+          [ -z "${{ secrets.NEO4J_URI }}" ] && echo "::error::Missing NEO4J_URI" && missing=1
+          [ -z "${{ secrets.NEO4J_USER }}" ] && echo "::error::Missing NEO4J_USER" && missing=1
+          [ -z "${{ secrets.NEO4J_PASSWORD }}" ] && echo "::error::Missing NEO4J_PASSWORD" && missing=1
+          [ $missing -ne 0 ] && exit 1 || true
   execute-pipeline:
     name: Execute Complete E-commerce Pipeline
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
+    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,7 +61,7 @@ jobs:
           import time
           
           w = WorkspaceClient()
-          environment = "${{ inputs.environment }}"
+          environment = "dev"
           
           # Find ingestion job
           jobs = list(w.jobs.list(name=f"E-commerce Data Ingestion - {environment}"))
@@ -129,7 +139,7 @@ jobs:
   verify-graph-data:
     name: Verify Neo4j Graph Data
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
     needs: execute-pipeline
     steps:
       - name: Checkout code
@@ -147,7 +157,7 @@ jobs:
       - name: Verify Graph Structure
         env:
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
-          NEO4J_USER: ${{ secrets.NEO4J_USERNAME }}
+          NEO4J_USER: ${{ secrets.NEO4J_USER }}
           NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
         run: |
           cat > /tmp/verify-graph.py << 'EOF'
@@ -222,7 +232,7 @@ jobs:
   run-analytics-queries:
     name: Execute E-commerce Analytics
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
     needs: verify-graph-data
     steps:
       - name: Checkout code
@@ -240,7 +250,7 @@ jobs:
       - name: Run Customer 360 Query
         env:
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
-          NEO4J_USER: ${{ secrets.NEO4J_USERNAME }}
+          NEO4J_USER: ${{ secrets.NEO4J_USER }}
           NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
         run: |
           cat > /tmp/customer-360.py << 'EOF'

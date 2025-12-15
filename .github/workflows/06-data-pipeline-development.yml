@@ -2,25 +2,30 @@ name: 06 - Data Pipeline Development
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy (dev, staging, prod)'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
 
 permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: dev-data-pipeline-dev-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  validate-secrets:
+    name: Validate Databricks Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check DATABRICKS_HOST/TOKEN
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.DATABRICKS_HOST }}" ] || [ -z "${{ secrets.DATABRICKS_TOKEN }}" ]; then
+            echo "::error::Missing DATABRICKS_HOST or DATABRICKS_TOKEN"; exit 1; fi
   upload-notebooks:
     name: Deploy E-commerce ETL Notebooks
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
+    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -85,7 +90,7 @@ jobs:
   create-jobs:
     name: Create E-commerce Data Pipeline Jobs
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
     needs: upload-notebooks
     steps:
       - name: Checkout code
@@ -114,16 +119,16 @@ jobs:
         run: |
           cat > /tmp/ecommerce-ingestion-job.json << 'EOF'
           {
-            "name": "E-commerce Data Ingestion - ${{ inputs.environment }}",
+            "name": "E-commerce Data Ingestion - dev",
             "new_cluster": {
               "spark_version": "13.3.x-scala2.12",
-              "node_type_id": "${{ inputs.environment == 'prod' && 'Standard_DS4_v2' || 'Standard_DS3_v2' }}",
-              "num_workers": ${{ inputs.environment == 'prod' && 3 || 2 }},
+              "node_type_id": "Standard_DS3_v2",
+              "num_workers": 2,
               "spark_conf": {
                 "spark.databricks.delta.preview.enabled": "true"
               },
               "custom_tags": {
-                "Environment": "${{ inputs.environment }}",
+                "Environment": "dev",
                 "Pipeline": "E-commerce-Ingestion"
               }
             },
@@ -140,7 +145,7 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/csv-ingestion",
                   "base_parameters": {
-                    "environment": "${{ inputs.environment }}",
+                    "environment": "dev",
                     "source_name": "customers"
                   }
                 }
@@ -150,7 +155,7 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/csv-ingestion",
                   "base_parameters": {
-                    "environment": "${{ inputs.environment }}",
+                    "environment": "dev",
                     "source_name": "products"
                   }
                 },
@@ -161,7 +166,7 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/csv-ingestion",
                   "base_parameters": {
-                    "environment": "${{ inputs.environment }}",
+                    "environment": "dev",
                     "source_name": "orders"
                   }
                 },
@@ -184,16 +189,16 @@ jobs:
         run: |
           cat > /tmp/neo4j-loading-job.json << 'EOF'
           {
-            "name": "Neo4j Graph Loading - ${{ inputs.environment }}",
+            "name": "Neo4j Graph Loading - dev",
             "new_cluster": {
               "spark_version": "13.3.x-scala2.12",
-              "node_type_id": "${{ inputs.environment == 'prod' && 'Standard_DS4_v2' || 'Standard_DS3_v2' }}",
-              "num_workers": ${{ inputs.environment == 'prod' && 4 || 2 }},
+              "node_type_id": "Standard_DS3_v2",
+              "num_workers": 2,
               "spark_conf": {
                 "spark.databricks.delta.preview.enabled": "true"
               },
               "custom_tags": {
-                "Environment": "${{ inputs.environment }}",
+                "Environment": "dev",
                 "Pipeline": "Neo4j-Loading"
               },
               "init_scripts": [
@@ -222,7 +227,7 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/graph-transformation",
                   "base_parameters": {
-                    "environment": "${{ inputs.environment }}"
+                    "environment": "dev"
                   }
                 }
               },
@@ -231,7 +236,7 @@ jobs:
                 "notebook_task": {
                   "notebook_path": "/Workspace/ecommerce-pipeline/notebooks/neo4j-loading",
                   "base_parameters": {
-                    "environment": "${{ inputs.environment }}"
+                    "environment": "dev"
                   }
                 },
                 "depends_on": [{"task_key": "transform_to_graph"}]
@@ -253,11 +258,11 @@ jobs:
         run: |
           cat > /tmp/analytics-job.json << 'EOF'
           {
-            "name": "E-commerce Analytics - ${{ inputs.environment }}",
+            "name": "E-commerce Analytics - dev",
             "new_cluster": {
               "spark_version": "13.3.x-scala2.12",
-              "node_type_id": "${{ inputs.environment == 'prod' && 'Standard_DS4_v2' || 'Standard_DS3_v2' }}",
-              "num_workers": ${{ inputs.environment == 'prod' && 3 || 2 }},
+              "node_type_id": "Standard_DS3_v2",
+              "num_workers": 2,
               "custom_tags": {
                 "Environment": "${{ inputs.environment }}",
                 "Pipeline": "Analytics"

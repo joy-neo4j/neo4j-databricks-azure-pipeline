@@ -2,25 +2,20 @@ name: 01 - Prerequisites Setup
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to validate (dev, staging, prod)'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
 
 permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: prereqs-${{ github.ref }}-dev
+  cancel-in-progress: true
+
 jobs:
   validate-credentials:
     name: Validate Azure and Neo4j Credentials
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
     outputs:
       azure_valid: ${{ steps.azure-check.outputs.valid }}
       databricks_valid: ${{ steps.databricks-check.outputs.valid }}

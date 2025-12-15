@@ -2,25 +2,20 @@ name: 08 - Testing and Validation
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to validate (dev, staging, prod)'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
 
 permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: testing-validations-${{ github.ref }}-dev
+  cancel-in-progress: true
+
 jobs:
   validate-infrastructure:
     name: Validate Azure Infrastructure
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,7 +28,7 @@ jobs:
       - name: Verify Resource Group
         run: |
           echo "Validating resource group..."
-          RG_NAME="rg-neo4j-databricks-${{ inputs.environment }}"
+          RG_NAME="rg-neo4j-databricks-dev"
           
           if az group show --name $RG_NAME &> /dev/null; then
             echo "✅ Resource group exists: $RG_NAME"
@@ -53,7 +48,7 @@ jobs:
       - name: Verify Storage Account
         run: |
           echo "Validating storage account..."
-          RG_NAME="rg-neo4j-databricks-${{ inputs.environment }}"
+          RG_NAME="rg-neo4j-databricks-dev"
           
           STORAGE_ACCOUNTS=$(az storage account list --resource-group $RG_NAME --query "[].name" -o tsv)
           
@@ -94,7 +89,7 @@ jobs:
   validate-databricks:
     name: Validate Databricks Configuration
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -124,7 +119,7 @@ jobs:
           from databricks.sdk import WorkspaceClient
           
           w = WorkspaceClient()
-          environment = "${{ inputs.environment }}"
+          environment = "dev"
           
           clusters = list(w.clusters.list())
           neo4j_clusters = [c for c in clusters if 'neo4j' in c.cluster_name.lower()]
@@ -145,7 +140,7 @@ jobs:
           from databricks.sdk import WorkspaceClient
           
           w = WorkspaceClient()
-          environment = "${{ inputs.environment }}"
+          environment = "dev"
           
           jobs = list(w.jobs.list())
           ecommerce_jobs = [j for j in jobs if 'commerce' in j.settings.name.lower() or 'neo4j' in j.settings.name.lower()]
@@ -178,7 +173,7 @@ jobs:
   validate-neo4j:
     name: Validate Neo4j Integration
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -195,7 +190,7 @@ jobs:
       - name: Test Neo4j Connection
         env:
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
-          NEO4J_USER: ${{ secrets.NEO4J_USERNAME }}
+          NEO4J_USER: ${{ secrets.NEO4J_USER }}
           NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
         run: |
           cat > /tmp/test-neo4j-connection.py << 'EOF'
@@ -239,7 +234,7 @@ jobs:
       - name: Validate Graph Schema
         env:
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
-          NEO4J_USER: ${{ secrets.NEO4J_USERNAME }}
+          NEO4J_USER: ${{ secrets.NEO4J_USER }}
           NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
         run: |
           cat > /tmp/validate-schema.py << 'EOF'

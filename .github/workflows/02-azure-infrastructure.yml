@@ -2,30 +2,29 @@ name: 02 - Azure Infrastructure Deployment
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy (dev, staging, prod)'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
-      destroy:
-        description: 'Destroy infrastructure instead of creating'
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: infra-02-${{ github.ref }}-dev
+  cancel-in-progress: true
+
 jobs:
+  validate-secrets:
+    name: Validate Azure Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check AZURE_CREDENTIALS secret
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.AZURE_CREDENTIALS }}" ]; then echo "::error::Missing AZURE_CREDENTIALS"; exit 1; fi
   deploy-infrastructure:
     name: Deploy UK South Azure Resources
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: dev
+    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,9 +46,9 @@ jobs:
           terraform {
             backend "azurerm" {
               resource_group_name  = "rg-terraform-state"
-              storage_account_name = "stterraformstate${{ inputs.environment }}"
+              storage_account_name = "stterraformstatedev"
               container_name       = "tfstate"
-              key                  = "neo4j-databricks-${{ inputs.environment }}.tfstate"
+              key                  = "neo4j-databricks-dev.tfstate"
             }
           }
           EOF
@@ -59,7 +58,6 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        if: ${{ !inputs.destroy }}
         working-directory: terraform
         env:
           TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
@@ -67,11 +65,10 @@ jobs:
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
         run: |
           terraform plan \
-            -var-file="environments/${{ inputs.environment }}.tfvars" \
+            -var-file="environments/dev.tfvars.example" \
             -out=tfplan
 
       - name: Terraform Apply
-        if: ${{ !inputs.destroy }}
         working-directory: terraform
         env:
           TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
@@ -80,19 +77,7 @@ jobs:
         run: |
           terraform apply -auto-approve tfplan
 
-      - name: Terraform Destroy
-        if: ${{ inputs.destroy }}
-        working-directory: terraform
-        env:
-          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
-          TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
-          TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
-        run: |
-          terraform destroy -auto-approve \
-            -var-file="environments/${{ inputs.environment }}.tfvars"
-
       - name: Export Terraform Outputs
-        if: ${{ !inputs.destroy }}
         working-directory: terraform
         run: |
           terraform output -json > /tmp/terraform-outputs.json
@@ -101,7 +86,6 @@ jobs:
           echo "DATABRICKS_WORKSPACE_URL=$(terraform output -raw databricks_workspace_url)" >> $GITHUB_ENV
 
       - name: Verify UK South Deployment
-        if: ${{ !inputs.destroy }}
         run: |
           echo "Verifying UK South region deployment..."
           az group show --name ${{ env.RESOURCE_GROUP }} --query location -o tsv | grep "uksouth"
@@ -140,13 +124,12 @@ jobs:
             --overwrite
 
       - name: Infrastructure Summary
-        if: ${{ !inputs.destroy }}
         run: |
           echo "=================================="
           echo "Infrastructure Deployment Complete"
           echo "=================================="
           echo ""
-          echo "Environment: ${{ inputs.environment }}"
+          echo "Environment: dev"
           echo "Region: UK South"
           echo "Resource Group: ${{ env.RESOURCE_GROUP }}"
           echo "Storage Account: ${{ env.STORAGE_ACCOUNT }}"
