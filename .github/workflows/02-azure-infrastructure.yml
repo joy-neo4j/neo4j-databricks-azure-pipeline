@@ -1,4 +1,4 @@
-name: 02 - Azure Infrastructure Deployment
+name: 02 - Azure Infrastructure
 
 on:
   workflow_dispatch:
@@ -97,13 +97,12 @@ jobs:
           fi
 
       - name: Configure Network Optimization
-        if: ${{ !inputs.destroy }}
         run: |
           echo "Configuring network optimization for Neo4j traffic..."
           # Add network security group rules for Neo4j
           az network nsg rule create \
             --resource-group ${{ env.RESOURCE_GROUP }} \
-            --nsg-name nsg-neo4j-${{ inputs.environment }} \
+            --nsg-name nsg-neo4j-dev \
             --name AllowNeo4jBolt \
             --priority 100 \
             --direction Inbound \
@@ -114,7 +113,6 @@ jobs:
             || echo "NSG rule already exists or NSG not found"
 
       - name: Upload Storage Sample Data
-        if: ${{ !inputs.destroy }}
         run: |
           echo "Uploading sample e-commerce data to Azure Storage..."
           az storage blob upload-batch \

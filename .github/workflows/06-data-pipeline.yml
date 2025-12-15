@@ -87,11 +87,36 @@ jobs:
             dbfs:/databricks/init-scripts/neo4j-connector-init.sh \
             --overwrite || echo "Init script will be created during cluster setup"
 
+  validate-notebooks:
+    name: Validate Notebooks Syntax
+    runs-on: ubuntu-latest
+    needs: upload-notebooks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install pyspark neo4j pytest
+
+      - name: Syntax check notebooks
+        run: |
+          for notebook in databricks/notebooks/*.py; do
+            echo "Checking $notebook"
+            python -m py_compile "$notebook"
+          done
+          echo "✅ All notebooks passed syntax check"
+
   create-jobs:
     name: Create E-commerce Data Pipeline Jobs
     runs-on: ubuntu-latest
     environment: dev
-    needs: upload-notebooks
+    needs: validate-notebooks
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
