@@ -80,7 +80,7 @@ jobs:
               curl_json \
                 -H "Content-Type: application/x-www-form-urlencoded" \
                 --data-urlencode grant_type=client_credentials \
-                # --data-urlencode audience="$audience" \
+                --data-urlencode audience="$audience" \
                 --data-urlencode client_id="${{ secrets.AURA_CLIENT_ID }}" \
                 --data-urlencode client_secret="${{ secrets.AURA_CLIENT_SECRET }}" \
                 https://api.neo4j.io/oauth/token
