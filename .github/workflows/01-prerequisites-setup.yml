@@ -70,9 +70,14 @@ jobs:
           if [ -n "${{ secrets.AURA_CLIENT_ID }}" ] && [ -n "${{ secrets.AURA_CLIENT_SECRET }}" ]; then
             set -e
 
+            curl_json() {
+              # Emits: " HTTPSTATUS:<code>"
+              curl -sS -m 20 --retry 2 -w ' HTTPSTATUS:%{http_code}' "$@"
+            }
+
             get_token() {
               local audience="$1"
-              curl -sS -m 20 --retry 2 -w "%{http_code}" -o /tmp/aura_token.json \
+              curl_json \
                 -H "Content-Type: application/x-www-form-urlencoded" \
                 --data-urlencode grant_type=client_credentials \
                 --data-urlencode audience="$audience" \
@@ -81,38 +86,44 @@ jobs:
                 https://login.neo4j.com/oauth/token
             }
 
-            TOKEN_CODE=$(get_token "https://api.neo4j.io/")
-            if [ "$TOKEN_CODE" -ne 200 ]; then
-              ERR=$(jq -r '.error // empty' /tmp/aura_token.json)
-              DESC=$(jq -r '.error_description // empty' /tmp/aura_token.json)
-              echo "First token attempt failed (HTTP $TOKEN_CODE). error=$ERR desc=$DESC"
-              TOKEN_CODE=$(get_token "https://api.neo4j.io")
+            # Try audience with trailing slash first, then without
+            RESP="$(get_token 'https://api.neo4j.io/')"
+            CODE="${RESP##*HTTPSTATUS:}"
+            BODY="${RESP% HTTPSTATUS:*}"
+            if [ "$CODE" -ne 200 ]; then
+              echo "First token attempt failed (HTTP $CODE)"
+              echo "error=$(echo "$BODY" | jq -r '.error // empty' 2>/dev/null)"
+              echo "desc=$(echo "$BODY" | jq -r '.error_description // empty' 2>/dev/null)"
+              RESP="$(get_token 'https://api.neo4j.io')"
+              CODE="${RESP##*HTTPSTATUS:}"
+              BODY="${RESP% HTTPSTATUS:*}"
             fi
 
-            if [ "$TOKEN_CODE" -ne 200 ]; then
-              ERR=$(jq -r '.error // empty' /tmp/aura_token.json)
-              DESC=$(jq -r '.error_description // empty' /tmp/aura_token.json)
-              echo "❌ Neo4j Aura OAuth token request failed (HTTP $TOKEN_CODE). error=$ERR desc=$DESC"
+            if [ "$CODE" -ne 200 ]; then
+              echo "❌ Neo4j Aura OAuth token request failed (HTTP $CODE)"
+              echo "error=$(echo "$BODY" | jq -r '.error // empty' 2>/dev/null)"
+              echo "desc=$(echo "$BODY" | jq -r '.error_description // empty' 2>/dev/null)"
               echo "valid=false" >> $GITHUB_OUTPUT
               exit 1
             fi
 
-            ACCESS_TOKEN=$(jq -r '.access_token // empty' /tmp/aura_token.json)
+            ACCESS_TOKEN="$(echo "$BODY" | jq -r '.access_token // empty' 2>/dev/null || python -c "import sys,json; print(json.loads(sys.stdin.read()).get('access_token',''))" <<<"$BODY")"
             if [ -z "$ACCESS_TOKEN" ]; then
-              echo "❌ Neo4j Aura token not found in response"
+              echo "❌ access_token not found in token response"
               echo "valid=false" >> $GITHUB_OUTPUT
               exit 1
             fi
 
-            API_CODE=$(curl -sS -m 20 --retry 2 -w "%{http_code}" -o /tmp/aura_response.json \
-              -H "Authorization: Bearer $ACCESS_TOKEN" \
-              https://api.neo4j.io/v1/instances)
+            # Optional: reachability/permissions check (non-200 does not fail credentials)
+            INST_RESP="$(curl_json -H "Authorization: Bearer $ACCESS_TOKEN" https://api.neo4j.io/v1/instances)"
+            INST_CODE="${INST_RESP##*HTTPSTATUS:}"
+            INST_BODY="${INST_RESP% HTTPSTATUS:*}"
 
-            if [ "$API_CODE" -eq 200 ]; then
+            if [ "$INST_CODE" -eq 200 ]; then
               echo "✅ Neo4j Aura credentials are valid and API reachable"
               echo "valid=true" >> $GITHUB_OUTPUT
             else
-              echo "⚠️ Neo4j Aura token valid, but API call returned HTTP $API_CODE"
+              echo "⚠️ Token valid; instances call returned HTTP $INST_CODE"
               echo "valid=true" >> $GITHUB_OUTPUT
             fi
           else
