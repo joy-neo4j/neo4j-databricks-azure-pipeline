@@ -115,6 +115,8 @@ jobs:
 
       # Configure and validate Aura
       - name: Configure Aura CLI
+        id: aura-config
+        continue-on-error: true
         env:
           AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
           AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
@@ -131,6 +133,12 @@ jobs:
       - name: Validate Neo4j Aura Credentials (Aura CLI)
         id: neo4j-check
         run: |
+          if [ "${{ steps.aura-config.outcome }}" != "success" ]; then
+            echo "❌ Neo4j Aura credentials not configured"
+            echo "valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
           if aura-cli instance list --output json >/dev/null 2>&1; then
             echo "✅ Neo4j Aura credentials are valid (Aura CLI)"
             echo "valid=true" >> $GITHUB_OUTPUT
