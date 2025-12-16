@@ -80,10 +80,10 @@ jobs:
               curl_json \
                 -H "Content-Type: application/x-www-form-urlencoded" \
                 --data-urlencode grant_type=client_credentials \
-                --data-urlencode audience="$audience" \
+                # --data-urlencode audience="$audience" \
                 --data-urlencode client_id="${{ secrets.AURA_CLIENT_ID }}" \
                 --data-urlencode client_secret="${{ secrets.AURA_CLIENT_SECRET }}" \
-                https://login.neo4j.com/oauth/token
+                https://api.neo4j.io/oauth/token
             }
 
             # Try audience with trailing slash first, then without
