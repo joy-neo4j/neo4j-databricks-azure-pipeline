@@ -54,83 +54,93 @@ jobs:
 
       - name: Validate Databricks Token
         id: databricks-check
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          if [ -n "${{ secrets.DATABRICKS_TOKEN }}" ]; then
-            echo "✅ Databricks token is configured"
-            echo "valid=true" >> $GITHUB_OUTPUT
-          else
+          if [ -z "$DATABRICKS_TOKEN" ]; then
             echo "❌ Databricks token not found"
             echo "valid=false" >> $GITHUB_OUTPUT
             exit 1
           fi
 
-      - name: Validate Neo4j Aura Credentials
-        id: neo4j-check
-        run: |
-          if [ -n "${{ secrets.AURA_CLIENT_ID }}" ] && [ -n "${{ secrets.AURA_CLIENT_SECRET }}" ]; then
-            set -e
+          # Try to authenticate with Databricks CLI first
+          databricks configure --token <<EOF
+          $DATABRICKS_HOST
+          $DATABRICKS_TOKEN
+          EOF
 
-            curl_json() {
-              # Emits: " HTTPSTATUS:<code>"
-              curl -sS -m 20 --retry 2 -w ' HTTPSTATUS:%{http_code}' "$@"
-            }
-
-            get_token() {
-              local audience="$1"
-              curl_json \
-                -H "Content-Type: application/x-www-form-urlencoded" \
-                --data-urlencode grant_type=client_credentials \
-                --data-urlencode audience="$audience" \
-                --data-urlencode client_id="${{ secrets.AURA_CLIENT_ID }}" \
-                --data-urlencode client_secret="${{ secrets.AURA_CLIENT_SECRET }}" \
-                https://api.neo4j.io/oauth/token
-            }
-
-            # Try audience with trailing slash first, then without
-            RESP="$(get_token 'https://api.neo4j.io/')"
-            CODE="${RESP##*HTTPSTATUS:}"
-            BODY="${RESP% HTTPSTATUS:*}"
-            if [ "$CODE" -ne 200 ]; then
-              echo "First token attempt failed (HTTP $CODE)"
-              echo "error=$(echo "$BODY" | jq -r '.error // empty' 2>/dev/null)"
-              echo "desc=$(echo "$BODY" | jq -r '.error_description // empty' 2>/dev/null)"
-              RESP="$(get_token 'https://api.neo4j.io')"
-              CODE="${RESP##*HTTPSTATUS:}"
-              BODY="${RESP% HTTPSTATUS:*}"
-            fi
-
-            if [ "$CODE" -ne 200 ]; then
-              echo "❌ Neo4j Aura OAuth token request failed (HTTP $CODE)"
-              echo "error=$(echo "$BODY" | jq -r '.error // empty' 2>/dev/null)"
-              echo "desc=$(echo "$BODY" | jq -r '.error_description // empty' 2>/dev/null)"
-              echo "valid=false" >> $GITHUB_OUTPUT
-              exit 1
-            fi
-
-            ACCESS_TOKEN="$(echo "$BODY" | jq -r '.access_token // empty' 2>/dev/null || python -c "import sys,json; print(json.loads(sys.stdin.read()).get('access_token',''))" <<<"$BODY")"
-            if [ -z "$ACCESS_TOKEN" ]; then
-              echo "❌ access_token not found in token response"
-              echo "valid=false" >> $GITHUB_OUTPUT
-              exit 1
-            fi
-
-            # Optional: reachability/permissions check (non-200 does not fail credentials)
-            INST_RESP="$(curl_json -H "Authorization: Bearer $ACCESS_TOKEN" https://api.neo4j.io/v1/instances)"
-            INST_CODE="${INST_RESP##*HTTPSTATUS:}"
-            INST_BODY="${INST_RESP% HTTPSTATUS:*}"
-
-            if [ "$INST_CODE" -eq 200 ]; then
-              echo "✅ Neo4j Aura credentials are valid and API reachable"
+          # Validate authentication using CLI
+          if databricks workspace list --output json >/dev/null 2>&1; then
+            echo "✅ Databricks token is valid (CLI authentication successful)"
+            echo "valid=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Databricks CLI authentication failed, trying REST API..."
+            
+            # Fallback to REST API validation
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
+              -H "Authorization: Bearer $DATABRICKS_TOKEN" \
+              "${DATABRICKS_HOST}/api/2.0/clusters/list")
+            
+            if [ "$RESPONSE" -eq 200 ] || [ "$RESPONSE" -eq 400 ]; then
+              # 200 = success, 400 = no clusters but auth worked
+              echo "✅ Databricks token is valid (REST API authentication successful)"
               echo "valid=true" >> $GITHUB_OUTPUT
             else
-              echo "⚠️ Token valid; instances call returned HTTP $INST_CODE"
-              echo "valid=true" >> $GITHUB_OUTPUT
+              echo "❌ Databricks token authentication failed (HTTP $RESPONSE)"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
             fi
+          fi
+
+      # Prepare isolated config directory for Aura CLI
+      - name: Prepare Aura CLI config
+        run: |
+          mkdir -p "$RUNNER_TEMP/aura-config"
+          echo "XDG_CONFIG_HOME=$RUNNER_TEMP/aura-config" >> "$GITHUB_ENV"
+
+      # Install Aura CLI via Go (no third-party actions)
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+
+      - name: Install Aura CLI
+        run: |
+          go install github.com/neo4j/aura-cli@latest
+          echo "$HOME/go/bin" >> "$GITHUB_PATH"
+
+      - name: Verify Aura CLI installation
+        run: |
+          aura-cli --version
+
+      # Configure and validate Aura
+      - name: Configure Aura CLI
+        env:
+          AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
+          AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
+        run: |
+          aura-cli credential add \
+            --name "ci" \
+            --client-id "$AURA_CLIENT_ID" \
+            --client-secret "$AURA_CLIENT_SECRET"
+
+      - name: Validate Neo4j Aura Credentials (Aura CLI)
+        id: neo4j-check
+        run: |
+          if aura-cli instance list --output json >/dev/null 2>&1; then
+            echo "✅ Neo4j Aura credentials are valid (Aura CLI)"
+            echo "valid=true" >> $GITHUB_OUTPUT
           else
-            echo "❌ Neo4j Aura credentials not found"
+            echo "❌ Neo4j Aura CLI authentication failed"
             echo "valid=false" >> $GITHUB_OUTPUT
             exit 1
           fi
+
+      - name: Cleanup Aura CLI config
+        if: always()
+        run: |
+          rm -rf "$XDG_CONFIG_HOME"
 
   validate-neo4j-connector:
     name: Validate Neo4j Spark Connector
