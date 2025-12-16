@@ -68,13 +68,31 @@ jobs:
         id: neo4j-check
         run: |
           if [ -n "${{ secrets.AURA_CLIENT_ID }}" ] && [ -n "${{ secrets.AURA_CLIENT_SECRET }}" ]; then
-            TOKEN_CODE=$(curl -sS -m 20 --retry 2 -w "%{http_code}" -o /tmp/aura_token.json \
-              -H "Content-Type: application/json" \
-              -d "{\"grant_type\":\"client_credentials\",\"audience\":\"https://api.neo4j.io/\",\"client_id\":\"${{ secrets.AURA_CLIENT_ID }}\",\"client_secret\":\"${{ secrets.AURA_CLIENT_SECRET }}\"}" \
-              https://login.neo4j.com/oauth/token)
+            set -e
+
+            get_token() {
+              local audience="$1"
+              curl -sS -m 20 --retry 2 -w "%{http_code}" -o /tmp/aura_token.json \
+                -H "Content-Type: application/x-www-form-urlencoded" \
+                --data-urlencode grant_type=client_credentials \
+                --data-urlencode audience="$audience" \
+                --data-urlencode client_id="${{ secrets.AURA_CLIENT_ID }}" \
+                --data-urlencode client_secret="${{ secrets.AURA_CLIENT_SECRET }}" \
+                https://login.neo4j.com/oauth/token
+            }
+
+            TOKEN_CODE=$(get_token "https://api.neo4j.io/")
+            if [ "$TOKEN_CODE" -ne 200 ]; then
+              ERR=$(jq -r '.error // empty' /tmp/aura_token.json)
+              DESC=$(jq -r '.error_description // empty' /tmp/aura_token.json)
+              echo "First token attempt failed (HTTP $TOKEN_CODE). error=$ERR desc=$DESC"
+              TOKEN_CODE=$(get_token "https://api.neo4j.io")
+            fi
 
             if [ "$TOKEN_CODE" -ne 200 ]; then
-              echo "❌ Neo4j Aura OAuth token request failed (HTTP $TOKEN_CODE)"
+              ERR=$(jq -r '.error // empty' /tmp/aura_token.json)
+              DESC=$(jq -r '.error_description // empty' /tmp/aura_token.json)
+              echo "❌ Neo4j Aura OAuth token request failed (HTTP $TOKEN_CODE). error=$ERR desc=$DESC"
               echo "valid=false" >> $GITHUB_OUTPUT
               exit 1
             fi
