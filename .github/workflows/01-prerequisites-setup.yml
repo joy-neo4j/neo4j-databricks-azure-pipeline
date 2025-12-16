@@ -68,18 +68,34 @@ jobs:
         id: neo4j-check
         run: |
           if [ -n "${{ secrets.AURA_CLIENT_ID }}" ] && [ -n "${{ secrets.AURA_CLIENT_SECRET }}" ]; then
-            # Test Aura API connection
-            response=$(curl -s -w "%{http_code}" -o /tmp/aura_response.json \
-              -u "${{ secrets.AURA_CLIENT_ID }}:${{ secrets.AURA_CLIENT_SECRET }}" \
-              https://api.neo4j.io/v1/instances)
-            
-            if [ "$response" -eq 200 ] || [ "$response" -eq 401 ]; then
-              echo "✅ Neo4j Aura credentials are configured"
-              echo "valid=true" >> $GITHUB_OUTPUT
-            else
-              echo "❌ Neo4j Aura API connection failed"
+            TOKEN_CODE=$(curl -sS -m 20 --retry 2 -w "%{http_code}" -o /tmp/aura_token.json \
+              -H "Content-Type: application/json" \
+              -d "{\"grant_type\":\"client_credentials\",\"audience\":\"https://api.neo4j.io/\",\"client_id\":\"${{ secrets.AURA_CLIENT_ID }}\",\"client_secret\":\"${{ secrets.AURA_CLIENT_SECRET }}\"}" \
+              https://login.neo4j.com/oauth/token)
+
+            if [ "$TOKEN_CODE" -ne 200 ]; then
+              echo "❌ Neo4j Aura OAuth token request failed (HTTP $TOKEN_CODE)"
               echo "valid=false" >> $GITHUB_OUTPUT
               exit 1
+            fi
+
+            ACCESS_TOKEN=$(jq -r '.access_token // empty' /tmp/aura_token.json)
+            if [ -z "$ACCESS_TOKEN" ]; then
+              echo "❌ Neo4j Aura token not found in response"
+              echo "valid=false" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+
+            API_CODE=$(curl -sS -m 20 --retry 2 -w "%{http_code}" -o /tmp/aura_response.json \
+              -H "Authorization: Bearer $ACCESS_TOKEN" \
+              https://api.neo4j.io/v1/instances)
+
+            if [ "$API_CODE" -eq 200 ]; then
+              echo "✅ Neo4j Aura credentials are valid and API reachable"
+              echo "valid=true" >> $GITHUB_OUTPUT
+            else
+              echo "⚠️ Neo4j Aura token valid, but API call returned HTTP $API_CODE"
+              echo "valid=true" >> $GITHUB_OUTPUT
             fi
           else
             echo "❌ Neo4j Aura credentials not found"
