@@ -33,27 +33,21 @@ jobs:
         run: |
           pip install azure-cli databricks-cli requests pyyaml
 
-      - name: Validate Azure Credentials
+      - name: Azure login (validate AZURE_CREDENTIALS)
+        id: azure-login
+        uses: azure/login@v2
+        continue-on-error: true
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set Azure validity output
         id: azure-check
         run: |
-          if [ -n "${{ secrets.AZURE_CREDENTIALS }}" ]; then
-            echo "${{ secrets.AZURE_CREDENTIALS }}" > azure_creds.json
-            az login --service-principal \
-              -u $(jq -r .clientId azure_creds.json) \
-              -p $(jq -r .clientSecret azure_creds.json) \
-              --tenant $(jq -r .tenantId azure_creds.json)
-            
-            if [ $? -eq 0 ]; then
-              echo "✅ Azure credentials are valid"
-              echo "valid=true" >> $GITHUB_OUTPUT
-            else
-              echo "❌ Azure credentials are invalid"
-              echo "valid=false" >> $GITHUB_OUTPUT
-              exit 1
-            fi
-            rm azure_creds.json
+          if [ "${{ steps.azure-login.outcome }}" == "success" ]; then
+            echo "✅ Azure credentials are valid"
+            echo "valid=true" >> $GITHUB_OUTPUT
           else
-            echo "❌ Azure credentials not found"
+            echo "❌ Azure credentials are invalid or not found"
             echo "valid=false" >> $GITHUB_OUTPUT
             exit 1
           fi
