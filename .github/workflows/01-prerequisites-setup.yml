@@ -65,10 +65,9 @@ jobs:
           fi
 
           # Try to authenticate with Databricks CLI first
-          databricks configure --token <<EOF
-          $DATABRICKS_HOST
-          $DATABRICKS_TOKEN
-          EOF
+          # Use environment variables for secure configuration
+          export DATABRICKS_HOST
+          export DATABRICKS_TOKEN
 
           # Validate authentication using CLI
           if databricks workspace list --output json >/dev/null 2>&1; then
@@ -120,6 +119,10 @@ jobs:
           AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
           AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
         run: |
+          if [ -z "$AURA_CLIENT_ID" ] || [ -z "$AURA_CLIENT_SECRET" ]; then
+            echo "❌ AURA_CLIENT_ID or AURA_CLIENT_SECRET is not set"
+            exit 1
+          fi
           aura-cli credential add \
             --name "ci" \
             --client-id "$AURA_CLIENT_ID" \
