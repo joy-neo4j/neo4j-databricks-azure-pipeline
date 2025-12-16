@@ -94,15 +94,35 @@ jobs:
 
       - name: Install Aura CLI
         run: |
+          set -e
           # Download latest Aura CLI release for Linux x86_64
           LATEST_RELEASE=$(curl -sL https://api.github.com/repos/neo4j/aura-cli/releases/latest | jq -r '.tag_name')
+          
+          if [ -z "$LATEST_RELEASE" ] || [ "$LATEST_RELEASE" = "null" ]; then
+            echo "❌ Failed to fetch latest Aura CLI release"
+            exit 1
+          fi
+          
           echo "Installing Aura CLI version: $LATEST_RELEASE"
           
           DOWNLOAD_URL="https://github.com/neo4j/aura-cli/releases/download/${LATEST_RELEASE}/aura-cli_${LATEST_RELEASE}_Linux_x86_64.tar.gz"
-          curl -sL "$DOWNLOAD_URL" -o /tmp/aura-cli.tar.gz
+          
+          if ! curl -sL "$DOWNLOAD_URL" -o /tmp/aura-cli.tar.gz; then
+            echo "❌ Failed to download Aura CLI from $DOWNLOAD_URL"
+            exit 1
+          fi
           
           # Extract and install
-          tar -xzf /tmp/aura-cli.tar.gz -C /tmp
+          if ! tar -xzf /tmp/aura-cli.tar.gz -C /tmp; then
+            echo "❌ Failed to extract Aura CLI archive"
+            exit 1
+          fi
+          
+          if [ ! -f /tmp/aura-cli ]; then
+            echo "❌ aura-cli binary not found in archive"
+            exit 1
+          fi
+          
           mkdir -p $HOME/.local/bin
           mv /tmp/aura-cli $HOME/.local/bin/
           chmod +x $HOME/.local/bin/aura-cli
@@ -123,10 +143,14 @@ jobs:
           fi
 
           # Configure credentials using Aura CLI
-          $HOME/.local/bin/aura-cli credential add --name ci \
+          if ! $HOME/.local/bin/aura-cli credential add --name ci \
             --client-id "$AURA_CLIENT_ID" \
             --client-secret "$AURA_CLIENT_SECRET" \
-            --use
+            --use; then
+            echo "❌ Failed to configure Aura CLI credentials"
+            echo "valid=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
 
           # Validate by listing instances
           if $HOME/.local/bin/aura-cli instance list --output json > /dev/null 2>&1; then
