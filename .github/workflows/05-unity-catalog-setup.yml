@@ -1,16 +1,7 @@
-name: 05 - Unity Catalog Setup
+name: 05 - Unity Catalog Setup (Assumes UC Exists)
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to configure (dev, staging, prod)'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
 
 permissions:
   contents: read
@@ -18,340 +9,42 @@ permissions:
 
 jobs:
   setup-unity-catalog:
-    name: Configure Unity Catalog for E-commerce
+    name: Configure Unity Catalog Schemas
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
         with:
-          python-version: '3.10'
+          terraform_version: 1.5.0
 
-      - name: Install dependencies
-        run: |
-          pip install databricks-cli databricks-sdk pyyaml
+      - name: Terraform Init (unitycatalog)
+        working-directory: terraform/unitycatalog
+        run: terraform init
 
-      - name: Configure Databricks SDK
+      - name: Terraform Plan (unitycatalog)
+        working-directory: terraform/unitycatalog
         env:
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          TF_VAR_databricks_host: ${{ secrets.DATABRICKS_HOST }}
+          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          cat > ~/.databrickscfg << EOF
-          [DEFAULT]
-          host = ${{ secrets.DATABRICKS_HOST }}
-          token = $DATABRICKS_TOKEN
-          EOF
+          terraform plan -out=tfplan
 
-      - name: Create Unity Catalog Metastore
-        run: |
-          cat > /tmp/setup-unity-catalog.py << 'EOF'
-          import os
-          import sys
-          from databricks.sdk import WorkspaceClient
-          
-          w = WorkspaceClient()
-          environment = "${{ inputs.environment }}"
-          
-          try:
-              # Create or get metastore
-              metastore_name = f"neo4j_ecommerce_{environment}"
-              
-              print(f"Setting up Unity Catalog metastore: {metastore_name}")
-              
-              # List existing metastores
-              metastores = list(w.metastores.list())
-              existing = [m for m in metastores if m.name == metastore_name]
-              
-              if not existing:
-                  print(f"Creating new metastore: {metastore_name}")
-                  # Note: In production, this would create the metastore
-                  # For now, we'll use the default metastore
-              else:
-                  print(f"Metastore already exists: {metastore_name}")
-              
-              print("✅ Unity Catalog metastore configured")
-              
-          except Exception as e:
-              print(f"Note: {str(e)}")
-              print("Using default Unity Catalog configuration")
-          EOF
-          
-          python /tmp/setup-unity-catalog.py || echo "Using default Unity Catalog"
-
-      - name: Create Catalog for E-commerce
-        run: |
-          cat > /tmp/create-catalog.py << 'EOF'
-          import os
-          import sys
-          from databricks.sdk import WorkspaceClient
-          
-          w = WorkspaceClient()
-          environment = "${{ inputs.environment }}"
-          catalog_name = f"ecommerce_{environment}"
-          
-          try:
-              # Create catalog
-              print(f"Creating catalog: {catalog_name}")
-              
-              try:
-                  w.catalogs.create(
-                      name=catalog_name,
-                      comment=f"E-commerce analytics catalog for {environment} environment"
-                  )
-                  print(f"✅ Catalog created: {catalog_name}")
-              except Exception as e:
-                  if "already exists" in str(e):
-                      print(f"Catalog already exists: {catalog_name}")
-                  else:
-                      raise e
-              
-          except Exception as e:
-              print(f"Error: {str(e)}")
-              sys.exit(1)
-          EOF
-          
-          python /tmp/create-catalog.py
-
-      - name: Create Schemas for E-commerce Data
-        run: |
-          cat > /tmp/create-schemas.py << 'EOF'
-          import os
-          from databricks.sdk import WorkspaceClient
-          
-          w = WorkspaceClient()
-          environment = "${{ inputs.environment }}"
-          catalog_name = f"ecommerce_{environment}"
-          
-          # Define schemas for e-commerce data layers
-          schemas = [
-              {
-                  "name": "bronze",
-                  "comment": "Raw ingested data from source systems"
-              },
-              {
-                  "name": "silver",
-                  "comment": "Cleaned and validated e-commerce data"
-              },
-              {
-                  "name": "gold",
-                  "comment": "Business-level aggregated data"
-              },
-              {
-                  "name": "graph_ready",
-                  "comment": "Data prepared for Neo4j graph loading"
-              },
-              {
-                  "name": "customers",
-                  "comment": "Customer-related data and analytics"
-              },
-              {
-                  "name": "products",
-                  "comment": "Product catalog and category data"
-              },
-              {
-                  "name": "orders",
-                  "comment": "Order and transaction data"
-              },
-              {
-                  "name": "analytics",
-                  "comment": "E-commerce analytics and ML features"
-              }
-          ]
-          
-          print(f"Creating schemas in catalog: {catalog_name}")
-          
-          for schema in schemas:
-              try:
-                  w.schemas.create(
-                      name=schema["name"],
-                      catalog_name=catalog_name,
-                      comment=schema["comment"]
-                  )
-                  print(f"✅ Schema created: {catalog_name}.{schema['name']}")
-              except Exception as e:
-                  if "already exists" in str(e):
-                      print(f"Schema already exists: {catalog_name}.{schema['name']}")
-                  else:
-                      print(f"Error creating schema {schema['name']}: {str(e)}")
-          
-          print(f"\n✅ All schemas created successfully")
-          EOF
-          
-          python /tmp/create-schemas.py
-
-      - name: Create Tables for Traditional Clusters
-        run: |
-          cat > /tmp/create-tables.py << 'EOF'
-          import os
-          from databricks.sdk import WorkspaceClient
-          
-          w = WorkspaceClient()
-          environment = "${{ inputs.environment }}"
-          catalog_name = f"ecommerce_{environment}"
-          
-          # Define table schemas
-          table_definitions = """
-          -- Bronze Layer Tables
-          CREATE TABLE IF NOT EXISTS {catalog}.bronze.customers_raw (
-            id BIGINT,
-            name STRING,
-            email STRING,
-            age INT,
-            gender STRING,
-            city STRING,
-            country STRING,
-            signup_date TIMESTAMP,
-            customer_segment STRING,
-            preferences STRING,
-            created_at TIMESTAMP
-          ) USING DELTA;
-          
-          CREATE TABLE IF NOT EXISTS {catalog}.bronze.products_raw (
-            id BIGINT,
-            name STRING,
-            description STRING,
-            category STRING,
-            subcategory STRING,
-            price DECIMAL(10,2),
-            supplier_id BIGINT,
-            stock_quantity INT,
-            created_at TIMESTAMP
-          ) USING DELTA;
-          
-          CREATE TABLE IF NOT EXISTS {catalog}.bronze.orders_raw (
-            id BIGINT,
-            customer_id BIGINT,
-            product_id BIGINT,
-            quantity INT,
-            total_amount DECIMAL(10,2),
-            order_date TIMESTAMP,
-            status STRING,
-            payment_method STRING
-          ) USING DELTA;
-          
-          CREATE TABLE IF NOT EXISTS {catalog}.bronze.reviews_raw (
-            id BIGINT,
-            customer_id BIGINT,
-            product_id BIGINT,
-            rating INT,
-            review_text STRING,
-            review_date TIMESTAMP
-          ) USING DELTA;
-          
-          CREATE TABLE IF NOT EXISTS {catalog}.bronze.suppliers_raw (
-            id BIGINT,
-            name STRING,
-            country STRING,
-            contact_email STRING,
-            reliability_score DECIMAL(3,2)
-          ) USING DELTA;
-          
-          -- Graph Ready Tables
-          CREATE TABLE IF NOT EXISTS {catalog}.graph_ready.customer_nodes (
-            id BIGINT,
-            properties STRING
-          ) USING DELTA;
-          
-          CREATE TABLE IF NOT EXISTS {catalog}.graph_ready.product_nodes (
-            id BIGINT,
-            properties STRING
-          ) USING DELTA;
-          
-          CREATE TABLE IF NOT EXISTS {catalog}.graph_ready.purchased_relationships (
-            customer_id BIGINT,
-            product_id BIGINT,
-            properties STRING
-          ) USING DELTA;
-          
-          CREATE TABLE IF NOT EXISTS {catalog}.graph_ready.reviewed_relationships (
-            customer_id BIGINT,
-            product_id BIGINT,
-            properties STRING
-          ) USING DELTA;
-          """
-          
-          print(f"Creating tables in catalog: {catalog_name}")
-          print("Note: Tables will be created when data pipeline runs")
-          
-          with open('/tmp/table-definitions.sql', 'w') as f:
-              f.write(table_definitions.format(catalog=catalog_name))
-          
-          print("✅ Table definitions prepared")
-          EOF
-          
-          python /tmp/create-tables.py
-
-      - name: Grant Permissions
-        run: |
-          cat > /tmp/grant-permissions.py << 'EOF'
-          import os
-          from databricks.sdk import WorkspaceClient
-          
-          w = WorkspaceClient()
-          environment = "${{ inputs.environment }}"
-          catalog_name = f"ecommerce_{environment}"
-          
-          print(f"Configuring permissions for catalog: {catalog_name}")
-          
-          # Note: In production, you would grant specific permissions to users/groups
-          # For now, we'll use workspace admin permissions
-          
-          print("✅ Permissions configured")
-          EOF
-          
-          python /tmp/grant-permissions.py || echo "Using default permissions"
-
-      - name: Create External Location for Sample Data
+      - name: Terraform Apply (unitycatalog)
+        working-directory: terraform/unitycatalog
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          TF_VAR_databricks_host: ${{ secrets.DATABRICKS_HOST }}
+          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          cat > /tmp/create-external-location.py << 'EOF'
-          import os
-          import json
-          from databricks.sdk import WorkspaceClient
-          
-          w = WorkspaceClient()
-          environment = "${{ inputs.environment }}"
-          
-          # Get storage account details from Azure credentials
-          try:
-              creds = json.loads(os.environ.get('AZURE_CREDENTIALS', '{}'))
-              subscription_id = creds.get('subscriptionId', '')
-              
-              # External location for sample data
-              storage_url = f"abfss://pipeline-data@stneo4j{environment}.dfs.core.windows.net/sample-data"
-              
-              print(f"Configuring external location: {storage_url}")
-              print("✅ External location configured")
-              
-          except Exception as e:
-              print(f"Note: {str(e)}")
-              print("External location will be configured during infrastructure setup")
-          EOF
-          
-          python /tmp/create-external-location.py || echo "External location setup deferred"
+          terraform apply -auto-approve tfplan
 
       - name: Unity Catalog Summary
+        working-directory: terraform/unitycatalog
         run: |
           echo "=================================="
           echo "Unity Catalog Setup Complete"
           echo "=================================="
-          echo ""
-          echo "Environment: ${{ inputs.environment }}"
-          echo "Catalog: ecommerce_${{ inputs.environment }}"
-          echo ""
-          echo "Schemas Created:"
-          echo "  - bronze (raw data)"
-          echo "  - silver (cleaned data)"
-          echo "  - gold (aggregated data)"
-          echo "  - graph_ready (Neo4j prepared data)"
-          echo "  - customers"
-          echo "  - products"
-          echo "  - orders"
-          echo "  - analytics"
-          echo ""
-          echo "✅ Unity Catalog configured for traditional clusters"
-          echo "✅ E-commerce data schemas ready"
-          echo "✅ Graph-ready tables prepared"
+          echo "Catalog: $(terraform output -raw catalog_name)"
+          echo "✅ Schemas created (bronze/silver/gold/graph_ready/customers/products/orders/analytics)"

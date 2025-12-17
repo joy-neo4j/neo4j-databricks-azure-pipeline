@@ -1,6 +1,6 @@
 # Neo4j + Databricks E-commerce Analytics Pipeline
 
-[![Deploy Full Pipeline](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/deploy-full-pipeline.yml/badge.svg)](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/deploy-full-pipeline.yml)
+[![Azure Infrastructure](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/02-azure-infrastructure.yml/badge.svg)](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/02-azure-infrastructure.yml)
 
 A production-ready, single-click deployment solution for **e-commerce analytics** using Azure Databricks and Neo4j Aura. Features comprehensive graph-based customer journey analysis, product recommendations, and supply chain optimization with Neo4j Spark Connector 5.3.0 optimized for UK South region.
 
@@ -99,34 +99,32 @@ az ad sp create-for-rbac \
 
 Copy the JSON output to the `AZURE_CREDENTIALS` secret.
 
-### 4. Configure Environments
+### 4. Deploy
 
-Create GitHub environments in your repository settings:
-- **dev**: No approval required
-- **staging**: 1 reviewer required
-- **prod**: 2 reviewers required
+#### Automated Deployment via GitHub Actions
 
-### 5. Deploy
-
-#### Option A: Full Pipeline (Recommended)
+Navigate to the Actions tab in your repository and run workflows in sequence:
 ```bash
-# Navigate to Actions → Deploy Full Pipeline → Run workflow
-# Select environment: dev, staging, or prod
+# 1. Deploy Azure infrastructure
+gh workflow run 02-azure-infrastructure.yml
+
+# 2. Deploy Neo4j Aura
+gh workflow run 03-neo4j-aura-setup.yml
+
+# 3. Configure Databricks
+gh workflow run 04-databricks-configuration.yml
+
+# 4. Setup Unity Catalog
+gh workflow run 05-unity-catalog-setup.yml
+
+# 5. Deploy data pipeline
+gh workflow run 06-data-pipeline.yml
 ```
 
-#### Option B: Manual Steps
-```bash
-# 1. Deploy infrastructure only
-gh workflow run deploy-infrastructure.yml -f environment=dev
-
-# 2. Deploy data pipeline
-gh workflow run deploy-data-pipeline.yml -f environment=dev
-```
-
-### 6. Verify Deployment
+### 5. Verify Deployment
 ```bash
 # Check deployment status
-gh run list --workflow=deploy-full-pipeline.yml
+gh run list --workflow=02-azure-infrastructure.yml
 
 # View logs
 gh run view <run-id> --log
@@ -214,8 +212,8 @@ See [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for advanced config
 - **Configures**: Tables optimized for traditional clusters
 - **Use Case**: Data governance and organization
 
-#### 6. Data Pipeline Development
-**File**: `.github/workflows/06-data-pipeline-development.yml`
+#### 6. Data Pipeline
+**File**: `.github/workflows/06-data-pipeline.yml`
 - **Duration**: 5-8 minutes
 - **Deploys**: E-commerce ETL notebooks, Neo4j loading jobs, analytics notebooks
 - **Creates**: Scheduled jobs for data processing
@@ -225,25 +223,7 @@ See [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for advanced config
 **File**: `.github/workflows/07-neo4j-integration-showcase.yml`
 - **Duration**: 10-15 minutes
 - **Executes**: Complete e-commerce pipeline from ingestion to Neo4j
-- **Demonstrates**: Customer 360, product recommendations, graph queries
 - **Use Case**: End-to-end pipeline validation and showcase
-
-#### 8. Testing and Validation
-**File**: `.github/workflows/08-testing-validation.yml`
-- **Duration**: 5-7 minutes
-- **Validates**: Infrastructure, Databricks setup, Neo4j integration, performance
-- **Tests**: Sub-second query response, data integrity, connector performance
-- **Use Case**: Quality assurance and performance benchmarking
-
-### Legacy Workflows (Still Available)
-
-#### Deploy Full Pipeline
-**File**: `.github/workflows/deploy-full-pipeline.yml`
-- **Duration**: 15-20 minutes
-- **Use Case**: Complete new environment setup (legacy workflow)
-
-#### Scheduled ETL, Manage Environments, Cleanup Resources
-- Available for ongoing operations and maintenance
 
 ## 🏗️ Architecture
 

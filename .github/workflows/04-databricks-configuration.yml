@@ -1,23 +1,14 @@
-name: 04 - Databricks Configuration
+name: 04 - Databricks Configuration (Single Environment)
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to configure (dev, staging, prod)'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
 
 permissions:
   contents: read
   id-token: write
 
 concurrency:
-  group: databricks-config-${{ github.ref }}-${{ inputs.environment }}
+  group: databricks-config-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -28,234 +19,48 @@ jobs:
       - name: Check DATABRICKS_HOST/TOKEN
         shell: bash
         run: |
-          host="${{ secrets[format('{0}_DATABRICKS_HOST', inputs.environment)] || secrets.DATABRICKS_HOST }}"
-          token="${{ secrets[format('{0}_DATABRICKS_TOKEN', inputs.environment)] || secrets.DATABRICKS_TOKEN }}"
-          if [ -z "$host" ] || [ -z "$token" ]; then echo "::error::Missing Databricks host/token secrets"; exit 1; fi
-  setup-neo4j-cluster:
-    name: Setup Neo4j-Dedicated Cluster
+          if [ -z "${{ secrets.DATABRICKS_HOST }}" ] || [ -z "${{ secrets.DATABRICKS_TOKEN }}" ]; then
+            echo "::error::Missing Databricks host/token secrets"; exit 1; fi
+
+  deploy-cluster:
+    name: Deploy Databricks Cluster via Terraform
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
     needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
         with:
-          python-version: '3.10'
+          terraform_version: 1.5.0
 
-      - name: Install Databricks CLI
-        run: |
-          pip install databricks-cli
+      - name: Terraform Init (databricks)
+        working-directory: terraform/databricks
+        run: terraform init
 
-      - name: Configure Databricks CLI
+      - name: Terraform Plan (databricks)
+        working-directory: terraform/databricks
         env:
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          TF_VAR_databricks_host: ${{ secrets.DATABRICKS_HOST }}
+          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          # Get Databricks workspace URL from terraform output or use default
-          WORKSPACE_URL="${{ secrets.DATABRICKS_HOST }}"
-          if [ -z "$WORKSPACE_URL" ]; then
-            WORKSPACE_URL="https://adb-123456789.0.azuredatabricks.net"
-          fi
-          
-          echo "[DEFAULT]" > ~/.databrickscfg
-          echo "host = $WORKSPACE_URL" >> ~/.databrickscfg
-          echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
+          terraform plan -out=tfplan
 
-      - name: Create Neo4j Cluster Configuration
+      - name: Terraform Apply (databricks)
+        working-directory: terraform/databricks
+        env:
+          TF_VAR_databricks_host: ${{ secrets.DATABRICKS_HOST }}
+          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
-          cat > /tmp/neo4j-cluster-config.json << 'EOF'
-          {
-            "cluster_name": "neo4j-ecommerce-${{ inputs.environment }}",
-            "spark_version": "13.3.x-scala2.12",
-            "node_type_id": "${{ inputs.environment == 'prod' && 'Standard_DS4_v2' || 'Standard_DS3_v2' }}",
-            "num_workers": ${{ inputs.environment == 'prod' && 3 || 2 }},
-            "autoscale": {
-              "min_workers": ${{ inputs.environment == 'prod' && 2 || 1 }},
-              "max_workers": ${{ inputs.environment == 'prod' && 10 || 5 }}
-            },
-            "spark_conf": {
-              "spark.databricks.delta.preview.enabled": "true",
-              "spark.databricks.io.cache.enabled": "true",
-              "spark.sql.adaptive.enabled": "true",
-              "spark.sql.adaptive.coalescePartitions.enabled": "true"
-            },
-            "custom_tags": {
-              "Environment": "${{ inputs.environment }}",
-              "Purpose": "Neo4j-Integration",
-              "UseCase": "E-commerce-Analytics"
-            },
-            "spark_env_vars": {
-              "NEO4J_ENABLED": "true"
-            },
-            "autotermination_minutes": 120,
-            "enable_elastic_disk": true
-          }
-          EOF
-          
-          echo "Neo4j cluster configuration created"
-
-      - name: Install Neo4j Spark Connector Library
-        run: |
-          cat > /tmp/install-neo4j-connector.sh << 'EOF'
-          #!/bin/bash
-          
-          # Neo4j Spark Connector version
-          CONNECTOR_VERSION="5.3.0_for_spark_3.5"
-          CONNECTOR_ARTIFACT="org.neo4j:neo4j-connector-apache-spark_2.12:${CONNECTOR_VERSION}"
-          
-          echo "Installing Neo4j Spark Connector ${CONNECTOR_VERSION}..."
-          
-          # Create library installation JSON
-          cat > /tmp/library-install.json << LIBEOF
-          {
-            "libraries": [
-              {
-                "maven": {
-                  "coordinates": "${CONNECTOR_ARTIFACT}",
-                  "repo": "https://repo1.maven.org/maven2/"
-                }
-              },
-              {
-                "pypi": {
-                  "package": "neo4j==5.14.0"
-                }
-              }
-            ]
-          }
-          LIBEOF
-          
-          echo "Library configuration created"
-          cat /tmp/library-install.json
-          EOF
-          
-          chmod +x /tmp/install-neo4j-connector.sh
-          /tmp/install-neo4j-connector.sh
-
-      - name: Create Init Script for Neo4j Connector
-        run: |
-          mkdir -p /tmp/dbfs/init-scripts
-          
-          cat > /tmp/dbfs/init-scripts/neo4j-connector-init.sh << 'EOF'
-          #!/bin/bash
-          
-          echo "Initializing Neo4j Spark Connector..."
-          
-          # Set Neo4j connector environment variables
-          export NEO4J_CONNECTOR_VERSION="5.3.0_for_spark_3.5"
-          
-          # Configure connection pooling
-          export NEO4J_MAX_CONNECTION_POOL_SIZE=100
-          export NEO4J_CONNECTION_TIMEOUT=30
-          export NEO4J_MAX_TRANSACTION_RETRY_TIME=30
-          
-          # Performance optimization
-          export NEO4J_BATCH_SIZE=5000
-          export NEO4J_PARALLEL_WRITES=4
-          
-          echo "Neo4j Spark Connector initialized successfully"
-          EOF
-          
-          echo "Init script created for Neo4j connector optimization"
-
-      - name: Configure Cluster Policies
-        run: |
-          cat > /tmp/neo4j-cluster-policy.json << 'EOF'
-          {
-            "name": "Neo4j E-commerce Policy - ${{ inputs.environment }}",
-            "definition": {
-              "spark_version": {
-                "type": "fixed",
-                "value": "13.3.x-scala2.12"
-              },
-              "node_type_id": {
-                "type": "allowlist",
-                "values": ["Standard_DS3_v2", "Standard_DS4_v2", "Standard_DS5_v2"]
-              },
-              "autotermination_minutes": {
-                "type": "fixed",
-                "value": 120
-              },
-              "spark_conf.spark.databricks.delta.preview.enabled": {
-                "type": "fixed",
-                "value": "true"
-              }
-            }
-          }
-          EOF
-          
-          echo "Cluster policy for Neo4j integration created"
-
-      - name: Create Instance Pools
-        run: |
-          cat > /tmp/instance-pool.json << 'EOF'
-          {
-            "instance_pool_name": "neo4j-pool-${{ inputs.environment }}",
-            "node_type_id": "${{ inputs.environment == 'prod' && 'Standard_DS4_v2' || 'Standard_DS3_v2' }}",
-            "min_idle_instances": ${{ inputs.environment == 'prod' && 1 || 0 }},
-            "max_capacity": ${{ inputs.environment == 'prod' && 10 || 5 }},
-            "idle_instance_autotermination_minutes": 60,
-            "preloaded_spark_versions": ["13.3.x-scala2.12"],
-            "custom_tags": {
-              "Purpose": "Neo4j-Integration",
-              "Environment": "${{ inputs.environment }}"
-            }
-          }
-          EOF
-          
-          echo "Instance pool configuration created for cost optimization"
-
-      - name: Configure Connection Optimization
-        run: |
-          cat > /tmp/neo4j-connection-config.yml << 'EOF'
-          # Neo4j Connection Configuration for UK South
-          connection:
-            region: uksouth
-            max_pool_size: 100
-            connection_acquisition_timeout: 60
-            max_connection_lifetime: 3600
-            max_transaction_retry_time: 30
-            connection_timeout: 30
-            keep_alive: true
-          
-          performance:
-            batch_size: 5000
-            parallel_writes: 4
-            write_batch_size: 10000
-            node_write_batch_size: 5000
-            relationship_write_batch_size: 5000
-          
-          optimization:
-            use_unwind: true
-            use_batch_import: true
-            partition_number: 4
-            partitions_per_core: 2
-          
-          spark_config:
-            spark.neo4j.url: "${NEO4J_URI}"
-            spark.neo4j.authentication.type: "basic"
-            spark.neo4j.authentication.basic.username: "${NEO4J_USERNAME}"
-            spark.neo4j.authentication.basic.password: "${NEO4J_PASSWORD}"
-            spark.neo4j.batch.size: "5000"
-            spark.neo4j.transaction.retries: "3"
-          EOF
-          
-          echo "Neo4j connection optimization configuration created"
+          terraform apply -auto-approve tfplan
 
       - name: Databricks Configuration Summary
+        working-directory: terraform/databricks
         run: |
           echo "=================================="
           echo "Databricks Configuration Complete"
           echo "=================================="
-          echo ""
-          echo "Environment: ${{ inputs.environment }}"
-          echo "Cluster: neo4j-ecommerce-${{ inputs.environment }}"
-          echo "Neo4j Connector: 5.3.0_for_spark_3.5"
-          echo "Spark Version: 13.3.x-scala2.12"
-          echo ""
-          echo "✅ Neo4j-dedicated cluster configured"
-          echo "✅ Neo4j Spark Connector installed"
-          echo "✅ Connection pooling optimized"
-          echo "✅ Performance settings configured"
-          echo "✅ Instance pools created for cost optimization"
+          echo "Cluster ID: $(terraform output -raw cluster_id)"
+          echo "Spark Version: $(terraform output -raw spark_version || echo '13.3.x-scala2.12')"
+          echo "✅ Neo4j Connector installed via libraries"
