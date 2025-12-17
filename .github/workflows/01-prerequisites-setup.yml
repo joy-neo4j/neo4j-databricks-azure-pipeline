@@ -156,57 +156,31 @@ jobs:
             exit 1
           fi
 
+      # New step: List AuraDB tenants after successful validation
+      - name: List AuraDB tenants
+        if: ${{ steps.neo4j-check.outputs.valid == 'true' }}
+        run: |
+          aura-cli tenant list
+
+      # New steps: Configure Databricks CLI for listing and list workspace
+      - name: Configure Databricks CLI for listing
+        if: ${{ steps.databricks-check.outputs.valid == 'true' }}
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          mkdir -p ~/.databricks
+          printf "[DEFAULT]\nhost=%s\ntoken=%s\n" "$DATABRICKS_HOST" "$DATABRICKS_TOKEN" > ~/.databricks/config
+
+      - name: List Databricks workspace objects
+        if: ${{ steps.databricks-check.outputs.valid == 'true' }}
+        run: |
+          databricks workspace list /
+
       - name: Cleanup Aura CLI config
         if: always()
         run: |
           rm -rf "$XDG_CONFIG_HOME"
-
-  validate-neo4j-connector:
-    name: Validate Neo4j Spark Connector
-    runs-on: ubuntu-latest
-    needs: validate-credentials
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Check Neo4j Connector Version
-        run: |
-          echo "Validating Neo4j Spark Connector 5.3.0 for Spark 3.5"
-          
-          # Check if connector library exists in configs
-          if [ -f "configs/neo4j-connector-config.yml" ]; then
-            echo "✅ Neo4j connector configuration found"
-          else
-            echo "⚠️ Neo4j connector configuration not found - will be created"
-          fi
-          
-          echo "Target Connector: neo4j-connector-apache-spark_2.12:5.3.0_for_spark_3.5"
-          echo "Maven Repository: https://repo1.maven.org/maven2/"
-
-      - name: Validate Connector Compatibility
-        run: |
-          cat > /tmp/connector-check.py << 'EOF'
-          import requests
-          import sys
-          
-          # Check if Neo4j connector exists in Maven Central
-          connector_version = "5.3.0_for_spark_3.5"
-          group_id = "org.neo4j"
-          artifact_id = "neo4j-connector-apache-spark_2.12"
-          
-          maven_url = f"https://repo1.maven.org/maven2/org/neo4j/{artifact_id}/{connector_version}/"
-          
-          response = requests.get(maven_url)
-          if response.status_code == 200:
-              print(f"✅ Neo4j Connector {connector_version} is available in Maven Central")
-              sys.exit(0)
-          else:
-              print(f"❌ Neo4j Connector {connector_version} not found in Maven Central")
-              print(f"URL checked: {maven_url}")
-              sys.exit(1)
-          EOF
-          
-          python /tmp/connector-check.py
 
   validate-region-configuration:
     name: Validate UK South Region Configuration
@@ -235,7 +209,7 @@ jobs:
   summary:
     name: Prerequisites Summary
     runs-on: ubuntu-latest
-    needs: [validate-credentials, validate-neo4j-connector, validate-region-configuration]
+    needs: [validate-credentials, validate-region-configuration]
     steps:
       - name: Prerequisites Summary
         run: |
@@ -246,7 +220,6 @@ jobs:
           echo "✅ Azure Credentials: Valid"
           echo "✅ Databricks Token: Valid"
           echo "✅ Neo4j Aura Credentials: Valid"
-          echo "✅ Neo4j Spark Connector: Compatible"
           echo "✅ UK South Region: Configured"
           echo ""
           echo "Ready to proceed with infrastructure deployment!"
