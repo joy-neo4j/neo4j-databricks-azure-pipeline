@@ -149,3 +149,10 @@ variable "budget_alert_threshold" {
   type        = number
   default     = 80
 }
+
+# Unity Catalog Configuration
+variable "catalog_name" {
+  description = "Existing Unity Catalog name"
+  type        = string
+  default     = "ecommerce_dev"
+}

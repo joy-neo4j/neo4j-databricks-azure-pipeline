@@ -1,0 +1,82 @@
+name: 02 - Provision (Azure + Databricks + Aura + UC)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: provision-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  provision:
+    name: Provision single environment via Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.0
+
+      - name: Determine var-file
+        id: varfile
+        working-directory: terraform
+        run: |
+          if [ -f "terraform.tfvars" ]; then
+            echo "file=terraform.tfvars" >> $GITHUB_OUTPUT
+          elif [ -f "terraform.tfvars.example" ]; then
+            echo "file=terraform.tfvars.example" >> $GITHUB_OUTPUT
+          else
+            echo "file=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: terraform
+        env:
+          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
+          TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
+          TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+        run: |
+          VARFILE="${{ steps.varfile.outputs.file }}"
+          if [ -n "$VARFILE" ]; then
+            terraform plan -var-file="$VARFILE" -out=tfplan
+          else
+            terraform plan -out=tfplan
+          fi
+
+      - name: Terraform Apply
+        working-directory: terraform
+        env:
+          TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
+          TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
+          TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+        run: terraform apply -auto-approve tfplan
+
+      - name: Provisioning Summary
+        working-directory: terraform
+        run: |
+          echo "=================================="
+          echo "Provisioning Complete"
+          echo "=================================="
+          echo ""
+          echo "Environment: $(terraform output -raw environment 2>/dev/null || echo 'dev')"
+          echo "Resource Group: $(terraform output -raw resource_group_name 2>/dev/null || echo 'N/A')"
+          echo "Databricks Workspace: $(terraform output -raw databricks_workspace_url 2>/dev/null || echo 'N/A')"
+          echo "Neo4j Instance: $(terraform output -raw neo4j_instance_id 2>/dev/null || echo 'N/A')"
+          echo ""
+          echo "✅ Azure + Databricks + Aura + Unity Catalog provisioned"
