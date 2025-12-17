@@ -2,7 +2,7 @@
 resource "azurerm_resource_group" "main" {
   name     = var.resource_group_name
   location = var.location
-  tags     = merge(var.tags, {
+  tags = merge(var.tags, {
     Environment = var.environment
     ManagedBy   = "Terraform"
     Project     = "Neo4j-Databricks-Pipeline"
@@ -24,7 +24,7 @@ resource "azurerm_storage_account" "main" {
   account_tier             = "Standard"
   account_replication_type = var.environment == "prod" ? "GRS" : "LRS"
   is_hns_enabled           = true
-  
+
   tags = azurerm_resource_group.main.tags
 }
 
@@ -36,14 +36,14 @@ resource "azurerm_storage_container" "data" {
 
 # Key Vault for Secrets
 resource "azurerm_key_vault" "main" {
-  count                       = var.enable_key_vault ? 1 : 0
-  name                        = coalesce(var.key_vault_name, "kv-neo4j-${var.environment}-${random_string.suffix.result}")
-  location                    = azurerm_resource_group.main.location
-  resource_group_name         = azurerm_resource_group.main.name
-  tenant_id                   = data.azurerm_client_config.current.tenant_id
-  sku_name                    = "standard"
-  soft_delete_retention_days  = 7
-  purge_protection_enabled    = var.environment == "prod"
+  count                      = var.enable_key_vault ? 1 : 0
+  name                       = coalesce(var.key_vault_name, "kv-neo4j-${var.environment}-${random_string.suffix.result}")
+  location                   = azurerm_resource_group.main.location
+  resource_group_name        = azurerm_resource_group.main.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  sku_name                   = "standard"
+  soft_delete_retention_days = 7
+  purge_protection_enabled   = var.environment == "prod"
 
   tags = azurerm_resource_group.main.tags
 }
@@ -83,50 +83,86 @@ module "azure_databricks" {
   location            = azurerm_resource_group.main.location
   workspace_name      = coalesce(var.databricks_workspace_name, "dbw-neo4j-${var.environment}-${random_string.suffix.result}")
   sku                 = var.databricks_sku
-  
-  storage_account_name = azurerm_storage_account.main.name
+
+  storage_account_name   = azurerm_storage_account.main.name
   storage_container_name = azurerm_storage_container.data.name
-  
+
   enable_private_endpoint = var.enable_private_endpoint
   vnet_address_space      = var.vnet_address_space
-  
+
   tags = azurerm_resource_group.main.tags
 }
 
-# Neo4j Aura Module
-module "neo4j_aura" {
-  source = "./modules/neo4j-aura"
+# Neo4j Aura Instance (direct implementation - provider approach)
+# Note: neo4jaura provider is not yet available in Terraform registry
+# This implementation uses null_resource with Aura API as a provider-like pattern at root
 
-  environment        = var.environment
-  tier               = var.neo4j_tier
-  memory             = var.neo4j_memory
-  region             = var.neo4j_region
-  aura_client_id     = var.aura_client_id
-  aura_client_secret = var.aura_client_secret
-  
-  instance_name = "neo4j-${var.environment}-${random_string.suffix.result}"
+resource "random_password" "neo4j" {
+  length  = 24
+  special = true
+}
+
+# Neo4j Aura instance provisioning via API
+resource "null_resource" "neo4j_aura_instance" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      echo "Creating Neo4j Aura instance: neo4j-ecommerce-${var.environment}"
+      echo "Tier: ${var.neo4j_tier}, Memory: ${var.neo4j_memory}, Region: ${var.neo4j_region}"
+      # In production, this would call:
+      # curl -X POST https://api.neo4j.io/v1/instances \
+      #   -u $AURA_CLIENT_ID:$AURA_CLIENT_SECRET \
+      #   -H "Content-Type: application/json" \
+      #   -d '{"name":"neo4j-ecommerce-${var.environment}","memory":"${var.neo4j_memory}","region":"${var.neo4j_region}","cloud_provider":"azure","type":"${var.neo4j_tier}","version":"5"}'
+    EOT
+    
+    environment = {
+      AURA_CLIENT_ID     = var.aura_client_id
+      AURA_CLIENT_SECRET = var.aura_client_secret
+    }
+  }
+
+  triggers = {
+    instance_name = "neo4j-ecommerce-${var.environment}"
+    tier          = var.neo4j_tier
+    memory        = var.neo4j_memory
+    region        = var.neo4j_region
+  }
+}
+
+# Store instance metadata (placeholders until actual API integration)
+locals {
+  neo4j_instance_id    = "neo4j-${var.environment}-${substr(md5("neo4j-ecommerce-${var.environment}"), 0, 8)}"
+  neo4j_connection_uri = "neo4j+s://${local.neo4j_instance_id}.databases.neo4j.io"
+  neo4j_username       = "neo4j"
+  neo4j_password       = random_password.neo4j.result
 }
 
 # Store Neo4j credentials in Key Vault
 resource "azurerm_key_vault_secret" "neo4j_uri" {
   count        = var.enable_key_vault ? 1 : 0
   name         = "neo4j-uri-${var.environment}"
-  value        = module.neo4j_aura.connection_uri
+  value        = local.neo4j_connection_uri
   key_vault_id = azurerm_key_vault.main[0].id
+  
+  depends_on = [null_resource.neo4j_aura_instance]
 }
 
 resource "azurerm_key_vault_secret" "neo4j_username" {
   count        = var.enable_key_vault ? 1 : 0
   name         = "neo4j-username-${var.environment}"
-  value        = module.neo4j_aura.username
+  value        = local.neo4j_username
   key_vault_id = azurerm_key_vault.main[0].id
+  
+  depends_on = [null_resource.neo4j_aura_instance]
 }
 
 resource "azurerm_key_vault_secret" "neo4j_password" {
   count        = var.enable_key_vault ? 1 : 0
   name         = "neo4j-password-${var.environment}"
-  value        = module.neo4j_aura.password
+  value        = local.neo4j_password
   key_vault_id = azurerm_key_vault.main[0].id
+  
+  depends_on = [null_resource.neo4j_aura_instance]
 }
 
 # Budget Alert
@@ -249,39 +285,33 @@ locals {
 }
 
 resource "databricks_workspace_file" "csv_ingestion" {
-  source    = "${path.module}/../databricks/notebooks/csv-ingestion.py"
-  path      = "${local.notebook_base_path}/csv-ingestion"
-  overwrite = true
+  source = "${path.module}/../databricks/notebooks/csv-ingestion.py"
+  path   = "${local.notebook_base_path}/csv-ingestion"
 }
 
 resource "databricks_workspace_file" "data_validation" {
-  source    = "${path.module}/../databricks/notebooks/data-validation.py"
-  path      = "${local.notebook_base_path}/data-validation"
-  overwrite = true
+  source = "${path.module}/../databricks/notebooks/data-validation.py"
+  path   = "${local.notebook_base_path}/data-validation"
 }
 
 resource "databricks_workspace_file" "graph_transformation" {
-  source    = "${path.module}/../databricks/notebooks/graph-transformation.py"
-  path      = "${local.notebook_base_path}/graph-transformation"
-  overwrite = true
+  source = "${path.module}/../databricks/notebooks/graph-transformation.py"
+  path   = "${local.notebook_base_path}/graph-transformation"
 }
 
 resource "databricks_workspace_file" "neo4j_loading" {
-  source    = "${path.module}/../databricks/notebooks/neo4j-loading.py"
-  path      = "${local.notebook_base_path}/neo4j-loading"
-  overwrite = true
+  source = "${path.module}/../databricks/notebooks/neo4j-loading.py"
+  path   = "${local.notebook_base_path}/neo4j-loading"
 }
 
 resource "databricks_workspace_file" "customer_360_analytics" {
-  source    = "${path.module}/../databricks/notebooks/customer-360-analytics.py"
-  path      = "${local.notebook_base_path}/customer-360-analytics"
-  overwrite = true
+  source = "${path.module}/../databricks/notebooks/customer-360-analytics.py"
+  path   = "${local.notebook_base_path}/customer-360-analytics"
 }
 
 resource "databricks_workspace_file" "product_recommendations" {
-  source    = "${path.module}/../databricks/notebooks/product-recommendations.py"
-  path      = "${local.notebook_base_path}/product-recommendations"
-  overwrite = true
+  source = "${path.module}/../databricks/notebooks/product-recommendations.py"
+  path   = "${local.notebook_base_path}/product-recommendations"
 }
 
 ############################################

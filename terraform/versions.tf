@@ -1,14 +1,14 @@
 terraform {
-  required_version = ">= 1.5.0"
-  
+  required_version = ">= 1.3.0"
+
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.80"
+      version = "~> 3.0"
     }
     databricks = {
       source  = "databricks/databricks"
-      version = "~> 1.30"
+      version = "~> 1.50"
     }
     random = {
       source  = "hashicorp/random"
@@ -35,7 +35,7 @@ provider "azurerm" {
 }
 
 provider "databricks" {
-  host  = module.azure_databricks.workspace_url
+  host  = var.databricks_host
   token = var.databricks_token
 }
 
