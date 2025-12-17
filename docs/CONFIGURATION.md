@@ -102,38 +102,45 @@ See [Secrets Management Guide](SECRETS_MANAGEMENT.md) for complete reference.
 
 ## Environment-Specific Settings
 
-### Development
-```yaml
-# terraform/environments/dev.tfvars.example
-environment = "dev"
-databricks_sku = "premium"
-neo4j_tier = "professional"
-auto_pause_minutes = 120
-budget_amount = 500
-enable_private_endpoint = false
+### Single Environment Configuration
+
+The pipeline now uses a single environment configured via `terraform/terraform.tfvars`:
+
+```hcl
+# terraform/terraform.tfvars.example
+resource_group_name     = "rg-neo4j-dbx-dev"
+location                = "uksouth"
+
+storage_account_name    = null
+storage_container_name  = "pipeline-data"
+
+databricks_workspace_name = "dbw-neo4j-dev"
+databricks_sku            = "premium"
+
+enable_key_vault        = true
+key_vault_name          = null
+enable_monitoring       = true
+
+budget_amount           = 200
+budget_alert_threshold  = 80
+
+neo4j_region            = "uksouth"
+neo4j_tier              = "professional"
+neo4j_memory            = "8GB"
+
+catalog_name            = "ecommerce_dev"
+
+environment             = "dev"
 ```
 
-### Staging
-```yaml
-# terraform/environments/staging.tfvars.example
-environment = "staging"
-databricks_sku = "premium"
-neo4j_tier = "professional"
-auto_pause_minutes = 60
-budget_amount = 800
-enable_private_endpoint = false
+To customize for your environment:
+```bash
+cd terraform
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your values
 ```
 
-### Production
-```yaml
-# terraform/environments/prod.tfvars.example
-environment = "prod"
-databricks_sku = "premium"
-neo4j_tier = "enterprise"
-auto_pause_minutes = 0  # Disabled
-budget_amount = 1500
-enable_private_endpoint = true
-```
+**Note**: `terraform.tfvars` is git-ignored. Only non-secret defaults should be in this file. Secrets are provided via environment variables (TF_VAR_*) in the workflow.
 
 ## Workflow Configuration
 

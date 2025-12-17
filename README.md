@@ -1,6 +1,6 @@
 # Neo4j + Databricks E-commerce Analytics Pipeline
 
-[![Azure Infrastructure](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/02-azure-infrastructure.yml/badge.svg)](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/02-azure-infrastructure.yml)
+[![Provision Infrastructure](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/02-provision.yml/badge.svg)](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/02-provision.yml)
 
 A production-ready, single-click deployment solution for **e-commerce analytics** using Azure Databricks and Neo4j Aura. Features comprehensive graph-based customer journey analysis, product recommendations, and supply chain optimization with Neo4j Spark Connector 5.3.0 optimized for UK South region.
 
@@ -14,9 +14,9 @@ A production-ready, single-click deployment solution for **e-commerce analytics*
 - **UK South Optimization**: Regional deployment for data residency and GDPR compliance
 
 ### Infrastructure & Deployment
-- **8 Sequential Workflows**: Automated deployment from prerequisites to validation
-- **Single-Click Deployment**: Complete infrastructure and pipeline deployment in 15-20 minutes
-- **Multi-Environment Support**: Dev, staging, and production configurations with approval gates
+- **Consolidated Provisioning**: Single Terraform workflow deploys Azure + Databricks + Aura + Unity Catalog
+- **Infrastructure as Code**: Complete infrastructure and pipeline deployment in one apply
+- **Terraform-Managed Jobs**: Databricks jobs, notebooks, and clusters defined in Terraform
 - **Enhanced Secrets Management**: GitHub secrets + Azure Key Vault integration with fallback mechanisms
 - **Cost Optimization**: Auto-pause, scheduling, and resource cleanup capabilities
 - **Comprehensive Monitoring**: Application Insights, alerting, and performance tracking
@@ -99,35 +99,44 @@ az ad sp create-for-rbac \
 
 Copy the JSON output to the `AZURE_CREDENTIALS` secret.
 
-### 4. Deploy
+### 4. Configure Terraform Variables (Optional)
+
+Create `terraform/terraform.tfvars` from the example:
+```bash
+cd terraform
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your environment-specific values
+```
+
+### 5. Deploy
 
 #### Automated Deployment via GitHub Actions
 
 Navigate to the Actions tab in your repository and run workflows in sequence:
 ```bash
-# 1. Deploy Azure infrastructure
-gh workflow run 02-azure-infrastructure.yml
+# 1. Provision complete infrastructure (Azure + Databricks + Aura + Unity Catalog)
+gh workflow run 02-provision.yml
 
-# 2. Deploy Neo4j Aura
-gh workflow run 03-neo4j-aura-setup.yml
-
-# 3. Configure Databricks
-gh workflow run 04-databricks-configuration.yml
-
-# 4. Setup Unity Catalog
-gh workflow run 05-unity-catalog-setup.yml
-
-# 5. Deploy data pipeline
+# 2. Validate data pipeline notebooks
 gh workflow run 06-data-pipeline.yml
+
+# 3. Run end-to-end showcase (optional)
+gh workflow run 07-neo4j-integration-showcase.yml
 ```
 
-### 5. Verify Deployment
+**Note**: The new `02-provision.yml` workflow consolidates the previous workflows 02-05 into a single Terraform deployment.
+
+### 6. Verify Deployment
 ```bash
 # Check deployment status
-gh run list --workflow=02-azure-infrastructure.yml
+gh run list --workflow=02-provision.yml
 
 # View logs
 gh run view <run-id> --log
+
+# Check Terraform outputs
+cd terraform
+terraform output
 ```
 
 ## 🔐 Secrets Configuration
@@ -177,53 +186,47 @@ See [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for advanced config
 
 ## 🔄 Deployment Workflows
 
-### Sequential E-commerce Pipeline Workflows
+### Consolidated Terraform Deployment
 
-#### 1. Prerequisites Setup
+#### 1. Prerequisites Setup (Optional)
 **File**: `.github/workflows/01-prerequisites-setup.yml`
 - **Duration**: 2-3 minutes
-- **Validates**: Azure credentials, Databricks token, Neo4j Aura credentials, Neo4j Spark Connector 5.3.0
+- **Validates**: Azure credentials, Databricks token, Neo4j Aura credentials
 - **Use Case**: Pre-deployment validation and compatibility checks
 
-#### 2. Azure Infrastructure Deployment
-**File**: `.github/workflows/02-azure-infrastructure.yml`
-- **Duration**: 8-12 minutes
-- **Deploys**: UK South Azure resources, storage, Key Vault, networking for Neo4j
-- **Use Case**: Infrastructure foundation with regional optimization
+#### 2. Provision (Consolidated Infrastructure)
+**File**: `.github/workflows/02-provision.yml`
+- **Duration**: 10-15 minutes
+- **Deploys via Terraform**:
+  - Azure infrastructure (Resource Group, Storage, Key Vault, Databricks workspace)
+  - Neo4j Aura instance with credentials stored in Key Vault
+  - Databricks cluster with Neo4j Spark Connector 5.3.0
+  - Unity Catalog schemas (bronze, silver, gold, graph_ready, etc.)
+  - Databricks notebooks uploaded to workspace
+  - Databricks jobs (ETL pipeline with 6 tasks)
+  - Key Vault-backed secret scope for Neo4j credentials
+  - Unity Catalog grants for users
+- **Use Case**: Complete infrastructure and pipeline deployment in one workflow
+- **Note**: Consolidates the functionality of previous workflows 02-05
 
-#### 3. Neo4j Aura Setup
-**File**: `.github/workflows/03-neo4j-aura-setup.yml`
-- **Duration**: 5-8 minutes
-- **Creates**: Performance-optimized Neo4j Aura instance in UK South
-- **Configures**: E-commerce indexes, constraints, and optimization settings
-- **Use Case**: Graph database setup for e-commerce workloads
-
-#### 4. Databricks Configuration
-**File**: `.github/workflows/04-databricks-configuration.yml`
-- **Duration**: 5-7 minutes
-- **Configures**: Neo4j-dedicated clusters with Spark Connector 5.3.0
-- **Installs**: Libraries, init scripts, and performance tuning
-- **Use Case**: Databricks cluster optimization for Neo4j integration
-
-#### 5. Unity Catalog Setup
-**File**: `.github/workflows/05-unity-catalog-setup.yml`
-- **Duration**: 3-5 minutes
-- **Creates**: E-commerce catalogs and schemas (bronze, silver, gold, graph_ready)
-- **Configures**: Tables optimized for traditional clusters
-- **Use Case**: Data governance and organization
-
-#### 6. Data Pipeline
+#### 3. Data Pipeline Validation
 **File**: `.github/workflows/06-data-pipeline.yml`
-- **Duration**: 5-8 minutes
-- **Deploys**: E-commerce ETL notebooks, Neo4j loading jobs, analytics notebooks
-- **Creates**: Scheduled jobs for data processing
-- **Use Case**: Complete data pipeline deployment
+- **Duration**: 2-3 minutes
+- **Validates**: Notebook syntax and Python compilation
+- **Use Case**: Syntax validation for notebooks (deployment handled by Terraform)
 
-#### 7. Neo4j Integration Showcase
+#### 4. Neo4j Integration Showcase (Optional)
 **File**: `.github/workflows/07-neo4j-integration-showcase.yml`
 - **Duration**: 10-15 minutes
 - **Executes**: Complete e-commerce pipeline from ingestion to Neo4j
 - **Use Case**: End-to-end pipeline validation and showcase
+
+### Legacy Workflows (Deprecated)
+The following workflows have been consolidated into `02-provision.yml`:
+- `02-azure-infrastructure.yml.deprecated`
+- `03-neo4j-aura-setup.yml.deprecated`
+- `04-databricks-configuration.yml.deprecated`
+- `05-unity-catalog-setup.yml.deprecated`
 
 ## 🏗️ Architecture
 
@@ -340,18 +343,22 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture docum
 
 ## ⚙️ Configuration
 
-### Environment Variables
-Configure in `terraform/environments/{env}.tfvars`:
+### Terraform Variables
+Configure in `terraform/terraform.tfvars` (copy from `terraform.tfvars.example`):
 
 ```hcl
-# Example: dev.tfvars
-environment         = "dev"
-location            = "eastus"
-resource_group_name = "rg-neo4j-databricks-dev"
-databricks_sku      = "premium"
-neo4j_tier          = "professional"
-auto_pause_minutes  = 120
+# Example: terraform.tfvars
+resource_group_name       = "rg-neo4j-dbx-dev"
+location                  = "uksouth"
+databricks_workspace_name = "dbw-neo4j-dev"
+databricks_sku            = "premium"
+neo4j_tier                = "professional"
+neo4j_memory              = "8GB"
+catalog_name              = "ecommerce_dev"
+environment               = "dev"
 ```
+
+See [docs/CONFIGURATION.md](docs/CONFIGURATION.md) for complete configuration reference.
 
 ### Data Sources
 Configure in `configs/data-sources.yml`:
