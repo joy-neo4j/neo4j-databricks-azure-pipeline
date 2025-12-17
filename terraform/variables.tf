@@ -35,6 +35,11 @@ variable "databricks_sku" {
   }
 }
 
+variable "databricks_host" {
+  description = "Databricks workspace URL"
+  type        = string
+}
+
 variable "databricks_token" {
   description = "Databricks personal access token"
   type        = string
@@ -148,4 +153,11 @@ variable "budget_alert_threshold" {
   description = "Budget alert threshold percentage"
   type        = number
   default     = 80
+}
+
+# Unity Catalog Configuration
+variable "catalog_name" {
+  description = "Existing Unity Catalog name"
+  type        = string
+  default     = "ecommerce_dev"
 }

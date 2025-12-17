@@ -1,0 +1,24 @@
+# Copy to terraform.tfvars and modify to suit your environment
+resource_group_name     = "rg-neo4j-dbx-dev"
+location                = "uksouth"
+
+storage_account_name    = null
+storage_container_name  = "pipeline-data"
+
+databricks_workspace_name = "dbw-neo4j-dev"
+databricks_sku            = "premium"
+
+enable_key_vault        = true
+key_vault_name          = null
+enable_monitoring       = true
+
+budget_amount           = 200
+budget_alert_threshold  = 80
+
+neo4j_region            = "uksouth"
+neo4j_tier              = "professional"
+neo4j_memory            = "8GB"
+
+catalog_name            = "ecommerce_dev"
+
+environment             = "dev"
