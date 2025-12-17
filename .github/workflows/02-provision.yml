@@ -48,6 +48,7 @@ jobs:
       - name: Terraform Plan
         working-directory: terraform
         env:
+          TF_VAR_databricks_host: ${{ secrets.DATABRICKS_HOST }}
           TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
@@ -62,10 +63,17 @@ jobs:
       - name: Terraform Apply
         working-directory: terraform
         env:
+          TF_VAR_databricks_host: ${{ secrets.DATABRICKS_HOST }}
           TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
-        run: terraform apply -auto-approve tfplan
+        run: |
+          VARFILE="${{ steps.varfile.outputs.file }}"
+          if [ -n "$VARFILE" ]; then
+            terraform apply -auto-approve -var-file="$VARFILE" tfplan
+          else
+            terraform apply -auto-approve tfplan
+          fi
 
       - name: Provisioning Summary
         working-directory: terraform

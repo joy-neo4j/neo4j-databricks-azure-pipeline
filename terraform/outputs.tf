@@ -74,24 +74,24 @@ output "databricks_workspace_name" {
 # Neo4j Aura
 output "neo4j_instance_id" {
   description = "ID of the Neo4j Aura instance"
-  value       = module.neo4j_aura.instance_id
+  value       = local.neo4j_instance_id
 }
 
 output "neo4j_connection_uri" {
   description = "Connection URI for Neo4j Aura"
-  value       = module.neo4j_aura.connection_uri
+  value       = local.neo4j_connection_uri
   sensitive   = true
 }
 
 output "neo4j_username" {
   description = "Username for Neo4j Aura"
-  value       = module.neo4j_aura.username
+  value       = local.neo4j_username
   sensitive   = true
 }
 
 output "neo4j_password" {
   description = "Password for Neo4j Aura"
-  value       = module.neo4j_aura.password
+  value       = local.neo4j_password
   sensitive   = true
 }
 
@@ -104,7 +104,7 @@ output "deployment_info" {
     location             = azurerm_resource_group.main.location
     databricks_workspace = module.azure_databricks.workspace_name
     databricks_url       = module.azure_databricks.workspace_url
-    neo4j_instance       = module.neo4j_aura.instance_id
+    neo4j_instance       = local.neo4j_instance_id
     storage_account      = azurerm_storage_account.main.name
     key_vault            = var.enable_key_vault ? azurerm_key_vault.main[0].name : "disabled"
   }
