@@ -125,6 +125,8 @@ jobs:
 
           export DATABRICKS_CONFIG_FILE="$RUNNER_TEMP/databricks.ini"
           printf "[DEFAULT]\nhost=%s\ntoken=%s\n" "$DATABRICKS_HOST" "$DATABRICKS_TOKEN" > "$DATABRICKS_CONFIG_FILE"
+          mkdir -p ~/.databricks
+          cp "$DATABRICKS_CONFIG_FILE" ~/.databricks/config
 
           if databricks workspace ls / >/dev/null 2>&1; then
             echo "✅ Databricks token is valid (CLI)"
@@ -156,24 +158,29 @@ jobs:
             exit 1
           fi
 
-      # New step: List AuraDB tenants after successful validation
+      # List AuraDB tenants after successful Aura validation
       - name: List AuraDB tenants
         if: ${{ steps.neo4j-check.outputs.valid == 'true' }}
         run: |
           aura-cli tenant list
 
-      # New steps: Configure Databricks CLI for listing and list workspace
-      - name: Configure Databricks CLI for listing
+      # Prepare Databricks CLI config and list workspace contents
+      - name: Prepare Databricks CLI config for listing
         if: ${{ steps.databricks-check.outputs.valid == 'true' }}
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          DATABRICKS_CONFIG_FILE: ${{ runner.temp }}/databricks.ini
         run: |
           mkdir -p ~/.databricks
-          printf "[DEFAULT]\nhost=%s\ntoken=%s\n" "$DATABRICKS_HOST" "$DATABRICKS_TOKEN" > ~/.databricks/config
+          printf "[DEFAULT]\nhost=%s\ntoken=%s\n" "$DATABRICKS_HOST" "$DATABRICKS_TOKEN" > "$DATABRICKS_CONFIG_FILE"
+          cp "$DATABRICKS_CONFIG_FILE" ~/.databricks/config
+          echo "Prepared Databricks CLI config at $DATABRICKS_CONFIG_FILE and ~/.databricks/config"
 
       - name: List Databricks workspace objects
         if: ${{ steps.databricks-check.outputs.valid == 'true' }}
+        env:
+          DATABRICKS_CONFIG_FILE: ${{ runner.temp }}/databricks.ini
         run: |
           databricks workspace list /
 
