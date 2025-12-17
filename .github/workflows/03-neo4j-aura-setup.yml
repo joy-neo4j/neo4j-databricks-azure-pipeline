@@ -1,32 +1,14 @@
-name: 03 - Neo4j Aura Setup
+name: 03 - Neo4j Aura Setup (Single Environment)
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy (dev, staging, prod)'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
-      instance_size:
-        description: 'Neo4j instance size'
-        required: false
-        type: choice
-        options:
-          - 8GB
-          - 16GB
-          - 32GB
-        default: 8GB
 
 permissions:
   contents: read
   id-token: write
 
 concurrency:
-  group: aura-setup-${{ github.ref }}-${{ inputs.environment }}
+  group: aura-setup-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -39,209 +21,52 @@ jobs:
         run: |
           if [ -z "${{ secrets.AURA_CLIENT_ID }}" ] || [ -z "${{ secrets.AURA_CLIENT_SECRET }}" ]; then
             echo "::error::Missing AURA_CLIENT_ID or AURA_CLIENT_SECRET"; exit 1; fi
-  create-neo4j-instance:
-    name: Create Performance-Optimized Neo4j Aura Instance
+
+  deploy-auradb:
+    name: Deploy AuraDB via Terraform
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
     needs: validate-secrets
-    outputs:
-      neo4j_uri: ${{ steps.create-instance.outputs.uri }}
-      neo4j_username: ${{ steps.create-instance.outputs.username }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
         with:
-          python-version: '3.10'
+          terraform_version: 1.5.0
 
-      - name: Install dependencies
-        run: |
-          pip install requests pyyaml
+      - name: Terraform Init (aura)
+        working-directory: terraform/aura
+        run: terraform init
 
-      - name: Create Neo4j Aura Instance
-        id: create-instance
+      - name: Terraform Plan (aura)
+        working-directory: terraform/aura
         env:
-          AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
-          AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
+          TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
+          TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
         run: |
-          cat > /tmp/create-aura-instance.py << 'EOF'
-          import requests
-          import json
-          import os
-          import sys
-          import time
-          
-          client_id = os.environ['AURA_CLIENT_ID']
-          client_secret = os.environ['AURA_CLIENT_SECRET']
-          environment = "${{ inputs.environment }}"
-          memory_size = "${{ inputs.instance_size }}"
-          
-          # Neo4j Aura API endpoint
-          api_url = "https://api.neo4j.io/v1"
-          
-          # Create instance
-          create_payload = {
-              "name": f"neo4j-ecommerce-{environment}",
-              "version": "5",
-              "region": "uksouth",
-              "memory": memory_size,
-              "type": "professional",
-              "cloud_provider": "azure"
-          }
-          
-          print(f"Creating Neo4j Aura instance in UK South region...")
-          print(f"Configuration: {json.dumps(create_payload, indent=2)}")
-          
-          response = requests.post(
-              f"{api_url}/instances",
-              auth=(client_id, client_secret),
-              json=create_payload
-          )
-          
-          if response.status_code in [200, 201, 202]:
-              instance_data = response.json()
-              instance_id = instance_data.get('data', {}).get('id')
-              
-              print(f"✅ Neo4j instance created: {instance_id}")
-              
-              # Wait for instance to be ready
-              print("Waiting for instance to be ready...")
-              max_attempts = 30
-              for attempt in range(max_attempts):
-                  status_response = requests.get(
-                      f"{api_url}/instances/{instance_id}",
-                      auth=(client_id, client_secret)
-                  )
-                  
-                  if status_response.status_code == 200:
-                      status_data = status_response.json()
-                      status = status_data.get('data', {}).get('status')
-                      
-                      if status == 'running':
-                          connection_url = status_data.get('data', {}).get('connection_url')
-                          username = status_data.get('data', {}).get('username', 'neo4j')
-                          password = status_data.get('data', {}).get('password')
-                          
-                          print(f"✅ Instance is ready!")
-                          print(f"Connection URL: {connection_url}")
-                          print(f"Username: {username}")
-                          
-                          # Output to GitHub Actions
-                          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-                              f.write(f"uri={connection_url}\n")
-                              f.write(f"username={username}\n")
-                              f.write(f"password={password}\n")
-                              f.write(f"instance_id={instance_id}\n")
-                          
-                          sys.exit(0)
-                      
-                      print(f"Status: {status} (attempt {attempt + 1}/{max_attempts})")
-                      time.sleep(30)
-                  else:
-                      print(f"Failed to check status: {status_response.text}")
-                      time.sleep(30)
-              
-              print("❌ Instance did not become ready in time")
-              sys.exit(1)
-          else:
-              print(f"❌ Failed to create instance: {response.status_code}")
-              print(response.text)
-              sys.exit(1)
-          EOF
-          
-          python /tmp/create-aura-instance.py
+          terraform plan -out=tfplan
 
-      - name: Configure Instance for E-commerce Workload
+      - name: Terraform Apply (aura)
+        working-directory: terraform/aura
         env:
-          NEO4J_URI: ${{ steps.create-instance.outputs.uri }}
-          NEO4J_USER: ${{ steps.create-instance.outputs.username }}
-          NEO4J_PASSWORD: ${{ steps.create-instance.outputs.password }}
+          TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
+          TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
         run: |
-          cat > /tmp/configure-neo4j.py << 'EOF'
-          from neo4j import GraphDatabase
-          import os
-          import sys
-          
-          uri = os.environ['NEO4J_URI']
-          user = os.environ['NEO4J_USER']
-          password = os.environ['NEO4J_PASSWORD']
-          
-          try:
-              driver = GraphDatabase.driver(uri, auth=(user, password))
-              
-              with driver.session() as session:
-                  # Create indexes for e-commerce entities
-                  indexes = [
-                      "CREATE INDEX customer_id_idx IF NOT EXISTS FOR (c:Customer) ON (c.id)",
-                      "CREATE INDEX product_id_idx IF NOT EXISTS FOR (p:Product) ON (p.id)",
-                      "CREATE INDEX order_id_idx IF NOT EXISTS FOR (o:Order) ON (o.id)",
-                      "CREATE INDEX category_name_idx IF NOT EXISTS FOR (c:Category) ON (c.name)",
-                      "CREATE INDEX supplier_id_idx IF NOT EXISTS FOR (s:Supplier) ON (s.id)",
-                      "CREATE INDEX review_id_idx IF NOT EXISTS FOR (r:Review) ON (r.id)"
-                  ]
-                  
-                  for idx in indexes:
-                      session.run(idx)
-                      print(f"✅ Created index: {idx.split()[2]}")
-                  
-                  # Create constraints
-                  constraints = [
-                      "CREATE CONSTRAINT customer_id_unique IF NOT EXISTS FOR (c:Customer) REQUIRE c.id IS UNIQUE",
-                      "CREATE CONSTRAINT product_id_unique IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE",
-                      "CREATE CONSTRAINT order_id_unique IF NOT EXISTS FOR (o:Order) REQUIRE o.id IS UNIQUE"
-                  ]
-                  
-                  for constraint in constraints:
-                      session.run(constraint)
-                      print(f"✅ Created constraint: {constraint.split()[2]}")
-                  
-                  print("✅ Neo4j instance configured for e-commerce workload")
-              
-              driver.close()
-              sys.exit(0)
-              
-          except Exception as e:
-              print(f"❌ Failed to configure Neo4j: {str(e)}")
-              sys.exit(1)
-          EOF
-          
-          pip install neo4j
-          python /tmp/configure-neo4j.py
+          terraform apply -auto-approve tfplan
 
-      - name: Store Credentials in Azure Key Vault
+      - name: Output AuraDB Connection
+        working-directory: terraform/aura
         run: |
-          az keyvault secret set \
-            --vault-name kv-neo4j-${{ inputs.environment }} \
-            --name neo4j-uri \
-            --value "${{ steps.create-instance.outputs.uri }}" \
-            || echo "Key Vault not found, skipping"
-          
-          az keyvault secret set \
-            --vault-name kv-neo4j-${{ inputs.environment }} \
-            --name neo4j-username \
-            --value "${{ steps.create-instance.outputs.username }}" \
-            || echo "Key Vault not found, skipping"
-          
-          az keyvault secret set \
-            --vault-name kv-neo4j-${{ inputs.environment }} \
-            --name neo4j-password \
-            --value "${{ steps.create-instance.outputs.password }}" \
-            || echo "Key Vault not found, skipping"
+          echo "NEO4J_URI=$(terraform output -raw connection_uri)" >> $GITHUB_ENV
+          echo "NEO4J_USER=$(terraform output -raw username)" >> $GITHUB_ENV
+          echo "NEO4J_PASSWORD=$(terraform output -raw password)" >> $GITHUB_ENV
 
-      - name: Neo4j Setup Summary
+      - name: Aura Setup Summary
         run: |
           echo "=================================="
           echo "Neo4j Aura Setup Complete"
           echo "=================================="
-          echo ""
-          echo "Environment: ${{ inputs.environment }}"
-          echo "Region: UK South"
-          echo "Instance Size: ${{ inputs.instance_size }}"
-          echo "Connection URI: ${{ steps.create-instance.outputs.uri }}"
-          echo "Username: ${{ steps.create-instance.outputs.username }}"
-          echo ""
-          echo "✅ Neo4j Aura instance ready for e-commerce data"
-          echo "✅ Indexes and constraints configured"
-          echo "✅ Credentials stored in Azure Key Vault"
+          echo "URI: $NEO4J_URI"
+          echo "User: $NEO4J_USER"
+          echo "✅ AuraDB provisioned using terraform-provider-neo4jaura defaults"

@@ -8,7 +8,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: infra-02-${{ github.ref }}-dev
+  group: infra-02-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -20,10 +20,10 @@ jobs:
         shell: bash
         run: |
           if [ -z "${{ secrets.AZURE_CREDENTIALS }}" ]; then echo "::error::Missing AZURE_CREDENTIALS"; exit 1; fi
+
   deploy-infrastructure:
-    name: Deploy UK South Azure Resources
+    name: Deploy Azure Resources (Single Environment)
     runs-on: ubuntu-latest
-    environment: dev
     needs: validate-secrets
     steps:
       - name: Checkout code
@@ -35,7 +35,7 @@ jobs:
           terraform_version: 1.5.0
 
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -64,9 +64,7 @@ jobs:
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
         run: |
-          terraform plan \
-            -var-file="environments/dev.tfvars.example" \
-            -out=tfplan
+          terraform plan -out=tfplan
 
       - name: Terraform Apply
         working-directory: terraform
@@ -89,28 +87,6 @@ jobs:
         run: |
           echo "Verifying UK South region deployment..."
           az group show --name ${{ env.RESOURCE_GROUP }} --query location -o tsv | grep "uksouth"
-          if [ $? -eq 0 ]; then
-            echo "✅ Resources deployed in UK South region"
-          else
-            echo "❌ Resources not in UK South region"
-            exit 1
-          fi
-
-      - name: Configure Network Optimization
-        run: |
-          echo "Configuring network optimization for Neo4j traffic..."
-          # Add network security group rules for Neo4j
-          az network nsg rule create \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --nsg-name nsg-neo4j-dev \
-            --name AllowNeo4jBolt \
-            --priority 100 \
-            --direction Inbound \
-            --access Allow \
-            --protocol Tcp \
-            --destination-port-range 7687 \
-            --description "Allow Neo4j Bolt traffic" \
-            || echo "NSG rule already exists or NSG not found"
 
       - name: Upload Storage Sample Data
         run: |
@@ -127,10 +103,9 @@ jobs:
           echo "Infrastructure Deployment Complete"
           echo "=================================="
           echo ""
-          echo "Environment: dev"
           echo "Region: UK South"
           echo "Resource Group: ${{ env.RESOURCE_GROUP }}"
           echo "Storage Account: ${{ env.STORAGE_ACCOUNT }}"
           echo "Databricks Workspace: ${{ env.DATABRICKS_WORKSPACE_URL }}"
           echo ""
-          echo "✅ Azure infrastructure ready for Neo4j integration"
+          echo "✅ Azure infrastructure ready for Neo4j + Databricks"

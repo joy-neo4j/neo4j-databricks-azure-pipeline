@@ -1,4 +1,4 @@
-name: 06 - Data Pipeline Development
+name: 06 - Data Pipeline
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: dev-data-pipeline-dev-${{ github.ref }}
+  group: data-pipeline-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -24,7 +24,6 @@ jobs:
   upload-notebooks:
     name: Deploy E-commerce ETL Notebooks
     runs-on: ubuntu-latest
-    environment: dev
     needs: validate-secrets
     steps:
       - name: Checkout code
@@ -115,7 +114,6 @@ jobs:
   create-jobs:
     name: Create E-commerce Data Pipeline Jobs
     runs-on: ubuntu-latest
-    environment: dev
     needs: validate-notebooks
     steps:
       - name: Checkout code
@@ -289,7 +287,7 @@ jobs:
               "node_type_id": "Standard_DS3_v2",
               "num_workers": 2,
               "custom_tags": {
-                "Environment": "${{ inputs.environment }}",
+                "Environment": "dev",
                 "Pipeline": "Analytics"
               }
             },
@@ -327,13 +325,11 @@ jobs:
           databricks jobs create --json-file /tmp/analytics-job.json || \
             echo "Job may already exist"
 
-      - name: Pipeline Development Summary
+      - name: Pipeline Deployment Summary
         run: |
           echo "=================================="
-          echo "Data Pipeline Development Complete"
+          echo "Data Pipeline Deployment Complete"
           echo "=================================="
-          echo ""
-          echo "Environment: ${{ inputs.environment }}"
           echo ""
           echo "Notebooks Deployed:"
           echo "  ✅ CSV Ingestion"
