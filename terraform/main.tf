@@ -152,8 +152,10 @@ resource "azurerm_consumption_budget_resource_group" "main" {
 
 ############################################
 # Databricks Resources
-# NOTE: Requires Databricks workspace to already exist and be accessible
-#       via databricks_host and databricks_token variables
+# NOTE: Databricks workspace is created by the azure_databricks module above.
+#       The provider configuration uses the workspace URL from that module's output.
+#       These resources (cluster, notebooks, jobs, etc.) are configured after
+#       the workspace is created during the same Terraform apply.
 ############################################
 
 ############################################
