@@ -61,7 +61,7 @@ jobs:
           fi
 
           echo "Downloading: $ASSET_URL"
-          curl -L -o aura-cli.tar.gz "$ASSET_URL"
+          curl -L --fail --max-filesize 100M -o aura-cli.tar.gz "$ASSET_URL"
 
           # Extract and install
           mkdir -p "$RUNNER_TEMP/aura-cli"
@@ -69,7 +69,7 @@ jobs:
           BIN=$(find "$RUNNER_TEMP/aura-cli" -type f -name 'aura-cli' | head -n1)
           if [ -z "$BIN" ]; then
             echo "❌ aura-cli binary not found after extraction"
-            find "$RUNNER_TEMP/aura-cli" -maxdepth 2 -type f -printf "%p\n" || true
+            find "$RUNNER_TEMP/aura-cli" -maxdepth 2 -type f -print || true
             exit 1
           fi
           chmod +x "$BIN"
@@ -83,6 +83,10 @@ jobs:
           AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
           AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
         run: |
+          if [ -z "$AURA_CLIENT_ID" ] || [ -z "$AURA_CLIENT_SECRET" ]; then
+            echo "❌ AURA_CLIENT_ID or AURA_CLIENT_SECRET not set"
+            exit 1
+          fi
           aura-cli credential add \
             --name "ci" \
             --client-id "$AURA_CLIENT_ID" \
