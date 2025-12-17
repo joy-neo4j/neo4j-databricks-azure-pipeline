@@ -61,7 +61,7 @@ jobs:
           fi
 
           echo "Downloading: $ASSET_URL"
-          curl -L --fail --max-filesize 100M -o aura-cli.tar.gz "$ASSET_URL"
+          curl -L --fail --max-filesize 100M --max-time 300 -o aura-cli.tar.gz "$ASSET_URL"
 
           # Extract and install
           mkdir -p "$RUNNER_TEMP/aura-cli"
@@ -133,7 +133,7 @@ jobs:
             echo "CLI check failed; trying REST"
             CODE=$(curl -sS -m 20 -w "%{http_code}" -o /dev/null \
               -H "Authorization: Bearer $DATABRICKS_TOKEN" \
-              "$DATABRICKS_HOST/api/2.0/preview/scim/v2/Me")
+              "$DATABRICKS_HOST/api/2.0/preview/scim/v2/Me" 2>/dev/null || echo "000")
             if [ "$CODE" -eq 200 ]; then
               echo "✅ Databricks token is valid (REST)"
               echo "valid=true" >> $GITHUB_OUTPUT
