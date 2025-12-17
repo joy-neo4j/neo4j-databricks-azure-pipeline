@@ -35,7 +35,7 @@ provider "azurerm" {
 }
 
 provider "databricks" {
-  host  = var.databricks_host
+  host  = module.azure_databricks.workspace_url
   token = var.databricks_token
 }
 

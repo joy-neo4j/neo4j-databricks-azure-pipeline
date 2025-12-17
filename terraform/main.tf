@@ -151,10 +151,16 @@ resource "azurerm_consumption_budget_resource_group" "main" {
 }
 
 ############################################
+# Databricks Resources
+# NOTE: Requires Databricks workspace to already exist and be accessible
+#       via databricks_host and databricks_token variables
+############################################
+
+############################################
 # Databricks Cluster
 ############################################
 resource "databricks_cluster" "neo4j_ecommerce" {
-  cluster_name            = "neo4j-ecommerce-dev"
+  cluster_name            = "neo4j-ecommerce-${var.environment}"
   spark_version           = "13.3.x-scala2.12"
   node_type_id            = "Standard_DS3_v2"
   autotermination_minutes = 120
@@ -180,7 +186,10 @@ resource "databricks_cluster" "neo4j_ecommerce" {
 }
 
 ############################################
-# Unity Catalog Schemas (assumes catalog exists)
+# Unity Catalog Schemas
+# NOTE: Requires Unity Catalog (specified by var.catalog_name) to already exist
+#       in the Databricks workspace. This Terraform configuration will create
+#       schemas within the existing catalog.
 ############################################
 resource "databricks_schema" "bronze" {
   name         = "bronze"

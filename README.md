@@ -71,7 +71,6 @@ AZURE_SUBSCRIPTION_ID    # Azure subscription ID
 AZURE_TENANT_ID         # Azure AD tenant ID
 
 # Databricks
-DATABRICKS_ACCOUNT_ID   # Account ID for workspace
 DATABRICKS_TOKEN        # Personal access token
 
 # Neo4j Aura
