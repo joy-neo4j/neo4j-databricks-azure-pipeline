@@ -86,6 +86,19 @@ jobs:
             echo "Container $CONTAINER exists"
           fi
 
+      - name: Break stale Terraform state lease (best effort)
+        run: |
+          set -euo pipefail
+          SA="${BACKEND_STORAGE_ACCOUNT}"
+          CONTAINER="tfstate"
+          BLOB="neo4j-databricks-dev.tfstate"
+          echo "Attempting best-effort lease break on $CONTAINER/$BLOB in $SA"
+          az storage blob lease break \
+            --account-name "$SA" \
+            --container-name "$CONTAINER" \
+            --blob "$BLOB" \
+            --auth-mode login || true
+
       - name: Terraform Init
         working-directory: terraform
         run: |
@@ -103,12 +116,13 @@ jobs:
           TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+          TF_VAR_environment: dev
         run: |
           VARFILE="${{ steps.varfile.outputs.file }}"
           if [ -n "$VARFILE" ]; then
-            terraform plan -input=false -lock-timeout=5m -var-file="$VARFILE" -out=tfplan
+            terraform plan -input=false -lock-timeout=10m -var-file="$VARFILE" -out=tfplan
           else
-            terraform plan -input=false -lock-timeout=5m -out=tfplan
+            terraform plan -input=false -lock-timeout=10m -out=tfplan
           fi
 
       - name: Terraform Apply
@@ -118,12 +132,13 @@ jobs:
           TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+          TF_VAR_environment: dev
         run: |
           VARFILE="${{ steps.varfile.outputs.file }}"
           if [ -n "$VARFILE" ]; then
-            terraform apply -input=false -auto-approve -lock-timeout=5m -var-file="$VARFILE" tfplan
+            terraform apply -input=false -auto-approve -lock-timeout=10m -var-file="$VARFILE" tfplan
           else
-            terraform apply -input=false -auto-approve -lock-timeout=5m tfplan
+            terraform apply -input=false -auto-approve -lock-timeout=10m tfplan
           fi
 
       - name: Export Terraform Outputs
