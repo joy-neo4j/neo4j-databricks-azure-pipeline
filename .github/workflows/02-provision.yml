@@ -104,7 +104,12 @@ jobs:
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
         run: |
-          terraform plan -out=tfplan
+          VARFILE="${{ steps.varfile.outputs.file }}"
+          if [ -n "$VARFILE" ]; then
+            terraform plan -input=false -lock-timeout=5m -var-file="$VARFILE" -out=tfplan
+          else
+            terraform plan -input=false -lock-timeout=5m -out=tfplan
+          fi
 
       - name: Terraform Apply
         working-directory: terraform
@@ -114,7 +119,12 @@ jobs:
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
         run: |
-            terraform apply -auto-approve tfplan
+          VARFILE="${{ steps.varfile.outputs.file }}"
+          if [ -n "$VARFILE" ]; then
+            terraform apply -input=false -auto-approve -lock-timeout=5m -var-file="$VARFILE" tfplan
+          else
+            terraform apply -input=false -auto-approve -lock-timeout=5m tfplan
+          fi
 
       - name: Export Terraform Outputs
         working-directory: terraform
