@@ -96,7 +96,7 @@ jobs:
           az storage blob lease break \
             --account-name "$SA" \
             --container-name "$CONTAINER" \
-            --blob "$BLOB" \
+            --blob-name "$BLOB" \
             --auth-mode login || true
 
       - name: Determine var-file
