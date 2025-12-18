@@ -29,6 +29,20 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Export ARM environment for Terraform (Service Principal)
+        run: |
+          set -euo pipefail
+          CREDS_JSON='${{ secrets.AZURE_CREDENTIALS }}'
+          ARM_CLIENT_ID=$(echo "$CREDS_JSON" | jq -r '.clientId')
+          ARM_CLIENT_SECRET=$(echo "$CREDS_JSON" | jq -r '.clientSecret')
+          ARM_TENANT_ID=$(echo "$CREDS_JSON" | jq -r '.tenantId')
+          ARM_SUBSCRIPTION_ID=$(echo "$CREDS_JSON" | jq -r '.subscriptionId')
+      
+          echo "ARM_CLIENT_ID=$ARM_CLIENT_ID" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=$ARM_CLIENT_SECRET" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=$ARM_TENANT_ID" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID" >> $GITHUB_ENV
+
       - name: Ensure Terraform remote backend resources exist
         run: |
           set -euo pipefail
