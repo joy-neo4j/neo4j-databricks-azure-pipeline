@@ -85,7 +85,32 @@ jobs:
           else
             echo "Container $CONTAINER exists"
           fi
+          
+      - name: Break stale Terraform state lease (best effort)
+        run: |
+          set -euo pipefail
+          SA="${BACKEND_STORAGE_ACCOUNT}"
+          CONTAINER="tfstate"
+          BLOB="neo4j-databricks-dev.tfstate"
+          echo "Attempting best-effort lease break on $CONTAINER/$BLOB in $SA"
+          az storage blob lease break \
+            --account-name "$SA" \
+            --container-name "$CONTAINER" \
+            --blob "$BLOB" \
+            --auth-mode login || true
 
+      - name: Determine var-file
+        id: varfile
+        working-directory: terraform
+        run: |
+          if [ -f "terraform.tfvars" ]; then
+            echo "file=terraform.tfvars" >> $GITHUB_OUTPUT
+          elif [ -f "terraform.tfvars.example" ]; then
+            echo "file=terraform.tfvars.example" >> $GITHUB_OUTPUT
+          else
+            echo "file=" >> $GITHUB_OUTPUT
+          fi
+            
       - name: Terraform Init
         working-directory: terraform
         run: |
@@ -94,7 +119,7 @@ jobs:
             -backend-config="resource_group_name=rg-terraform-state" \
             -backend-config="storage_account_name=${BACKEND_STORAGE_ACCOUNT}" \
             -backend-config="container_name=tfstate" \
-            -backend-config="key=neo4j-databricks-dev.tfstate"
+            -backend-config="key=${{ github.ref_name == 'main' && 'neo4j-databricks-dev.tfstate' || format('neo4j-databricks-{0}.tfstate', github.ref_name) }}"
 
       - name: Terraform Plan
         working-directory: terraform
