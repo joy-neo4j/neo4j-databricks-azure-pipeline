@@ -24,6 +24,46 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Ensure Terraform remote backend resources exist
+        run: |
+          set -euo pipefail
+          RG="rg-terraform-state"
+          SA="stterraformstatedev"
+          CONTAINER="tfstate"
+          LOCATION="uksouth"
+
+          echo "Ensuring remote backend in RG=$RG SA=$SA CONTAINER=$CONTAINER LOCATION=$LOCATION"
+
+          # Create Resource Group if missing
+          if ! az group show --name "$RG" >/dev/null 2>&1; then
+            echo "Creating resource group $RG in $LOCATION"
+            az group create --name "$RG" --location "$LOCATION" >/dev/null
+          else
+            echo "Resource group $RG exists"
+          fi
+
+          # Create Storage Account if missing
+          if ! az storage account show --name "$SA" --resource-group "$RG" >/dev/null 2>&1; then
+            echo "Creating storage account $SA"
+            az storage account create \
+              --name "$SA" \
+              --resource-group "$RG" \
+              --location "$LOCATION" \
+              --sku Standard_LRS \
+              --kind StorageV2 \
+              --hns true >/dev/null
+          else
+            echo "Storage account $SA exists"
+          fi
+
+          # Create container if missing (auth via Azure CLI login)
+          if ! az storage container show --name "$CONTAINER" --account-name "$SA" --auth-mode login >/dev/null 2>&1; then
+            echo "Creating container $CONTAINER"
+            az storage container create --name "$CONTAINER" --account-name "$SA" --auth-mode login >/dev/null
+          else
+            echo "Container $CONTAINER exists"
+          fi
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
