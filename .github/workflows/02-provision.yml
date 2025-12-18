@@ -56,11 +56,10 @@ jobs:
             echo "Storage account $SA exists"
           fi
 
-          # Create container if missing (auth via account key)
-          KEY=$(az storage account keys list --account-name "$SA" --resource-group "$RG" --query "[0].value" -o tsv)
-          if ! az storage container show --name "$CONTAINER" --account-name "$SA" --auth-mode key >/dev/null 2>&1; then
+          # Create container if missing (auth via Azure CLI login)
+          if ! az storage container show --name "$CONTAINER" --account-name "$SA" --auth-mode login >/dev/null 2>&1; then
             echo "Creating container $CONTAINER"
-            az storage container create --name "$CONTAINER" --account-name "$SA" --auth-mode key >/dev/null
+            az storage container create --name "$CONTAINER" --account-name "$SA" --auth-mode login >/dev/null
           else
             echo "Container $CONTAINER exists"
           fi
