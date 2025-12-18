@@ -28,9 +28,9 @@ jobs:
         run: |
           set -euo pipefail
           RG="rg-terraform-state"
-          BASE="sttfstate"
-          DATE_SUFFIX=$(date -u +%d%b%y | tr '[:upper:]' '[:lower:]')  # DDMMMYY lowercased
-          SA="${BASE}${DATE_SUFFIX}"  # e.g., sttfstate18dec25
+          SUB_NAME=$(az account show --query name -o tsv | tr '[:upper:]' '[:lower:]' | tr -d '-')
+          BASE="tfstate"
+          SA="${BASE}${SUB_NAME}"  # e.g., tfstatefieldengcsaemea
           CONTAINER="tfstate"
           LOCATION="uksouth"
 

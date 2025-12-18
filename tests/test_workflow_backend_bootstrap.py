@@ -65,8 +65,9 @@ class TestWorkflowBackendBootstrap:
         
         # Check for required variables
         assert 'rg-terraform-state' in script, "Resource group name not found in script"
-        assert 'BASE="sttfstate"' in script, "Storage account base name not found in script"
-        assert 'DATE_SUFFIX=' in script, "Date suffix computation not found in script"
+        assert 'BASE="tfstate"' in script, "Storage account base name not found in script"
+        assert 'SUB_NAME=' in script, "Subscription name computation not found in script"
+        assert 'az account show' in script, "Azure subscription query not found in script"
         assert 'BACKEND_STORAGE_ACCOUNT=' in script, "BACKEND_STORAGE_ACCOUNT export not found in script"
         assert 'tfstate' in script, "Container name not found in script"
         assert 'uksouth' in script, "Location not found in script"
