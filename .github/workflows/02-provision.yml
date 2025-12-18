@@ -19,6 +19,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.0
+
       - name: Azure Login
         uses: azure/login@v2
         with:
@@ -29,8 +34,8 @@ jobs:
           set -euo pipefail
           RG="rg-terraform-state"
           SUB_NAME=$(az account show --query name -o tsv | tr '[:upper:]' '[:lower:]' | tr -d '-')
-          BASE="tfstate"
-          SA="${BASE}${SUB_NAME}"  # e.g., tfstatefieldengcsaemea
+          BASE="tfst"
+          SA="${BASE}${SUB_NAME}"  # e.g., tfstfieldengcsaemea
           CONTAINER="tfstate"
           LOCATION="uksouth"
 
@@ -67,40 +72,15 @@ jobs:
             echo "Container $CONTAINER exists"
           fi
 
-      - name: Configure Terraform Backend
-        working-directory: terraform
-        run: |
-          cat > backend.tf << EOF
-          terraform {
-            backend "azurerm" {
-              resource_group_name  = "rg-terraform-state"
-              storage_account_name = "${BACKEND_STORAGE_ACCOUNT}"
-              container_name       = "tfstate"
-              key                  = "neo4j-databricks-dev.tfstate"
-            }
-          }
-          EOF
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.5.0
-
-      - name: Determine var-file
-        id: varfile
-        working-directory: terraform
-        run: |
-          if [ -f "terraform.tfvars" ]; then
-            echo "file=terraform.tfvars" >> $GITHUB_OUTPUT
-          elif [ -f "terraform.tfvars.example" ]; then
-            echo "file=terraform.tfvars.example" >> $GITHUB_OUTPUT
-          else
-            echo "file=" >> $GITHUB_OUTPUT
-          fi
-
       - name: Terraform Init
         working-directory: terraform
-        run: terraform init
+        run: |
+          terraform init \
+            -input=false \
+            -backend-config="resource_group_name=rg-terraform-state" \
+            -backend-config="storage_account_name=${BACKEND_STORAGE_ACCOUNT}" \
+            -backend-config="container_name=tfstate" \
+            -backend-config="key=neo4j-databricks-dev.tfstate"
 
       - name: Terraform Plan
         working-directory: terraform
@@ -110,12 +90,7 @@ jobs:
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
         run: |
-          VARFILE="${{ steps.varfile.outputs.file }}"
-          if [ -n "$VARFILE" ]; then
-            terraform plan -var-file="$VARFILE" -out=tfplan
-          else
-            terraform plan -out=tfplan
-          fi
+          terraform plan -out=tfplan
 
       - name: Terraform Apply
         working-directory: terraform
@@ -125,12 +100,15 @@ jobs:
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
         run: |
-          VARFILE="${{ steps.varfile.outputs.file }}"
-          if [ -n "$VARFILE" ]; then
-            terraform apply -auto-approve -var-file="$VARFILE" tfplan
-          else
             terraform apply -auto-approve tfplan
-          fi
+
+      - name: Export Terraform Outputs
+        working-directory: terraform
+        run: |
+          terraform output -json > /tmp/terraform-outputs.json
+          echo "RESOURCE_GROUP=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
+          echo "STORAGE_ACCOUNT=$(terraform output -raw storage_account_name)" >> $GITHUB_ENV
+          echo "DATABRICKS_WORKSPACE_URL=$(terraform output -raw databricks_workspace_url)" >> $GITHUB_ENV
 
       - name: Upload Storage Sample Data
         run: |
