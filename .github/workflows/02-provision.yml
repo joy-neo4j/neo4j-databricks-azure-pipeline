@@ -29,7 +29,7 @@ jobs:
           set -euo pipefail
           RG="rg-terraform-state"
           BASE="sttfstate"
-          DATE_SUFFIX=$(date -u +%d%b%y | tr '[:upper:]' '[:lower:]')  # DDMONYY lowercased
+          DATE_SUFFIX=$(date -u +%d%b%y | tr '[:upper:]' '[:lower:]')  # DDMMMYY lowercased
           SA="${BASE}${DATE_SUFFIX}"  # e.g., sttfstate18dec25
           CONTAINER="tfstate"
           LOCATION="uksouth"
