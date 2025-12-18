@@ -146,12 +146,7 @@ jobs:
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
           DATABRICKS_AUTH_TYPE: pat
         run: |
-          VARFILE="${{ steps.varfile.outputs.file }}"
-          if [ -n "$VARFILE" ]; then
-            terraform apply -input=false -auto-approve -lock-timeout=5m -var-file="$VARFILE" tfplan
-          else
-            terraform apply -input=false -auto-approve -lock-timeout=5m tfplan
-          fi
+          terraform apply -input=false -auto-approve -lock-timeout=5m tfplan
 
       - name: Export Terraform Outputs
         working-directory: terraform
