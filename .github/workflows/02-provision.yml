@@ -28,11 +28,14 @@ jobs:
         run: |
           set -euo pipefail
           RG="rg-terraform-state"
-          SA="stterraformstatedev"
+          BASE="sttfstate"
+          DATE_SUFFIX=$(date -u +%d%b%y | tr '[:upper:]' '[:lower:]')  # DDMMMYY lowercased
+          SA="${BASE}${DATE_SUFFIX}"  # e.g., sttfstate18dec25
           CONTAINER="tfstate"
           LOCATION="uksouth"
 
           echo "Ensuring remote backend in RG=$RG SA=$SA CONTAINER=$CONTAINER LOCATION=$LOCATION"
+          echo "BACKEND_STORAGE_ACCOUNT=$SA" >> "$GITHUB_ENV"
 
           # Create Resource Group if missing
           if ! az group show --name "$RG" >/dev/null 2>&1; then
@@ -63,6 +66,20 @@ jobs:
           else
             echo "Container $CONTAINER exists"
           fi
+
+      - name: Configure Terraform Backend
+        working-directory: terraform
+        run: |
+          cat > backend.tf << EOF
+          terraform {
+            backend "azurerm" {
+              resource_group_name  = "rg-terraform-state"
+              storage_account_name = "${BACKEND_STORAGE_ACCOUNT}"
+              container_name       = "tfstate"
+              key                  = "neo4j-databricks-dev.tfstate"
+            }
+          }
+          EOF
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
@@ -114,6 +131,15 @@ jobs:
           else
             terraform apply -auto-approve tfplan
           fi
+
+      - name: Upload Storage Sample Data
+        run: |
+          echo "Uploading sample e-commerce data to Azure Storage..."
+          az storage blob upload-batch \
+            --account-name ${{ env.BACKEND_STORAGE_ACCOUNT }} \
+            --destination pipeline-data/sample-data \
+            --source sample-data/ \
+            --overwrite
 
       - name: Provisioning Summary
         working-directory: terraform

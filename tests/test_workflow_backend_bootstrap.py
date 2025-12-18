@@ -65,7 +65,9 @@ class TestWorkflowBackendBootstrap:
         
         # Check for required variables
         assert 'rg-terraform-state' in script, "Resource group name not found in script"
-        assert 'stterraformstatedev' in script, "Storage account name not found in script"
+        assert 'BASE="sttfstate"' in script, "Storage account base name not found in script"
+        assert 'DATE_SUFFIX=' in script, "Date suffix computation not found in script"
+        assert 'BACKEND_STORAGE_ACCOUNT=' in script, "BACKEND_STORAGE_ACCOUNT export not found in script"
         assert 'tfstate' in script, "Container name not found in script"
         assert 'uksouth' in script, "Location not found in script"
         
@@ -79,6 +81,81 @@ class TestWorkflowBackendBootstrap:
         
         # Check for error handling
         assert 'set -euo pipefail' in script, "Error handling not set up properly"
+    
+    def test_configure_backend_step_exists(self):
+        """Test that the Configure Terraform Backend step exists"""
+        with open(".github/workflows/02-provision.yml", 'r') as f:
+            workflow = yaml.safe_load(f)
+        
+        provision_job = workflow['jobs']['provision']
+        steps = provision_job['steps']
+        step_names = [step.get('name', '') for step in steps]
+        
+        assert 'Configure Terraform Backend' in step_names, \
+            "Configure Terraform Backend step not found in workflow"
+    
+    def test_configure_backend_uses_env_variable(self):
+        """Test that Configure Terraform Backend step uses BACKEND_STORAGE_ACCOUNT env variable"""
+        with open(".github/workflows/02-provision.yml", 'r') as f:
+            workflow = yaml.safe_load(f)
+        
+        provision_job = workflow['jobs']['provision']
+        steps = provision_job['steps']
+        
+        # Find the Configure Terraform Backend step
+        backend_config_step = None
+        for step in steps:
+            if step.get('name') == 'Configure Terraform Backend':
+                backend_config_step = step
+                break
+        
+        assert backend_config_step is not None, "Configure Terraform Backend step not found"
+        assert 'run' in backend_config_step, "Configure Terraform Backend step must have 'run' field"
+        
+        script = backend_config_step['run']
+        
+        # Check that it creates backend.tf with dynamic storage account name
+        assert 'backend.tf' in script, "backend.tf creation not found"
+        assert 'backend "azurerm"' in script, "azurerm backend not found"
+        assert '${BACKEND_STORAGE_ACCOUNT}' in script, "BACKEND_STORAGE_ACCOUNT variable not used"
+        assert 'rg-terraform-state' in script, "Resource group not found in backend config"
+    
+    def test_upload_sample_data_step_exists(self):
+        """Test that the Upload Storage Sample Data step exists"""
+        with open(".github/workflows/02-provision.yml", 'r') as f:
+            workflow = yaml.safe_load(f)
+        
+        provision_job = workflow['jobs']['provision']
+        steps = provision_job['steps']
+        step_names = [step.get('name', '') for step in steps]
+        
+        assert 'Upload Storage Sample Data' in step_names, \
+            "Upload Storage Sample Data step not found in workflow"
+    
+    def test_upload_sample_data_uses_env_variable(self):
+        """Test that Upload Storage Sample Data step uses BACKEND_STORAGE_ACCOUNT env variable"""
+        with open(".github/workflows/02-provision.yml", 'r') as f:
+            workflow = yaml.safe_load(f)
+        
+        provision_job = workflow['jobs']['provision']
+        steps = provision_job['steps']
+        
+        # Find the Upload Storage Sample Data step
+        upload_step = None
+        for step in steps:
+            if step.get('name') == 'Upload Storage Sample Data':
+                upload_step = step
+                break
+        
+        assert upload_step is not None, "Upload Storage Sample Data step not found"
+        assert 'run' in upload_step, "Upload Storage Sample Data step must have 'run' field"
+        
+        script = upload_step['run']
+        
+        # Check that it uses env.BACKEND_STORAGE_ACCOUNT
+        assert 'az storage blob upload-batch' in script, "Blob upload command not found"
+        assert '${{ env.BACKEND_STORAGE_ACCOUNT }}' in script, "BACKEND_STORAGE_ACCOUNT env variable not used"
+        assert 'sample-data' in script, "sample-data source not found"
 
 
 if __name__ == "__main__":
