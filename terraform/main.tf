@@ -115,7 +115,7 @@ resource "null_resource" "neo4j_aura_instance" {
       #   -H "Content-Type: application/json" \
       #   -d '{"name":"neo4j-ecommerce-${var.environment}","memory":"${var.neo4j_memory}","region":"${var.neo4j_region}","cloud_provider":"azure","type":"${var.neo4j_tier}","version":"5"}'
     EOT
-    
+
     environment = {
       AURA_CLIENT_ID     = var.aura_client_id
       AURA_CLIENT_SECRET = var.aura_client_secret
@@ -144,7 +144,7 @@ resource "azurerm_key_vault_secret" "neo4j_uri" {
   name         = "neo4j-uri-${var.environment}"
   value        = local.neo4j_connection_uri
   key_vault_id = azurerm_key_vault.main[0].id
-  
+
   depends_on = [null_resource.neo4j_aura_instance]
 }
 
@@ -153,7 +153,7 @@ resource "azurerm_key_vault_secret" "neo4j_username" {
   name         = "neo4j-username-${var.environment}"
   value        = local.neo4j_username
   key_vault_id = azurerm_key_vault.main[0].id
-  
+
   depends_on = [null_resource.neo4j_aura_instance]
 }
 
@@ -162,7 +162,7 @@ resource "azurerm_key_vault_secret" "neo4j_password" {
   name         = "neo4j-password-${var.environment}"
   value        = local.neo4j_password
   key_vault_id = azurerm_key_vault.main[0].id
-  
+
   depends_on = [null_resource.neo4j_aura_instance]
 }
 

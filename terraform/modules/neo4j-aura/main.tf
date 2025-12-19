@@ -21,7 +21,7 @@ resource "null_resource" "neo4j_aura_instance" {
       #   -H "Content-Type: application/json" \
       #   -d '{"name":"${var.instance_name}","memory":"${var.memory}","region":"${var.region}"}'
     EOT
-    
+
     environment = {
       AURA_CLIENT_ID     = var.aura_client_id
       AURA_CLIENT_SECRET = var.aura_client_secret
@@ -39,8 +39,8 @@ resource "null_resource" "neo4j_aura_instance" {
 # Store instance metadata
 locals {
   # Placeholder values - in production, these would come from Aura API response
-  instance_id     = "neo4j-${var.environment}-${substr(md5(var.instance_name), 0, 8)}"
-  connection_uri  = "neo4j+s://${local.instance_id}.databases.neo4j.io"
-  username        = "neo4j"
-  password        = random_password.neo4j.result
+  instance_id    = "neo4j-${var.environment}-${substr(md5(var.instance_name), 0, 8)}"
+  connection_uri = "neo4j+s://${local.instance_id}.databases.neo4j.io"
+  username       = "neo4j"
+  password       = random_password.neo4j.result
 }
