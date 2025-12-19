@@ -139,19 +139,6 @@ variable "vnet_address_space" {
   default     = ["10.0.0.0/16"]
 }
 
-# Cost Management
-variable "budget_amount" {
-  description = "Monthly budget amount in USD"
-  type        = number
-  default     = 1000
-}
-
-variable "budget_alert_threshold" {
-  description = "Budget alert threshold percentage"
-  type        = number
-  default     = 80
-}
-
 # Unity Catalog Configuration
 variable "catalog_name" {
   description = "Existing Unity Catalog name"

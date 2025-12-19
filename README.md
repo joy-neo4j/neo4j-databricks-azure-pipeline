@@ -37,7 +37,7 @@ A production-ready, single-click deployment solution for **e-commerce analytics*
 ## 🔧 Prerequisites
 
 ### Required Tools
-- Azure subscription with Owner or Contributor role
+- Azure subscription with appropriate access (see [Prerequisite Permissions](#prerequisite-permissions) for specific roles)
 - GitHub account with Actions enabled
 - Azure CLI (version 2.40+)
 - Terraform (version 1.5+)
@@ -52,6 +52,76 @@ A production-ready, single-click deployment solution for **e-commerce analytics*
 ### Neo4j Aura
 - Neo4j Aura account (Professional or Enterprise tier)
 - Aura API credentials
+
+### Prerequisite Permissions
+
+#### Azure Service Principal Roles
+
+**IMPORTANT**: Do NOT use the generic "Contributor" role. Instead, assign specific roles as follows:
+
+1. **User Access Administrator** (to allow creation of role assignments):
+   ```bash
+   az role assignment create \
+     --assignee <APP_ID_OR_OBJECT_ID> \
+     --role "User Access Administrator" \
+     --scope /subscriptions/<SUB_ID>
+   ```
+
+2. **Network Contributor** (if Terraform manages VNets/Subnets/NSGs):
+   ```bash
+   az role assignment create \
+     --assignee <APP_ID_OR_OBJECT_ID> \
+     --role "Network Contributor" \
+     --scope /subscriptions/<SUB_ID>/resourceGroups/<RG_NAME>
+   ```
+
+3. **Storage Blob Data Contributor** (data plane on the Storage Account used for state/data):
+   ```bash
+   az role assignment create \
+     --assignee <APP_ID_OR_OBJECT_ID> \
+     --role "Storage Blob Data Contributor" \
+     --scope $(az storage account show -n <SA_NAME> -g <RG_NAME> --query id -o tsv)
+   ```
+
+4. **Key Vault** (choose ONE model):
+   
+   **Option A - Access Policy model:**
+   ```bash
+   az keyvault set-policy \
+     -n <KV_NAME> \
+     --spn <APP_ID> \
+     --secret-permissions get list set delete purge recover
+   ```
+   
+   **Option B - RBAC model** (with `enable_rbac_authorization = true` on the vault):
+   ```bash
+   az role assignment create \
+     --assignee <OBJECT_ID> \
+     --role "Key Vault Secrets Officer" \
+     --scope $(az keyvault show -n <KV_NAME> --query id -o tsv)
+   ```
+
+#### Databricks PAT User Permissions
+
+The Databricks Personal Access Token (PAT) user must have:
+
+1. **Metastore Admin** at the Databricks Account level
+2. **Catalog-level privileges** to create schemas/manage grants (e.g., ALL_PRIVILEGES)
+
+**Example: Grant catalog privileges using Databricks CLI**
+
+Ensure `DATABRICKS_HOST` and `DATABRICKS_TOKEN` are set:
+```bash
+databricks unity-catalog privileges set \
+  --json '{
+    "securable_type":"catalog",
+    "securable_name":"ecommerce_dev",
+    "changes":[{
+      "principal":"<user@domain>",
+      "add":["ALL_PRIVILEGES"]
+    }]
+  }'
+```
 
 ## 🏃 Quick Start
 
@@ -87,16 +157,20 @@ NOTIFICATION_EMAIL      # Email notifications
 See [SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for detailed setup instructions.
 
 ### 3. Create Azure Service Principal
+
+Create a service principal and assign specific roles (see [Prerequisite Permissions](#prerequisite-permissions) above):
+
 ```bash
 az login
+
+# Create service principal (without role assignment)
 az ad sp create-for-rbac \
   --name "neo4j-databricks-pipeline" \
-  --role Contributor \
-  --scopes /subscriptions/<SUBSCRIPTION_ID> \
+  --skip-assignment \
   --sdk-auth
 ```
 
-Copy the JSON output to the `AZURE_CREDENTIALS` secret.
+Copy the JSON output to the `AZURE_CREDENTIALS` secret, then assign the specific roles listed in the [Prerequisite Permissions](#prerequisite-permissions) section (DO NOT use generic "Contributor").
 
 ### 4. Configure Terraform Variables (Optional)
 
