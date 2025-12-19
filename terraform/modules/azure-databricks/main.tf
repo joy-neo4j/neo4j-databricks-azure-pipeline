@@ -19,7 +19,7 @@ resource "azurerm_databricks_access_connector" "main" {
   name                = "dac-${var.workspace_name}"
   resource_group_name = var.resource_group_name
   location            = var.location
-  
+
   identity {
     type = "SystemAssigned"
   }

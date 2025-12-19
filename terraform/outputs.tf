@@ -58,17 +58,17 @@ output "application_insights_connection_string" {
 # Databricks
 output "databricks_workspace_id" {
   description = "ID of the Databricks workspace"
-  value       = module.azure_databricks.workspace_id
+  value       = var.create_databricks_workspace ? module.azure_databricks[0].workspace_id : null
 }
 
 output "databricks_workspace_url" {
   description = "URL of the Databricks workspace"
-  value       = module.azure_databricks.workspace_url
+  value       = var.create_databricks_workspace ? module.azure_databricks[0].workspace_url : var.databricks_host
 }
 
 output "databricks_workspace_name" {
   description = "Name of the Databricks workspace"
-  value       = module.azure_databricks.workspace_name
+  value       = var.create_databricks_workspace ? module.azure_databricks[0].workspace_name : null
 }
 
 # Neo4j Aura
@@ -102,8 +102,8 @@ output "deployment_info" {
     environment          = var.environment
     resource_group       = azurerm_resource_group.main.name
     location             = azurerm_resource_group.main.location
-    databricks_workspace = module.azure_databricks.workspace_name
-    databricks_url       = module.azure_databricks.workspace_url
+    databricks_workspace = var.create_databricks_workspace ? module.azure_databricks[0].workspace_name : "existing-workspace"
+    databricks_url       = var.create_databricks_workspace ? module.azure_databricks[0].workspace_url : var.databricks_host
     neo4j_instance       = local.neo4j_instance_id
     storage_account      = azurerm_storage_account.main.name
     key_vault            = var.enable_key_vault ? azurerm_key_vault.main[0].name : "disabled"

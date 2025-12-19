@@ -121,8 +121,7 @@ enable_key_vault        = true
 key_vault_name          = null
 enable_monitoring       = true
 
-budget_amount           = 200
-budget_alert_threshold  = 80
+create_databricks_workspace = false
 
 neo4j_region            = "uksouth"
 neo4j_tier              = "professional"
@@ -201,8 +200,7 @@ Owner: team-name
 - Use auto-pause in non-prod
 - Right-size clusters per environment
 - Use spot instances where applicable
-- Set budget alerts
-- Review costs monthly
+- Review costs monthly using Azure Cost Management
 
 ---
 

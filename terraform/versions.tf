@@ -36,8 +36,8 @@ provider "azurerm" {
 
 provider "databricks" {
   auth_type = "pat"
-  host  = var.databricks_host
-  token = var.databricks_token
+  host      = var.databricks_host
+  token     = var.databricks_token
 }
 
 provider "random" {}
