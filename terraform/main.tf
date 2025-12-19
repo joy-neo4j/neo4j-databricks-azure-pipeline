@@ -76,6 +76,7 @@ resource "azurerm_application_insights" "main" {
 
 # Azure Databricks Module
 module "azure_databricks" {
+  count  = var.create_databricks_workspace ? 1 : 0
   source = "./modules/azure-databricks"
 
   environment         = var.environment
@@ -163,27 +164,6 @@ resource "azurerm_key_vault_secret" "neo4j_password" {
   key_vault_id = azurerm_key_vault.main[0].id
   
   depends_on = [null_resource.neo4j_aura_instance]
-}
-
-# Budget Alert
-resource "azurerm_consumption_budget_resource_group" "main" {
-  name              = "budget-neo4j-${var.environment}"
-  resource_group_id = azurerm_resource_group.main.id
-
-  amount     = var.budget_amount
-  time_grain = "Monthly"
-
-  time_period {
-    start_date = formatdate("YYYY-MM-01'T'00:00:00Z", timestamp())
-  }
-
-  notification {
-    enabled   = true
-    threshold = var.budget_alert_threshold
-    operator  = "GreaterThanOrEqualTo"
-
-    contact_emails = []
-  }
 }
 
 ############################################

@@ -11,11 +11,6 @@ azure-mgmt-databricks>=2.0.0
 azure-mgmt-storage>=21.1.0
 azure-storage-blob>=12.19.0
 
-# Testing
-pytest>=7.4.0
-pytest-cov>=4.1.0
-pytest-mock>=3.12.0
-
 # Data Processing
 pandas>=2.0.0
 pyspark>=3.5.0

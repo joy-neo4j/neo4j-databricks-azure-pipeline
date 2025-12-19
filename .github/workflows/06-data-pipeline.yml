@@ -37,7 +37,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pyspark neo4j pytest
+          pip install pyspark neo4j
 
       - name: Syntax check notebooks
         run: |

@@ -49,6 +49,12 @@ variable "databricks_workspace_name" {
   default     = ""
 }
 
+variable "create_databricks_workspace" {
+  description = "Create a new Azure Databricks workspace (true) or reuse existing via DATABRICKS_HOST (false)"
+  type        = bool
+  default     = false
+}
+
 # Neo4j Configuration
 variable "neo4j_tier" {
   description = "Neo4j Aura tier (professional, enterprise)"
@@ -137,19 +143,6 @@ variable "vnet_address_space" {
   description = "Address space for virtual network"
   type        = list(string)
   default     = ["10.0.0.0/16"]
-}
-
-# Cost Management
-variable "budget_amount" {
-  description = "Monthly budget amount in USD"
-  type        = number
-  default     = 1000
-}
-
-variable "budget_alert_threshold" {
-  description = "Budget alert threshold percentage"
-  type        = number
-  default     = 80
 }
 
 # Unity Catalog Configuration
