@@ -91,27 +91,37 @@ jobs:
           
           if [ -n "${{ secrets.NEO4J_URI }}" ]; then
             echo "Setting neo4j-uri-dev"
-            databricks secrets put-secret pipeline-secrets neo4j-uri-dev --string-value "${{ secrets.NEO4J_URI }}" || true
+            if ! databricks secrets put-secret pipeline-secrets neo4j-uri-dev --string-value "${{ secrets.NEO4J_URI }}"; then
+              echo "Warning: Failed to set neo4j-uri-dev (may already exist)"
+            fi
           fi
           
           if [ -n "${{ secrets.NEO4J_USERNAME }}" ]; then
             echo "Setting neo4j-username-dev"
-            databricks secrets put-secret pipeline-secrets neo4j-username-dev --string-value "${{ secrets.NEO4J_USERNAME }}" || true
+            if ! databricks secrets put-secret pipeline-secrets neo4j-username-dev --string-value "${{ secrets.NEO4J_USERNAME }}"; then
+              echo "Warning: Failed to set neo4j-username-dev (may already exist)"
+            fi
           fi
           
           if [ -n "${{ secrets.NEO4J_PASSWORD }}" ]; then
             echo "Setting neo4j-password-dev"
-            databricks secrets put-secret pipeline-secrets neo4j-password-dev --string-value "${{ secrets.NEO4J_PASSWORD }}" || true
+            if ! databricks secrets put-secret pipeline-secrets neo4j-password-dev --string-value "${{ secrets.NEO4J_PASSWORD }}"; then
+              echo "Warning: Failed to set neo4j-password-dev (may already exist)"
+            fi
           fi
           
           if [ -n "${{ secrets.AURA_CLIENT_ID }}" ]; then
             echo "Setting aura-client-id"
-            databricks secrets put-secret pipeline-secrets aura-client-id --string-value "${{ secrets.AURA_CLIENT_ID }}" || true
+            if ! databricks secrets put-secret pipeline-secrets aura-client-id --string-value "${{ secrets.AURA_CLIENT_ID }}"; then
+              echo "Warning: Failed to set aura-client-id (may already exist)"
+            fi
           fi
           
           if [ -n "${{ secrets.AURA_CLIENT_SECRET }}" ]; then
             echo "Setting aura-client-secret"
-            databricks secrets put-secret pipeline-secrets aura-client-secret --string-value "${{ secrets.AURA_CLIENT_SECRET }}" || true
+            if ! databricks secrets put-secret pipeline-secrets aura-client-secret --string-value "${{ secrets.AURA_CLIENT_SECRET }}"; then
+              echo "Warning: Failed to set aura-client-secret (may already exist)"
+            fi
           fi
           
           echo "Unity Catalog and secret scope preparation complete"
