@@ -56,10 +56,22 @@ jobs:
 
           api() {
             local method="$1" path="$2"; shift 2
-            curl -sS -X "$method" "$DATABRICKS_HOST$path" \
+            local response http_code
+            response=$(curl -sS -w "\n%{http_code}" -X "$method" "$DATABRICKS_HOST$path" \
               -H "Authorization: Bearer $DATABRICKS_TOKEN" \
               -H "Content-Type: application/json" \
-              "$@"
+              "$@")
+            http_code=$(echo "$response" | tail -n1)
+            response=$(echo "$response" | sed '$d')
+            
+            # Return response for success codes (2xx), otherwise fail
+            if [[ "$http_code" =~ ^2[0-9][0-9]$ ]]; then
+              echo "$response"
+              return 0
+            else
+              echo "API Error ($method $path): HTTP $http_code - $response" >&2
+              return 1
+            fi
           }
 
           # Ensure catalog exists
