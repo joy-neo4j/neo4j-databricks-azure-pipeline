@@ -55,79 +55,64 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
-      - name: Prepare Unity Catalog and Databricks Secret Scope
+      - name: Prepare Unity Catalog and Databricks Secret Scope (force PAT; idempotent)
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           set -euo pipefail
+      
+          # Force PAT auth for Databricks CLI by removing Azure/OIDC env seen by the CLI
+          unset ARM_CLIENT_ID ARM_CLIENT_SECRET ARM_TENANT_ID ARM_SUBSCRIPTION_ID
+          unset ACTIONS_ID_TOKEN_REQUEST_URL ACTIONS_ID_TOKEN_REQUEST_TOKEN
+      
           echo "Ensuring Unity Catalog resources exist..."
-          
+      
           # Ensure catalog exists
-          if ! databricks catalogs get ecommerce_dev &>/dev/null; then
+          if ! databricks catalogs get --name ecommerce_dev >/dev/null 2>&1; then
             echo "Creating catalog ecommerce_dev"
-            databricks catalogs create ecommerce_dev --comment "E-commerce pipeline catalog"
+            databricks catalogs create --name ecommerce_dev --comment "E-commerce pipeline catalog"
           else
             echo "Catalog ecommerce_dev already exists"
           fi
-          
+      
           # Ensure schemas exist
           for schema in bronze silver gold graph_ready; do
-            if ! databricks schemas get ecommerce_dev.$schema &>/dev/null; then
+            if ! databricks schemas get --catalog-name ecommerce_dev --name "$schema" >/dev/null 2>&1; then
               echo "Creating schema ecommerce_dev.$schema"
-              databricks schemas create --catalog-name ecommerce_dev --name $schema --comment "Schema for $schema layer"
+              databricks schemas create --catalog-name ecommerce_dev --name "$schema" --comment "Schema for $schema layer"
             else
               echo "Schema ecommerce_dev.$schema already exists"
             fi
           done
-          
+      
           # Ensure Databricks secret scope exists
-          if ! databricks secrets list-scopes | grep -q "pipeline-secrets"; then
+          if ! databricks secrets list-scopes --output json | jq -e '.scopes[] | select(.name == "pipeline-secrets")' >/dev/null; then
             echo "Creating secret scope pipeline-secrets"
-            databricks secrets create-scope pipeline-secrets
+            databricks secrets create-scope --scope pipeline-secrets
           else
             echo "Secret scope pipeline-secrets already exists"
           fi
-          
+      
+          # Helper to set secrets if present
+          put_secret() {
+            local key="$1" ; local val="$2"
+            if [ -n "$val" ]; then
+              echo "Setting secret $key"
+              databricks secrets put --scope pipeline-secrets --key "$key" --string-value "$val"
+            else
+              echo "Skipping secret $key (empty)"
+            fi
+          }
+      
           # Populate secrets from GitHub secrets (skip if empty)
-          echo "Populating secrets from GitHub secrets..."
-          
-          if [ -n "${{ secrets.NEO4J_URI }}" ]; then
-            echo "Setting neo4j-uri-dev"
-            if ! databricks secrets put-secret pipeline-secrets neo4j-uri-dev --string-value "${{ secrets.NEO4J_URI }}"; then
-              echo "Warning: Failed to set neo4j-uri-dev (may already exist)"
-            fi
-          fi
-          
-          if [ -n "${{ secrets.NEO4J_USERNAME }}" ]; then
-            echo "Setting neo4j-username-dev"
-            if ! databricks secrets put-secret pipeline-secrets neo4j-username-dev --string-value "${{ secrets.NEO4J_USERNAME }}"; then
-              echo "Warning: Failed to set neo4j-username-dev (may already exist)"
-            fi
-          fi
-          
-          if [ -n "${{ secrets.NEO4J_PASSWORD }}" ]; then
-            echo "Setting neo4j-password-dev"
-            if ! databricks secrets put-secret pipeline-secrets neo4j-password-dev --string-value "${{ secrets.NEO4J_PASSWORD }}"; then
-              echo "Warning: Failed to set neo4j-password-dev (may already exist)"
-            fi
-          fi
-          
-          if [ -n "${{ secrets.AURA_CLIENT_ID }}" ]; then
-            echo "Setting aura-client-id"
-            if ! databricks secrets put-secret pipeline-secrets aura-client-id --string-value "${{ secrets.AURA_CLIENT_ID }}"; then
-              echo "Warning: Failed to set aura-client-id (may already exist)"
-            fi
-          fi
-          
-          if [ -n "${{ secrets.AURA_CLIENT_SECRET }}" ]; then
-            echo "Setting aura-client-secret"
-            if ! databricks secrets put-secret pipeline-secrets aura-client-secret --string-value "${{ secrets.AURA_CLIENT_SECRET }}"; then
-              echo "Warning: Failed to set aura-client-secret (may already exist)"
-            fi
-          fi
-          
+          put_secret neo4j-uri-dev      "${{ secrets.NEO4J_URI }}"
+          put_secret neo4j-username-dev "${{ secrets.NEO4J_USERNAME }}"
+          put_secret neo4j-password-dev "${{ secrets.NEO4J_PASSWORD }}"
+          put_secret aura-client-id     "${{ secrets.AURA_CLIENT_ID }}"
+          put_secret aura-client-secret "${{ secrets.AURA_CLIENT_SECRET }}"
+      
           echo "Unity Catalog and secret scope preparation complete"
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
       - name: Ensure Terraform remote backend resources exist
         run: |
