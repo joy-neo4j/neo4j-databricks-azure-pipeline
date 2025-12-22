@@ -66,23 +66,40 @@ jobs:
           unset ARM_CLIENT_ID ARM_CLIENT_SECRET ARM_TENANT_ID ARM_SUBSCRIPTION_ID
           unset ACTIONS_ID_TOKEN_REQUEST_URL ACTIONS_ID_TOKEN_REQUEST_TOKEN
       
-          echo "Ensuring Unity Catalog resources exist..."
+          echo "Ensuring Unity Catalog resources exist (using existing catalog)..."
+
+          # If a catalog name override is provided via env or TF var, prefer that
+          OVERRIDE_CATALOG_NAME="${CATALOG_NAME:-}"
+          TF_CATALOG_NAME="${{ env.TF_VAR_catalog_name || '' }}"
       
-          # Ensure catalog exists
-          if ! databricks catalogs get ecommerce_dev >/dev/null 2>&1; then
-            echo "Creating catalog ecommerce_dev"
-            databricks catalogs create ecommerce_dev --comment "E-commerce pipeline catalog"
+          SELECTED_CATALOG=""
+          if [ -n "$OVERRIDE_CATALOG_NAME" ]; then
+            SELECTED_CATALOG="$OVERRIDE_CATALOG_NAME"
+            echo "Using override catalog: $SELECTED_CATALOG"
+          elif [ -n "$TF_CATALOG_NAME" ]; then
+            SELECTED_CATALOG="$TF_CATALOG_NAME"
+            echo "Using TF catalog: $SELECTED_CATALOG"
           else
-            echo "Catalog ecommerce_dev already exists"
+            # List catalogs and select the first available
+            echo "Listing catalogs..."
+            CATALOGS_JSON="$(databricks catalogs list --output json)"
+            SELECTED_CATALOG="$(echo "$CATALOGS_JSON" | jq -r '.catalogs[0].name // empty')"
+      
+            if [ -z "$SELECTED_CATALOG" ]; then
+              echo "::error::No existing Unity Catalog found. Your account likely has Default Storage disabled. Please create a catalog via the UI with Default Storage or provide a managed location."
+              echo "Hint: In Databricks Account Console, enable Default Storage or create a catalog with a MANAGED LOCATION."
+              exit 1
+            fi
+            echo "Selected existing catalog: $SELECTED_CATALOG"
           fi
       
-          # Ensure schemas exist
+          # Ensure required schemas exist within the selected catalog
           for schema in bronze silver gold graph_ready; do
-            if ! databricks schemas get --catalog-name ecommerce_dev --name "$schema" >/dev/null 2>&1; then
-              echo "Creating schema ecommerce_dev.$schema"
-              databricks schemas create --catalog-name ecommerce_dev --name "$schema" --comment "Schema for $schema layer"
+            if ! databricks schemas get --catalog-name "$SELECTED_CATALOG" --name "$schema" >/dev/null 2>&1; then
+              echo "Creating schema $SELECTED_CATALOG.$schema"
+              databricks schemas create --catalog-name "$SELECTED_CATALOG" --name "$schema" --comment "Schema for $schema layer"
             else
-              echo "Schema ecommerce_dev.$schema already exists"
+              echo "Schema $SELECTED_CATALOG.$schema already exists"
             fi
           done
       
