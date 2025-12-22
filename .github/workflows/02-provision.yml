@@ -50,6 +50,10 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Configuration
+          CATALOG_NAME="ecommerce_dev"
+          SECRET_SCOPE="pipeline-secrets"
+
           api() {
             local method="$1" path="$2"; shift 2
             curl -sS -X "$method" "$DATABRICKS_HOST$path" \
@@ -58,47 +62,51 @@ jobs:
               "$@"
           }
 
-          # Ensure catalog ecommerce_dev exists
-          if ! api GET "/api/2.1/unity-catalog/catalogs/ecommerce_dev" >/dev/null 2>&1; then
-            echo "Creating UC catalog: ecommerce_dev"
+          # Ensure catalog exists
+          echo "Checking catalog: $CATALOG_NAME"
+          if ! api GET "/api/2.1/unity-catalog/catalogs/$CATALOG_NAME" >/dev/null 2>&1; then
+            echo "Creating UC catalog: $CATALOG_NAME"
             api POST "/api/2.1/unity-catalog/catalogs" \
-              -d '{"name":"ecommerce_dev","comment":"E-commerce dev catalog managed by CI"}'
+              -d "{\"name\":\"$CATALOG_NAME\",\"comment\":\"E-commerce dev catalog managed by CI\"}"
           else
-            echo "Catalog ecommerce_dev exists"
+            echo "Catalog $CATALOG_NAME exists"
           fi
 
-          # Ensure schemas under ecommerce_dev
+          # Ensure schemas under catalog
           for S in bronze silver gold graph_ready customers products orders analytics; do
-            if ! api GET "/api/2.1/unity-catalog/schemas/ecommerce_dev.$S" >/dev/null 2>&1; then
+            echo "Checking schema: $CATALOG_NAME.$S"
+            if ! api GET "/api/2.1/unity-catalog/schemas/$CATALOG_NAME.$S" >/dev/null 2>&1; then
               echo "Creating schema: $S"
               api POST "/api/2.1/unity-catalog/schemas" \
-                -d "{\"name\":\"$S\",\"catalog_name\":\"ecommerce_dev\"}"
+                -d "{\"name\":\"$S\",\"catalog_name\":\"$CATALOG_NAME\"}"
             else
               echo "Schema $S exists"
             fi
           done
 
-          # Ensure databricks secret scope
-          SCOPE="pipeline-secrets"
-          if ! api GET "/api/2.0/secrets/scopes/list" | jq -e --arg s "$SCOPE" '.scopes[] | select(.name == $s)' >/dev/null; then
-            echo "Creating secret scope: $SCOPE"
-            api POST "/api/2.0/secrets/scopes/create" -d "{\"scope\":\"$SCOPE\"}"
+          # Ensure databricks secret scope exists
+          echo "Checking secret scope: $SECRET_SCOPE"
+          SCOPE_EXISTS=$(api GET "/api/2.0/secrets/scopes/list" 2>/dev/null | jq -e --arg s "$SECRET_SCOPE" '.scopes[] | select(.name == $s)' >/dev/null && echo "true" || echo "false")
+          if [ "$SCOPE_EXISTS" = "false" ]; then
+            echo "Creating secret scope: $SECRET_SCOPE"
+            api POST "/api/2.0/secrets/scopes/create" -d "{\"scope\":\"$SECRET_SCOPE\"}"
           else
-            echo "Secret scope $SCOPE exists"
+            echo "Secret scope $SECRET_SCOPE exists"
           fi
 
           # Helper to put a secret if non-empty
           put_secret() {
             local key="$1" val="$2"
             if [ -n "$val" ]; then
-              echo "Setting secret $key"
-              api POST "/api/2.0/secrets/put" -d "{\"scope\":\"$SCOPE\",\"key\":\"$key\",\"string_value\":\"$val\"}"
+              echo "Setting secret $key in scope $SECRET_SCOPE"
+              api POST "/api/2.0/secrets/put" -d "{\"scope\":\"$SECRET_SCOPE\",\"key\":\"$key\",\"string_value\":\"$val\"}"
             else
               echo "Skipping secret $key (empty)"
             fi
           }
 
-          # Attempt to populate common keys from repo secrets if present
+          # Populate secrets from GitHub secrets if present
+          # Note: Secret names use environment suffix for Neo4j credentials
           put_secret neo4j-uri-dev "${{ secrets.NEO4J_URI }}"
           put_secret neo4j-username-dev "${{ secrets.NEO4J_USERNAME }}"
           put_secret neo4j-password-dev "${{ secrets.NEO4J_PASSWORD }}"
