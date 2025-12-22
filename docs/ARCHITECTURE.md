@@ -21,8 +21,8 @@ The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solu
 │                 │                  │                         │
 │  - Resource Grp │                  │  - Notebooks            │
 │  - Storage Acc  │◄────────────────►│  - Clusters             │
-│  - Key Vault    │                  │  - Jobs                 │
-│  - Monitor      │                  │  - Unity Catalog        │
+│                 │                  │  - Jobs                 │
+│                 │                  │  - Unity Catalog        │
 └────────┬────────┘                  └──────────┬──────────────┘
          │                                       │
          │                                       │
@@ -70,21 +70,7 @@ The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solu
 - Unity Catalog integration
 - Auto-scaling clusters
 - Spot instance support for cost optimization
-
-#### Azure Key Vault
-- Centralized secrets management
-- Soft-delete protection
-- Access policies via managed identities
-- Secrets:
-  - Neo4j connection strings
-  - Service principal credentials
-  - API tokens
-
-#### Azure Monitor
-- Log Analytics workspace
-- Application Insights
-- Custom metrics and alerts
-- Query-based dashboards
+- Databricks-backed secret scope for credentials
 
 ### 2. Data Processing Layer (Databricks)
 
@@ -275,7 +261,6 @@ Each stage includes:
 **Azure Resources:**
 - Service Principal with RBAC
 - Managed Identities for Databricks
-- Key Vault access policies
 - Network security groups (optional)
 
 **Databricks:**
@@ -283,11 +268,12 @@ Each stage includes:
 - Unity Catalog permissions
 - Cluster policies
 - Workspace access controls
+- Databricks secret scope for credentials
 
 **Neo4j Aura:**
 - API client credentials
 - Database user credentials
-- Connection string in Key Vault
+- Connection string in Databricks secrets
 - TLS/SSL encryption
 
 ### Secret Management
@@ -295,8 +281,7 @@ Each stage includes:
 **Storage Hierarchy:**
 1. GitHub Environment Secrets (highest priority)
 2. GitHub Repository Secrets
-3. Azure Key Vault
-4. Databricks Secrets
+3. Databricks Secrets
 
 **Secret Rotation:**
 - Automated expiration warnings
@@ -349,7 +334,7 @@ Each stage includes:
 
 ### Logs
 - Structured JSON logging
-- Centralized in Log Analytics
+- Databricks job logs
 - Query-based analysis
 - Retention policies by environment
 

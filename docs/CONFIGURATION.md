@@ -117,10 +117,6 @@ storage_container_name  = "pipeline-data"
 databricks_workspace_name = "dbw-neo4j-dev"
 databricks_sku            = "premium"
 
-enable_key_vault        = true
-key_vault_name          = null
-enable_monitoring       = true
-
 create_databricks_workspace = false
 
 neo4j_region            = "uksouth"
@@ -165,12 +161,6 @@ action:
 - **Hierarchical Namespace:** Enabled
 - **Public Access:** Disabled
 
-### Key Vault
-- **SKU:** Standard
-- **Soft Delete:** 7 days (dev/staging), enabled (prod)
-- **Purge Protection:** Disabled (dev/staging), enabled (prod)
-- **Access Policies:** Service principal, Databricks MI
-
 ### Databricks Workspace
 - **SKU:** Premium
 - **Managed Resource Group:** Automatic
@@ -183,7 +173,6 @@ action:
 ```
 Resource Groups: rg-{project}-{env}
 Storage: st{project}{env}{random}
-Key Vault: kv-{project}-{env}-{random}
 Databricks: dbw-{project}-{env}
 ```
 

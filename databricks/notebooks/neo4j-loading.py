@@ -44,12 +44,12 @@ print(f"Batch Size: {batch_size}")
 # COMMAND ----------
 
 # Get Neo4j credentials from Databricks secrets
-# These should be configured via: databricks secrets put --scope neo4j --key <secret_name>
+# These should be configured via: databricks secrets put --scope pipeline-secrets --key <secret_name>
 
 try:
-    neo4j_uri = dbutils.secrets.get(scope="neo4j", key=f"{environment}-uri")
-    neo4j_username = dbutils.secrets.get(scope="neo4j", key=f"{environment}-username")
-    neo4j_password = dbutils.secrets.get(scope="neo4j", key=f"{environment}-password")
+    neo4j_uri = dbutils.secrets.get(scope="pipeline-secrets", key=f"neo4j-uri-{environment}")
+    neo4j_username = dbutils.secrets.get(scope="pipeline-secrets", key=f"neo4j-username-{environment}")
+    neo4j_password = dbutils.secrets.get(scope="pipeline-secrets", key=f"neo4j-password-{environment}")
     
     print(f"✅ Neo4j credentials loaded from secrets")
     print(f"URI: {neo4j_uri}")
