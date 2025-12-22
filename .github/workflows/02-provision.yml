@@ -86,7 +86,10 @@ jobs:
 
           # Ensure databricks secret scope exists
           echo "Checking secret scope: $SECRET_SCOPE"
-          SCOPE_EXISTS=$(api GET "/api/2.0/secrets/scopes/list" 2>/dev/null | jq -e --arg s "$SECRET_SCOPE" '.scopes[] | select(.name == $s)' >/dev/null && echo "true" || echo "false")
+          # Check if scope exists by listing all scopes and filtering
+          SCOPE_LIST=$(api GET "/api/2.0/secrets/scopes/list" 2>/dev/null || echo '{"scopes":[]}')
+          SCOPE_EXISTS=$(echo "$SCOPE_LIST" | jq -e --arg s "$SECRET_SCOPE" '.scopes[] | select(.name == $s)' >/dev/null && echo "true" || echo "false")
+          
           if [ "$SCOPE_EXISTS" = "false" ]; then
             echo "Creating secret scope: $SECRET_SCOPE"
             api POST "/api/2.0/secrets/scopes/create" -d "{\"scope\":\"$SECRET_SCOPE\"}"
@@ -106,7 +109,8 @@ jobs:
           }
 
           # Populate secrets from GitHub secrets if present
-          # Note: Secret names use environment suffix for Neo4j credentials
+          # Note: Neo4j credentials use '-dev' suffix to support multiple environments,
+          # while Aura credentials are shared across environments
           put_secret neo4j-uri-dev "${{ secrets.NEO4J_URI }}"
           put_secret neo4j-username-dev "${{ secrets.NEO4J_USERNAME }}"
           put_secret neo4j-password-dev "${{ secrets.NEO4J_PASSWORD }}"
