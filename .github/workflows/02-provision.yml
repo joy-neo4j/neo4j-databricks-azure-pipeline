@@ -68,7 +68,7 @@ jobs:
           fi
 
           # Ensure schemas under ecommerce_dev
-          for S in bronze silver gold graph_ready; do
+          for S in bronze silver gold graph_ready customers products orders analytics; do
             if ! api GET "/api/2.1/unity-catalog/schemas/ecommerce_dev.$S" >/dev/null 2>&1; then
               echo "Creating schema: $S"
               api POST "/api/2.1/unity-catalog/schemas" \
