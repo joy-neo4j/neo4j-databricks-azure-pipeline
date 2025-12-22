@@ -138,34 +138,6 @@ locals {
   neo4j_password       = random_password.neo4j.result
 }
 
-# Store Neo4j credentials in Key Vault
-resource "azurerm_key_vault_secret" "neo4j_uri" {
-  count        = var.enable_key_vault ? 1 : 0
-  name         = "neo4j-uri-${var.environment}"
-  value        = local.neo4j_connection_uri
-  key_vault_id = azurerm_key_vault.main[0].id
-
-  depends_on = [null_resource.neo4j_aura_instance]
-}
-
-resource "azurerm_key_vault_secret" "neo4j_username" {
-  count        = var.enable_key_vault ? 1 : 0
-  name         = "neo4j-username-${var.environment}"
-  value        = local.neo4j_username
-  key_vault_id = azurerm_key_vault.main[0].id
-
-  depends_on = [null_resource.neo4j_aura_instance]
-}
-
-resource "azurerm_key_vault_secret" "neo4j_password" {
-  count        = var.enable_key_vault ? 1 : 0
-  name         = "neo4j-password-${var.environment}"
-  value        = local.neo4j_password
-  key_vault_id = azurerm_key_vault.main[0].id
-
-  depends_on = [null_resource.neo4j_aura_instance]
-}
-
 ############################################
 # Databricks Resources
 # NOTE: Databricks workspace is created by the azure_databricks module above.
@@ -292,19 +264,6 @@ resource "databricks_workspace_file" "customer_360_analytics" {
 resource "databricks_workspace_file" "product_recommendations" {
   source = "${path.module}/../databricks/notebooks/product-recommendations.py"
   path   = "${local.notebook_base_path}/product-recommendations"
-}
-
-############################################
-# Key Vault-backed Secret Scope for Neo4j
-############################################
-resource "databricks_secret_scope" "neo4j" {
-  count = var.enable_key_vault ? 1 : 0
-  name  = "neo4j"
-
-  keyvault_metadata {
-    resource_id = azurerm_key_vault.main[0].id
-    dns_name    = azurerm_key_vault.main[0].vault_uri
-  }
 }
 
 ############################################

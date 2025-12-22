@@ -109,14 +109,14 @@ variable "key_vault_name" {
 variable "enable_key_vault" {
   description = "Enable Azure Key Vault for secrets management"
   type        = bool
-  default     = true
+  default     = false
 }
 
 # Monitoring Configuration
 variable "enable_monitoring" {
   description = "Enable Azure Monitor and Application Insights"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "log_analytics_workspace_name" {

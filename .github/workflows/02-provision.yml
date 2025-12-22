@@ -43,6 +43,68 @@ jobs:
           echo "ARM_TENANT_ID=$ARM_TENANT_ID" >> $GITHUB_ENV
           echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID" >> $GITHUB_ENV
 
+      - name: Prepare Databricks UC (catalog/schemas) and secret scope (idempotent)
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          api() {
+            local method="$1" path="$2"; shift 2
+            curl -sS -X "$method" "$DATABRICKS_HOST$path" \
+              -H "Authorization: Bearer $DATABRICKS_TOKEN" \
+              -H "Content-Type: application/json" \
+              "$@"
+          }
+
+          # Ensure catalog ecommerce_dev exists
+          if ! api GET "/api/2.1/unity-catalog/catalogs/ecommerce_dev" >/dev/null 2>&1; then
+            echo "Creating UC catalog: ecommerce_dev"
+            api POST "/api/2.1/unity-catalog/catalogs" \
+              -d '{"name":"ecommerce_dev","comment":"E-commerce dev catalog managed by CI"}'
+          else
+            echo "Catalog ecommerce_dev exists"
+          fi
+
+          # Ensure schemas under ecommerce_dev
+          for S in bronze silver gold graph_ready; do
+            if ! api GET "/api/2.1/unity-catalog/schemas/ecommerce_dev.$S" >/dev/null 2>&1; then
+              echo "Creating schema: $S"
+              api POST "/api/2.1/unity-catalog/schemas" \
+                -d "{\"name\":\"$S\",\"catalog_name\":\"ecommerce_dev\"}"
+            else
+              echo "Schema $S exists"
+            fi
+          done
+
+          # Ensure databricks secret scope
+          SCOPE="pipeline-secrets"
+          if ! api GET "/api/2.0/secrets/scopes/list" | jq -e --arg s "$SCOPE" '.scopes[] | select(.name == $s)' >/dev/null; then
+            echo "Creating secret scope: $SCOPE"
+            api POST "/api/2.0/secrets/scopes/create" -d "{\"scope\":\"$SCOPE\"}"
+          else
+            echo "Secret scope $SCOPE exists"
+          fi
+
+          # Helper to put a secret if non-empty
+          put_secret() {
+            local key="$1" val="$2"
+            if [ -n "$val" ]; then
+              echo "Setting secret $key"
+              api POST "/api/2.0/secrets/put" -d "{\"scope\":\"$SCOPE\",\"key\":\"$key\",\"string_value\":\"$val\"}"
+            else
+              echo "Skipping secret $key (empty)"
+            fi
+          }
+
+          # Attempt to populate common keys from repo secrets if present
+          put_secret neo4j-uri-dev "${{ secrets.NEO4J_URI }}"
+          put_secret neo4j-username-dev "${{ secrets.NEO4J_USERNAME }}"
+          put_secret neo4j-password-dev "${{ secrets.NEO4J_PASSWORD }}"
+          put_secret aura-client-id "${{ secrets.AURA_CLIENT_ID }}"
+          put_secret aura-client-secret "${{ secrets.AURA_CLIENT_SECRET }}"
+
       - name: Ensure Terraform remote backend resources exist
         run: |
           set -euo pipefail
