@@ -69,9 +69,9 @@ jobs:
           echo "Ensuring Unity Catalog resources exist..."
       
           # Ensure catalog exists
-          if ! databricks catalogs get --name ecommerce_dev >/dev/null 2>&1; then
+          if ! databricks catalogs get ecommerce_dev >/dev/null 2>&1; then
             echo "Creating catalog ecommerce_dev"
-            databricks catalogs create --name ecommerce_dev --comment "E-commerce pipeline catalog"
+            databricks catalogs create ecommerce_dev --comment "E-commerce pipeline catalog"
           else
             echo "Catalog ecommerce_dev already exists"
           fi
