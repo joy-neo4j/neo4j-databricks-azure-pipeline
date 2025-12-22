@@ -80,9 +80,9 @@ The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solu
   - Service principal credentials
   - API tokens
 
-#### Azure Monitor
-- Log Analytics workspace
-- Application Insights
+#### Azure Monitor (Optional)
+- Log Analytics workspace (disabled by default, enable via `enable_monitoring = true`)
+- Application Insights (disabled by default, enable via `enable_monitoring = true`)
 - Custom metrics and alerts
 - Query-based dashboards
 
@@ -349,7 +349,7 @@ Each stage includes:
 
 ### Logs
 - Structured JSON logging
-- Centralized in Log Analytics
+- Centralized in Log Analytics (if enabled via `enable_monitoring = true`)
 - Query-based analysis
 - Retention policies by environment
 

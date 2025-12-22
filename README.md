@@ -17,9 +17,9 @@ A production-ready, single-click deployment solution for **e-commerce analytics*
 - **Consolidated Provisioning**: Single Terraform workflow deploys Azure + Databricks + Aura + Unity Catalog
 - **Infrastructure as Code**: Complete infrastructure and pipeline deployment in one apply
 - **Terraform-Managed Jobs**: Databricks jobs, notebooks, and clusters defined in Terraform
-- **Enhanced Secrets Management**: GitHub secrets + Azure Key Vault integration with fallback mechanisms
+- **Enhanced Secrets Management**: GitHub secrets + Databricks secret scopes with optional Azure Key Vault integration
 - **Cost Optimization**: Auto-pause, scheduling, and resource cleanup capabilities
-- **Comprehensive Monitoring**: Application Insights, alerting, and performance tracking
+- **Optional Monitoring**: Application Insights, alerting, and performance tracking (disabled by default)
 
 ## 📋 Table of Contents
 
@@ -51,8 +51,8 @@ A production-ready, single-click deployment solution for **e-commerce analytics*
   - Set `create_databricks_workspace = false` in Terraform variables (default)
   - Alternatively, set `create_databricks_workspace = true` to create a new workspace
 - Azure Resource Manager
-- Azure Key Vault (for production secrets)
-- Azure Monitor and Application Insights
+- Azure Key Vault (optional, disabled by default, enable via `enable_key_vault = true`)
+- Azure Monitor and Application Insights (optional, disabled by default, enable via `enable_monitoring = true`)
 
 ### Neo4j Aura
 - Neo4j Aura account (Professional or Enterprise tier)
@@ -90,8 +90,9 @@ az role assignment create \
   --scope /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP_NAME>/providers/Microsoft.Storage/storageAccounts/<STORAGE_ACCOUNT_NAME>
 ```
 
-#### 3. Key Vault Permissions (for secrets management)
+#### 3. Key Vault Permissions (optional, if enable_key_vault = true)
 ```bash
+# Only required if enabling Azure Key Vault
 # Key Vault Administrator for managing secrets
 az role assignment create \
   --assignee <SERVICE_PRINCIPAL_APP_ID> \
@@ -121,8 +122,9 @@ az role assignment create \
 # This is handled by the Owner role assignment above
 ```
 
-#### 6. Monitoring and Logging
+#### 6. Monitoring and Logging (optional, if enable_monitoring = true)
 ```bash
+# Only required if enabling Azure Monitor and Application Insights
 # Log Analytics Contributor for monitoring setup
 az role assignment create \
   --assignee <SERVICE_PRINCIPAL_APP_ID> \

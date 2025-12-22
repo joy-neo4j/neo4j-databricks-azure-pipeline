@@ -151,11 +151,13 @@ gh workflow run deploy-full-pipeline.yml -f environment=prod
 **What it deploys:**
 - Azure resource group
 - Storage account
-- Key Vault
-- Log Analytics & App Insights
-- Databricks workspace
+- Key Vault (optional, disabled by default)
+- Log Analytics & App Insights (optional, disabled by default)
+- Databricks workspace (optional, reuses existing by default)
 - Neo4j Aura instance
 - Databricks notebooks & jobs
+- Unity Catalog schemas (pre-created via workflow)
+- Databricks secret scope (pre-created via workflow)
 
 **Duration:** 15-20 minutes
 

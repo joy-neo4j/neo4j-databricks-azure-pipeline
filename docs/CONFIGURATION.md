@@ -117,9 +117,9 @@ storage_container_name  = "pipeline-data"
 databricks_workspace_name = "dbw-neo4j-dev"
 databricks_sku            = "premium"
 
-enable_key_vault        = true
+enable_key_vault        = false
 key_vault_name          = null
-enable_monitoring       = true
+enable_monitoring       = false
 
 create_databricks_workspace = false
 
