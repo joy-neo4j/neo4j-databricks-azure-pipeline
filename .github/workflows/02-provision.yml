@@ -47,7 +47,7 @@ jobs:
         run: |
           set -euo pipefail
           echo "Installing Databricks CLI v0.229.0"
-          curl -fsSL https://github.com/databricks/cli/releases/download/v0.229.0/databricks_cli_0.229.0_linux_amd64.tar.gz -o /tmp/databricks.tar.gz
+          curl -fsSL https://github.com/databricks/cli/releases/download/v0.281.0/databricks_cli_0.281.0_linux_amd64.tar.gz -o /tmp/databricks.tar.gz
           sudo tar -xzf /tmp/databricks.tar.gz -C /usr/local/bin databricks
           sudo chmod +x /usr/local/bin/databricks
           databricks --version
