@@ -26,35 +26,6 @@ output "storage_container_name" {
   value       = azurerm_storage_container.data.name
 }
 
-# Key Vault
-output "key_vault_name" {
-  description = "Name of the Key Vault"
-  value       = var.enable_key_vault ? azurerm_key_vault.main[0].name : null
-}
-
-output "key_vault_uri" {
-  description = "URI of the Key Vault"
-  value       = var.enable_key_vault ? azurerm_key_vault.main[0].vault_uri : null
-}
-
-# Monitoring
-output "log_analytics_workspace_id" {
-  description = "ID of the Log Analytics workspace"
-  value       = var.enable_monitoring ? azurerm_log_analytics_workspace.main[0].workspace_id : null
-}
-
-output "application_insights_instrumentation_key" {
-  description = "Application Insights instrumentation key"
-  value       = var.enable_monitoring ? azurerm_application_insights.main[0].instrumentation_key : null
-  sensitive   = true
-}
-
-output "application_insights_connection_string" {
-  description = "Application Insights connection string"
-  value       = var.enable_monitoring ? azurerm_application_insights.main[0].connection_string : null
-  sensitive   = true
-}
-
 # Databricks
 output "databricks_workspace_id" {
   description = "ID of the Databricks workspace"
@@ -106,6 +77,5 @@ output "deployment_info" {
     databricks_url       = var.create_databricks_workspace ? module.azure_databricks[0].workspace_url : var.databricks_host
     neo4j_instance       = local.neo4j_instance_id
     storage_account      = azurerm_storage_account.main.name
-    key_vault            = var.enable_key_vault ? azurerm_key_vault.main[0].name : "disabled"
   }
 }

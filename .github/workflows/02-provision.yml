@@ -43,6 +43,82 @@ jobs:
           echo "ARM_TENANT_ID=$ARM_TENANT_ID" >> $GITHUB_ENV
           echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID" >> $GITHUB_ENV
 
+      - name: Install Databricks CLI
+        run: |
+          set -euo pipefail
+          echo "Installing Databricks CLI v0.229.0"
+          curl -fsSL https://github.com/databricks/cli/releases/download/v0.229.0/databricks_cli_0.229.0_linux_amd64.tar.gz -o /tmp/databricks.tar.gz
+          sudo tar -xzf /tmp/databricks.tar.gz -C /usr/local/bin databricks
+          sudo chmod +x /usr/local/bin/databricks
+          databricks --version
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+      - name: Prepare Unity Catalog and Databricks Secret Scope
+        run: |
+          set -euo pipefail
+          echo "Ensuring Unity Catalog resources exist..."
+          
+          # Ensure catalog exists
+          if ! databricks catalogs get ecommerce_dev &>/dev/null; then
+            echo "Creating catalog ecommerce_dev"
+            databricks catalogs create --name ecommerce_dev --comment "E-commerce pipeline catalog"
+          else
+            echo "Catalog ecommerce_dev already exists"
+          fi
+          
+          # Ensure schemas exist
+          for schema in bronze silver gold graph_ready; do
+            if ! databricks schemas get ecommerce_dev.$schema &>/dev/null; then
+              echo "Creating schema ecommerce_dev.$schema"
+              databricks schemas create --catalog-name ecommerce_dev --name $schema --comment "Schema for $schema layer"
+            else
+              echo "Schema ecommerce_dev.$schema already exists"
+            fi
+          done
+          
+          # Ensure Databricks secret scope exists
+          if ! databricks secrets list-scopes | grep -q "pipeline-secrets"; then
+            echo "Creating secret scope pipeline-secrets"
+            databricks secrets create-scope pipeline-secrets
+          else
+            echo "Secret scope pipeline-secrets already exists"
+          fi
+          
+          # Populate secrets from GitHub secrets (skip if empty)
+          echo "Populating secrets from GitHub secrets..."
+          
+          if [ -n "${{ secrets.NEO4J_URI }}" ]; then
+            echo "Setting neo4j-uri-dev"
+            databricks secrets put-secret pipeline-secrets neo4j-uri-dev --string-value "${{ secrets.NEO4J_URI }}" || true
+          fi
+          
+          if [ -n "${{ secrets.NEO4J_USERNAME }}" ]; then
+            echo "Setting neo4j-username-dev"
+            databricks secrets put-secret pipeline-secrets neo4j-username-dev --string-value "${{ secrets.NEO4J_USERNAME }}" || true
+          fi
+          
+          if [ -n "${{ secrets.NEO4J_PASSWORD }}" ]; then
+            echo "Setting neo4j-password-dev"
+            databricks secrets put-secret pipeline-secrets neo4j-password-dev --string-value "${{ secrets.NEO4J_PASSWORD }}" || true
+          fi
+          
+          if [ -n "${{ secrets.AURA_CLIENT_ID }}" ]; then
+            echo "Setting aura-client-id"
+            databricks secrets put-secret pipeline-secrets aura-client-id --string-value "${{ secrets.AURA_CLIENT_ID }}" || true
+          fi
+          
+          if [ -n "${{ secrets.AURA_CLIENT_SECRET }}" ]; then
+            echo "Setting aura-client-secret"
+            databricks secrets put-secret pipeline-secrets aura-client-secret --string-value "${{ secrets.AURA_CLIENT_SECRET }}" || true
+          fi
+          
+          echo "Unity Catalog and secret scope preparation complete"
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
       - name: Ensure Terraform remote backend resources exist
         run: |
           set -euo pipefail

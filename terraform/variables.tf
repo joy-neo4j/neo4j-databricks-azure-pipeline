@@ -49,12 +49,6 @@ variable "databricks_workspace_name" {
   default     = ""
 }
 
-variable "create_databricks_workspace" {
-  description = "Create a new Azure Databricks workspace (true) or reuse existing via DATABRICKS_HOST (false)"
-  type        = bool
-  default     = false
-}
-
 # Neo4j Configuration
 variable "neo4j_tier" {
   description = "Neo4j Aura tier (professional, enterprise)"
@@ -97,32 +91,6 @@ variable "storage_container_name" {
   description = "Name of the storage container for data"
   type        = string
   default     = "pipeline-data"
-}
-
-# Key Vault Configuration
-variable "key_vault_name" {
-  description = "Name of the Azure Key Vault"
-  type        = string
-  default     = ""
-}
-
-variable "enable_key_vault" {
-  description = "Enable Azure Key Vault for secrets management"
-  type        = bool
-  default     = true
-}
-
-# Monitoring Configuration
-variable "enable_monitoring" {
-  description = "Enable Azure Monitor and Application Insights"
-  type        = bool
-  default     = true
-}
-
-variable "log_analytics_workspace_name" {
-  description = "Name of the Log Analytics workspace"
-  type        = string
-  default     = ""
 }
 
 # Auto-pause Configuration
