@@ -107,7 +107,7 @@ jobs:
           for schema in bronze silver gold graph_ready; do
             if ! databricks schemas get --catalog-name "$SELECTED_CATALOG" --name "$schema" >/dev/null 2>&1; then
               echo "Creating schema $SELECTED_CATALOG.$schema"
-              databricks schemas create --catalog-name "$SELECTED_CATALOG" --name "$schema" --comment "Schema for $schema layer"
+              databricks schemas create "$schema" "$SELECTED_CATALOG" --comment "Schema for $schema layer"
             else
               echo "Schema $SELECTED_CATALOG.$schema already exists"
             fi
