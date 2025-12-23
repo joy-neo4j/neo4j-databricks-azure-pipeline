@@ -115,12 +115,12 @@ jobs:
       
           # Ensure Databricks secret scope exists (robust jq for array vs object JSON)
           SCOPES_JSON="$(databricks secrets list-scopes --output json || true)"
-          SCOPE_EXISTS="$(echo "$SCOPES_JSON" | jq -e 'if type=="array" then any(.[]; .name=="pipeline-secrets") else any(.scopes[]; .name=="pipeline-secrets") end' && echo yes || echo no)"
+          SCOPE_EXISTS="$(echo "$SCOPES_JSON" | jq -e 'if type=="array" then any(.[]; .name=="neo4j-secrets") else any(.scopes[]; .name=="neo4j-secrets") end' && echo yes || echo no)"
           if [ "$SCOPE_EXISTS" != "yes" ]; then
-            echo "Creating secret scope pipeline-secrets (Databricks backend)"
-            databricks secrets create-scope pipeline-secrets --scope-backend-type DATABRICKS
+            echo "Creating secret scope neo4j-secrets (Databricks backend)"
+            databricks secrets create-scope neo4j-secrets
           else
-            echo "Secret scope pipeline-secrets already exists"
+            echo "Secret scope neo4j-secrets already exists"
           fi
       
           # Helper to set secrets if present
@@ -128,7 +128,7 @@ jobs:
             local key="$1" ; local val="$2"
             if [ -n "$val" ]; then
               echo "Setting secret $key"
-              databricks secrets put --scope pipeline-secrets --key "$key" --string-value "$val"
+              databricks secrets put-secret --json '{"scope": "neo4j-secrets","key": "$key","string_value": "$val"}'
             else
               echo "Skipping secret $key (empty)"
             fi
