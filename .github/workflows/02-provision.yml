@@ -113,10 +113,12 @@ jobs:
             fi
           done
       
-          # Ensure Databricks secret scope exists
-          if ! databricks secrets list-scopes --output json | jq -e '.scopes[] | select(.name == "pipeline-secrets")' >/dev/null; then
-            echo "Creating secret scope pipeline-secrets"
-            databricks secrets create-scope --scope pipeline-secrets
+          # Ensure Databricks secret scope exists (robust jq for array vs object JSON)
+          SCOPES_JSON="$(databricks secrets list-scopes --output json || true)"
+          SCOPE_EXISTS="$(echo "$SCOPES_JSON" | jq -e 'if type=="array" then any(.[]; .name=="pipeline-secrets") else any(.scopes[]; .name=="pipeline-secrets") end' && echo yes || echo no)"
+          if [ "$SCOPE_EXISTS" != "yes" ]; then
+            echo "Creating secret scope pipeline-secrets (Databricks backend)"
+            databricks secrets create-scope pipeline-secrets --scope-backend-type DATABRICKS
           else
             echo "Secret scope pipeline-secrets already exists"
           fi
