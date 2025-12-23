@@ -55,7 +55,7 @@ jobs:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
-      - name: Prepare Unity Catalog and Databricks Secret Scope (force PAT; idempotent)
+      - name: Prepare Unity Catalog (use existing catalog) and Databricks Secret Scope (idempotent)
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
@@ -67,30 +67,40 @@ jobs:
           unset ACTIONS_ID_TOKEN_REQUEST_URL ACTIONS_ID_TOKEN_REQUEST_TOKEN
       
           echo "Ensuring Unity Catalog resources exist (using existing catalog)..."
-
-          # If a catalog name override is provided via env or TF var, prefer that
+      
+          # Optional override via env CATALOG_NAME
           OVERRIDE_CATALOG_NAME="${CATALOG_NAME:-}"
-          TF_CATALOG_NAME="${{ env.TF_VAR_catalog_name || '' }}"
       
           SELECTED_CATALOG=""
           if [ -n "$OVERRIDE_CATALOG_NAME" ]; then
-            SELECTED_CATALOG="$OVERRIDE_CATALOG_NAME"
-            echo "Using override catalog: $SELECTED_CATALOG"
-          elif [ -n "$TF_CATALOG_NAME" ]; then
-            SELECTED_CATALOG="$TF_CATALOG_NAME"
-            echo "Using TF catalog: $SELECTED_CATALOG"
-          else
-            # List catalogs and select the first available
-            echo "Listing catalogs..."
-            CATALOGS_JSON="$(databricks catalogs list --output json)"
-            SELECTED_CATALOG="$(echo "$CATALOGS_JSON" | jq -r '.catalogs[0].name // empty')"
-      
-            if [ -z "$SELECTED_CATALOG" ]; then
-              echo "::error::No existing Unity Catalog found. Your account likely has Default Storage disabled. Please create a catalog via the UI with Default Storage or provide a managed location."
-              echo "Hint: In Databricks Account Console, enable Default Storage or create a catalog with a MANAGED LOCATION."
+            # If override provided, use it if it exists
+            if databricks catalogs get --name "$OVERRIDE_CATALOG_NAME" >/dev/null 2>&1; then
+              SELECTED_CATALOG="$OVERRIDE_CATALOG_NAME"
+              echo "Using override catalog: $SELECTED_CATALOG"
+            else
+              echo "::error::Override catalog '$OVERRIDE_CATALOG_NAME' not found."
               exit 1
             fi
-            echo "Selected existing catalog: $SELECTED_CATALOG"
+          else
+            # Prefer 'ecommerce_dev' if it already exists
+            if databricks catalogs get --name ecommerce_dev >/dev/null 2>&1; then
+              SELECTED_CATALOG="ecommerce_dev"
+              echo "Using existing catalog: $SELECTED_CATALOG"
+            else
+              echo "Listing catalogs..."
+              CATALOGS_JSON="$(databricks catalogs list --output json || true)"
+              # Try parsing as array: [ { name: ... }, ... ]
+              SELECTED_CATALOG="$(echo "$CATALOGS_JSON" | jq -r '.[0].name // empty')"
+              # If empty, try object shape: { catalogs: [ { name: ... }, ... ] }
+              if [ -z "$SELECTED_CATALOG" ]; then
+                SELECTED_CATALOG="$(echo "$CATALOGS_JSON" | jq -r '.catalogs[0].name // empty')"
+              fi
+              if [ -z "$SELECTED_CATALOG" ]; then
+                echo "::error::No existing Unity Catalog found. Your account likely has Default Storage disabled. Please create a catalog via the UI with Default Storage or provide a managed location."
+                exit 1
+              fi
+              echo "Selected existing catalog: $SELECTED_CATALOG"
+            fi
           fi
       
           # Ensure required schemas exist within the selected catalog
@@ -129,7 +139,9 @@ jobs:
           put_secret aura-client-id     "${{ secrets.AURA_CLIENT_ID }}"
           put_secret aura-client-secret "${{ secrets.AURA_CLIENT_SECRET }}"
       
-          echo "Unity Catalog and secret scope preparation complete"
+          # Export the selected catalog name for Terraform
+          echo "TF_VAR_catalog_name=$SELECTED_CATALOG" >> "$GITHUB_ENV"
+          echo "Unity Catalog preparation complete using catalog: $SELECTED_CATALOG"
 
       - name: Ensure Terraform remote backend resources exist
         run: |
