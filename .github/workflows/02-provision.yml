@@ -174,15 +174,6 @@ jobs:
           echo "STORAGE_ACCOUNT=$(terraform output -raw storage_account_name)" >> $GITHUB_ENV
           echo "DATABRICKS_WORKSPACE_URL=$(terraform output -raw databricks_workspace_url)" >> $GITHUB_ENV
 
-      - name: Upload Storage Sample Data
-        run: |
-          echo "Uploading sample e-commerce data to Azure Storage..."
-          az storage blob upload-batch \
-            --account-name ${{ env.BACKEND_STORAGE_ACCOUNT }} \
-            --destination pipeline-data/sample-data \
-            --source sample-data/ \
-            --overwrite
-
       - name: Provisioning Summary
         working-directory: terraform
         run: |
