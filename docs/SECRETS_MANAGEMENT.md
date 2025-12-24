@@ -201,33 +201,26 @@ Examples:
    gh auth login
    ```
 
-3. **Run Secrets Manager:**
+3. **Set secrets via CLI:**
    ```bash
-   python scripts/secrets-manager.py \
-     --repo joy-neo4j/neo4j-databricks-azure-pipeline \
-     --action setup
+   # Azure credentials
+   gh secret set AZURE_CREDENTIALS < azure-credentials.json
+   gh secret set AZURE_SUBSCRIPTION_ID --body "$(az account show --query id -o tsv)"
+   gh secret set AZURE_TENANT_ID --body "$(az account show --query tenantId -o tsv)"
+   
+   # Databricks credentials
+   gh secret set DATABRICKS_HOST --body "YOUR_WORKSPACE_URL"
+   gh secret set DATABRICKS_TOKEN --body "YOUR_TOKEN"
+   
+   # Neo4j credentials
+   gh secret set NEO4J_URI --body "YOUR_NEO4J_URI"
+   gh secret set NEO4J_USERNAME --body "neo4j"
+   gh secret set NEO4J_PASSWORD --body "YOUR_PASSWORD"
+   
+   # Aura credentials
+   gh secret set AURA_CLIENT_ID --body "YOUR_CLIENT_ID"
+   gh secret set AURA_CLIENT_SECRET --body "YOUR_CLIENT_SECRET"
    ```
-
-### Method 3: Using Secrets Manager Script
-
-The repository includes a comprehensive secrets management script:
-
-```bash
-# Interactive setup
-python scripts/secrets-manager.py \
-  --repo your-org/your-repo \
-  --action setup
-
-# Validate existing secrets
-python scripts/secrets-manager.py \
-  --repo your-org/your-repo \
-  --action validate
-
-# List configured secrets
-python scripts/secrets-manager.py \
-  --repo your-org/your-repo \
-  --action list
-```
 
 ## Fallback Mechanism
 
@@ -263,9 +256,8 @@ All workflows include a validation step that checks:
 
 ### Manual Validation
 ```bash
-python scripts/secrets-manager.py \
-  --repo your-org/your-repo \
-  --action validate
+# Verify secret existence via GitHub CLI
+gh secret list
 ```
 
 ### Validation Rules
@@ -305,7 +297,7 @@ python scripts/secrets-manager.py \
 
 3. **Verify New Secret:**
    ```bash
-   python scripts/secrets-manager.py --repo your-org/your-repo --action validate
+   gh secret list
    ```
 
 4. **Revoke Old Secret:**

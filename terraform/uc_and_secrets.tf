@@ -1,0 +1,115 @@
+############################################
+# Unity Catalog - Select First Available Catalog
+############################################
+
+# Fetch list of catalogs via Databricks API
+data "http" "unity_catalog_list" {
+  url = "${var.databricks_host}/api/2.1/unity-catalog/catalogs"
+  request_headers = {
+    Authorization = "Bearer ${var.databricks_token}"
+  }
+}
+
+# Parse catalog list and select first or use override
+locals {
+  catalogs_response = jsondecode(data.http.unity_catalog_list.response_body)
+  catalogs_list     = try(local.catalogs_response.catalogs, [])
+  first_catalog     = length(local.catalogs_list) > 0 ? local.catalogs_list[0].name : ""
+  resolved_catalog  = var.catalog_name_override != "" ? var.catalog_name_override : local.first_catalog
+}
+
+# Fail-fast if no catalog found
+resource "null_resource" "validate_catalog" {
+  provisioner "local-exec" {
+    command = <<-EOT
+      if [ -z "${local.resolved_catalog}" ]; then
+        echo "ERROR: No Unity Catalog found. Please create a catalog in Databricks first."
+        exit 1
+      fi
+      echo "✓ Using Unity Catalog: ${local.resolved_catalog}"
+    EOT
+  }
+
+  triggers = {
+    catalog_name = local.resolved_catalog
+  }
+}
+
+############################################
+# Unity Catalog Schemas
+############################################
+
+resource "databricks_schema" "bronze" {
+  depends_on   = [null_resource.validate_catalog]
+  name         = "bronze"
+  catalog_name = local.resolved_catalog
+  comment      = "Raw ingested data"
+}
+
+resource "databricks_schema" "silver" {
+  depends_on   = [null_resource.validate_catalog]
+  name         = "silver"
+  catalog_name = local.resolved_catalog
+  comment      = "Validated data"
+}
+
+resource "databricks_schema" "gold" {
+  depends_on   = [null_resource.validate_catalog]
+  name         = "gold"
+  catalog_name = local.resolved_catalog
+  comment      = "Aggregations"
+}
+
+resource "databricks_schema" "graph_ready" {
+  depends_on   = [null_resource.validate_catalog]
+  name         = "graph_ready"
+  catalog_name = local.resolved_catalog
+  comment      = "Neo4j-formatted data"
+}
+
+############################################
+# Databricks Secret Scope (DATABRICKS backend)
+############################################
+
+resource "databricks_secret_scope" "pipeline_secrets" {
+  name = "pipeline-secrets"
+}
+
+############################################
+# Databricks Secrets (Conditional)
+############################################
+
+resource "databricks_secret" "neo4j_uri" {
+  count        = var.neo4j_uri != "" ? 1 : 0
+  key          = "neo4j-uri"
+  string_value = var.neo4j_uri
+  scope        = databricks_secret_scope.pipeline_secrets.name
+}
+
+resource "databricks_secret" "neo4j_username" {
+  count        = var.neo4j_username != "" ? 1 : 0
+  key          = "neo4j-username"
+  string_value = var.neo4j_username
+  scope        = databricks_secret_scope.pipeline_secrets.name
+}
+
+resource "databricks_secret" "neo4j_password" {
+  count        = var.neo4j_password != "" ? 1 : 0
+  key          = "neo4j-password"
+  string_value = var.neo4j_password
+  scope        = databricks_secret_scope.pipeline_secrets.name
+}
+
+resource "databricks_secret" "aura_client_id" {
+  count        = var.aura_client_id != "" ? 1 : 0
+  key          = "aura-client-id"
+  string_value = var.aura_client_id
+  scope        = databricks_secret_scope.pipeline_secrets.name
+}
+
+resource "databricks_secret" "aura_client_secret" {
+  count        = var.aura_client_secret != "" ? 1 : 0
+  key          = "aura-client-secret"
+  string_value = var.aura_client_secret
+  scope        = databricks_secret_scope.pipeline_secrets.name
+}

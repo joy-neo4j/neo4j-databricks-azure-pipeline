@@ -6,9 +6,6 @@ Common issues and solutions for the Neo4j-Databricks Azure Pipeline.
 
 ### Check System Status
 ```bash
-# Validate prerequisites
-python scripts/validate-prerequisites.py
-
 # Check Azure login
 az account show
 
@@ -68,14 +65,12 @@ ServiceUnavailable: Connection refused
 
 **Solutions:**
 ```bash
-# Test connection
-python scripts/configure-neo4j-connection.py --test
-
-# Check credentials
+# Check credentials via API
 curl -u $AURA_CLIENT_ID:$AURA_CLIENT_SECRET \
   https://api.neo4j.io/v1/instances
 
 # Verify instance is running in Aura Console
+# Test connection via Neo4j Constraints job in Databricks
 ```
 
 ### 2. Terraform Issues
