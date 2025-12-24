@@ -10,7 +10,7 @@
 # COMMAND ----------
 
 # Install neo4j driver
-%pip install neo4j
+# %pip install neo4j
 
 # COMMAND ----------
 
