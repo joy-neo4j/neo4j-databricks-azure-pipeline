@@ -141,6 +141,7 @@ jobs:
           TF_VAR_neo4j_uri: ${{ secrets.NEO4J_URI }}
           TF_VAR_neo4j_username: ${{ secrets.NEO4J_USERNAME }}
           TF_VAR_neo4j_password: ${{ secrets.NEO4J_PASSWORD }}
+          TF_VAR_catalog_name_override: ${{ secrets.CATALOG_NAME_OVERRIDE }}
           DATABRICKS_AUTH_TYPE: pat
         run: |
           VARFILE="${{ steps.varfile.outputs.file }}"
@@ -160,6 +161,7 @@ jobs:
           TF_VAR_neo4j_uri: ${{ secrets.NEO4J_URI }}
           TF_VAR_neo4j_username: ${{ secrets.NEO4J_USERNAME }}
           TF_VAR_neo4j_password: ${{ secrets.NEO4J_PASSWORD }}
+          TF_VAR_catalog_name_override: ${{ secrets.CATALOG_NAME_OVERRIDE }}
           DATABRICKS_AUTH_TYPE: pat
         run: |
           terraform apply -input=false -auto-approve -lock-timeout=5m tfplan
