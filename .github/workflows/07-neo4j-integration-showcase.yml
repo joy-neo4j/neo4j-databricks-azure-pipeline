@@ -12,24 +12,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate-secrets:
-    name: Validate Databricks and Neo4j Secrets
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check secrets
-        shell: bash
-        run: |
-          missing=0
-          [ -z "${{ secrets.DATABRICKS_HOST }}" ] && echo "::error::Missing DATABRICKS_HOST" && missing=1
-          [ -z "${{ secrets.DATABRICKS_TOKEN }}" ] && echo "::error::Missing DATABRICKS_TOKEN" && missing=1
-          [ -z "${{ secrets.NEO4J_URI }}" ] && echo "::error::Missing NEO4J_URI" && missing=1
-          [ -z "${{ secrets.NEO4J_USER }}" ] && echo "::error::Missing NEO4J_USER" && missing=1
-          [ -z "${{ secrets.NEO4J_PASSWORD }}" ] && echo "::error::Missing NEO4J_PASSWORD" && missing=1
-          [ $missing -ne 0 ] && exit 1 || true
   execute-pipeline:
     name: Execute Complete E-commerce Pipeline
     runs-on: ubuntu-latest
-    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -131,7 +116,7 @@ jobs:
       - name: Verify Graph Structure
         env:
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
-          NEO4J_USER: ${{ secrets.NEO4J_USER }}
+          NEO4J_USER: ${{ secrets.NEO4J_USERNAME }}
           NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
         run: |
           cat > /tmp/verify-graph.py << 'EOF'

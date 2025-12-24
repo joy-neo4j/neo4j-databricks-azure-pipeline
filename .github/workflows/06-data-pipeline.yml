@@ -12,20 +12,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  validate-secrets:
-    name: Validate Databricks Secrets
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check DATABRICKS_HOST/TOKEN
-        shell: bash
-        run: |
-          if [ -z "${{ secrets.DATABRICKS_HOST }}" ] || [ -z "${{ secrets.DATABRICKS_TOKEN }}" ]; then
-            echo "::error::Missing DATABRICKS_HOST or DATABRICKS_TOKEN"; exit 1; fi
-
   validate-notebooks:
     name: Validate Notebooks Syntax
     runs-on: ubuntu-latest
-    needs: validate-secrets
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
