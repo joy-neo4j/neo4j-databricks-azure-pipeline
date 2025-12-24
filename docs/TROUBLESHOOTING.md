@@ -205,8 +205,10 @@ TransientError: Database unavailable
 
 **Solutions:**
 ```bash
-# Check Neo4j status
-python scripts/configure-neo4j-connection.py --test
+# Check Neo4j status via Aura Console
+# Or test connection via API
+curl -u $AURA_CLIENT_ID:$AURA_CLIENT_SECRET \
+  https://api.neo4j.io/v1/instances
 
 # Reduce batch size
 # Edit notebook parameter: batch_size=500

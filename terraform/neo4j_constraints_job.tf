@@ -21,10 +21,9 @@ resource "databricks_job" "neo4j_constraints" {
     }
 
     new_cluster {
-      spark_version           = "13.3.x-scala2.12"
-      node_type_id            = "Standard_DS3_v2"
-      num_workers             = 1
-      autotermination_minutes = 30
+      spark_version = "13.3.x-scala2.12"
+      node_type_id  = "Standard_DS3_v2"
+      num_workers   = 1
 
       spark_conf = {
         "spark.databricks.delta.preview.enabled" = "true"
