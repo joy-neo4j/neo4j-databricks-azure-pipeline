@@ -218,7 +218,10 @@ az databricks workspace show \
 
 #### 3. Test Neo4j Connection
 ```bash
-python scripts/configure-neo4j-connection.py --test
+# Test connection via Databricks constraints job (manual run in Databricks UI)
+# Or verify credentials via API
+curl -u $AURA_CLIENT_ID:$AURA_CLIENT_SECRET \
+  https://api.neo4j.io/v1/instances
 ```
 
 #### 4. Run Test Pipeline
@@ -242,8 +245,8 @@ gh workflow run manage-environments.yml \
 # 2. Deploy to staging
 gh workflow run deploy-full-pipeline.yml -f environment=staging
 
-# 3. Verify staging
-python scripts/validate-prerequisites.py
+# 3. Verify staging deployment
+gh run list --workflow=deploy-full-pipeline.yml
 ```
 
 #### Staging to Production
@@ -262,8 +265,8 @@ gh workflow run manage-environments.yml \
 # 3. Deploy infrastructure
 gh workflow run deploy-infrastructure.yml -f environment=prod
 
-# 4. Verify
-python scripts/validate-prerequisites.py
+# 4. Verify deployment
+gh run list --workflow=deploy-infrastructure.yml
 ```
 
 ## Troubleshooting Deployment
@@ -367,7 +370,7 @@ gh workflow run manage-environments.yml \
   -f source_environment=dev
 
 # 2. Verify restoration
-python scripts/validate-prerequisites.py
+gh run list --workflow=manage-environments.yml
 ```
 
 ## Maintenance Operations

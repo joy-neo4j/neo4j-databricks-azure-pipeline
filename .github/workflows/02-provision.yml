@@ -43,107 +43,15 @@ jobs:
           echo "ARM_TENANT_ID=$ARM_TENANT_ID" >> $GITHUB_ENV
           echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID" >> $GITHUB_ENV
 
-      - name: Install Databricks CLI
+      - name: Download Neo4j Spark Connector JAR
         run: |
           set -euo pipefail
-          echo "Installing Databricks CLI v0.229.0"
-          curl -fsSL https://github.com/databricks/cli/releases/download/v0.281.0/databricks_cli_0.281.0_linux_amd64.tar.gz -o /tmp/databricks.tar.gz
-          sudo tar -xzf /tmp/databricks.tar.gz -C /usr/local/bin databricks
-          sudo chmod +x /usr/local/bin/databricks
-          databricks --version
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-
-      - name: Prepare Unity Catalog (use existing catalog) and Databricks Secret Scope (idempotent)
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: |
-          set -euo pipefail
-      
-          # Force PAT auth for Databricks CLI by removing Azure/OIDC env seen by the CLI
-          unset ARM_CLIENT_ID ARM_CLIENT_SECRET ARM_TENANT_ID ARM_SUBSCRIPTION_ID
-          unset ACTIONS_ID_TOKEN_REQUEST_URL ACTIONS_ID_TOKEN_REQUEST_TOKEN
-      
-          echo "Ensuring Unity Catalog resources exist (using existing catalog)..."
-      
-          # Optional override via env CATALOG_NAME
-          OVERRIDE_CATALOG_NAME="${CATALOG_NAME:-}"
-      
-          SELECTED_CATALOG=""
-          if [ -n "$OVERRIDE_CATALOG_NAME" ]; then
-            # If override provided, use it if it exists
-            if databricks catalogs get --name "$OVERRIDE_CATALOG_NAME" >/dev/null 2>&1; then
-              SELECTED_CATALOG="$OVERRIDE_CATALOG_NAME"
-              echo "Using override catalog: $SELECTED_CATALOG"
-            else
-              echo "::error::Override catalog '$OVERRIDE_CATALOG_NAME' not found."
-              exit 1
-            fi
-          else
-            # Prefer 'ecommerce_dev' if it already exists
-            if databricks catalogs get --name ecommerce_dev >/dev/null 2>&1; then
-              SELECTED_CATALOG="ecommerce_dev"
-              echo "Using existing catalog: $SELECTED_CATALOG"
-            else
-              echo "Listing catalogs..."
-              CATALOGS_JSON="$(databricks catalogs list --output json || true)"
-              # Try parsing as array: [ { name: ... }, ... ]
-              SELECTED_CATALOG="$(echo "$CATALOGS_JSON" | jq -r '.[0].name // empty')"
-              # If empty, try object shape: { catalogs: [ { name: ... }, ... ] }
-              if [ -z "$SELECTED_CATALOG" ]; then
-                SELECTED_CATALOG="$(echo "$CATALOGS_JSON" | jq -r '.catalogs[0].name // empty')"
-              fi
-              if [ -z "$SELECTED_CATALOG" ]; then
-                echo "::error::No existing Unity Catalog found. Your account likely has Default Storage disabled. Please create a catalog via the UI with Default Storage or provide a managed location."
-                exit 1
-              fi
-              echo "Selected existing catalog: $SELECTED_CATALOG"
-            fi
-          fi
-      
-          # Ensure required schemas exist within the selected catalog
-          for schema in bronze silver gold graph_ready; do
-            if ! databricks schemas get --catalog-name "$SELECTED_CATALOG" --name "$schema" >/dev/null 2>&1; then
-              echo "Creating schema $SELECTED_CATALOG.$schema"
-              databricks schemas create "$schema" "$SELECTED_CATALOG" --comment "Schema for $schema layer"
-            else
-              echo "Schema $SELECTED_CATALOG.$schema already exists"
-            fi
-          done
-      
-          # Ensure Databricks secret scope exists (robust jq for array vs object JSON)
-          SCOPES_JSON="$(databricks secrets list-scopes --output json || true)"
-          SCOPE_EXISTS="$(echo "$SCOPES_JSON" | jq -e 'if type=="array" then any(.[]; .name=="neo4j-secrets") else any(.scopes[]; .name=="neo4j-secrets") end' && echo yes || echo no)"
-          if [ "$SCOPE_EXISTS" != "yes" ]; then
-            echo "Creating secret scope neo4j-secrets (Databricks backend)"
-            databricks secrets create-scope neo4j-secrets
-          else
-            echo "Secret scope neo4j-secrets already exists"
-          fi
-      
-          # Helper to set secrets if present
-          put_secret() {
-            local key="$1" ; local val="$2"
-            if [ -n "$val" ]; then
-              echo "Setting secret $key"
-              databricks secrets put-secret --json '{"scope": "neo4j-secrets","key": "$key","string_value": "$val"}'
-            else
-              echo "Skipping secret $key (empty)"
-            fi
-          }
-      
-          # Populate secrets from GitHub secrets (skip if empty)
-          put_secret neo4j-uri-dev      "${{ secrets.NEO4J_URI }}"
-          put_secret neo4j-username-dev "${{ secrets.NEO4J_USERNAME }}"
-          put_secret neo4j-password-dev "${{ secrets.NEO4J_PASSWORD }}"
-          put_secret aura-client-id     "${{ secrets.AURA_CLIENT_ID }}"
-          put_secret aura-client-secret "${{ secrets.AURA_CLIENT_SECRET }}"
-      
-          # Export the selected catalog name for Terraform
-          echo "TF_VAR_catalog_name=$SELECTED_CATALOG" >> "$GITHUB_ENV"
-          echo "Unity Catalog preparation complete using catalog: $SELECTED_CATALOG"
+          echo "Downloading Neo4j Spark Connector JAR..."
+          mkdir -p build
+          curl -fsSL https://github.com/neo4j/neo4j-spark-connector/releases/download/5.3.10/neo4j-spark-connector-5.3.10-s_2.12.jar \
+            -o build/neo4j-spark-connector-5.3.10-s_2.12.jar
+          echo "✓ Neo4j Spark Connector JAR downloaded to build/"
+          ls -lh build/
 
       - name: Ensure Terraform remote backend resources exist
         run: |
@@ -230,6 +138,9 @@ jobs:
           TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+          TF_VAR_neo4j_uri: ${{ secrets.NEO4J_URI }}
+          TF_VAR_neo4j_username: ${{ secrets.NEO4J_USERNAME }}
+          TF_VAR_neo4j_password: ${{ secrets.NEO4J_PASSWORD }}
           DATABRICKS_AUTH_TYPE: pat
         run: |
           VARFILE="${{ steps.varfile.outputs.file }}"
@@ -246,6 +157,9 @@ jobs:
           TF_VAR_databricks_token: ${{ secrets.DATABRICKS_TOKEN }}
           TF_VAR_aura_client_id: ${{ secrets.AURA_CLIENT_ID }}
           TF_VAR_aura_client_secret: ${{ secrets.AURA_CLIENT_SECRET }}
+          TF_VAR_neo4j_uri: ${{ secrets.NEO4J_URI }}
+          TF_VAR_neo4j_username: ${{ secrets.NEO4J_USERNAME }}
+          TF_VAR_neo4j_password: ${{ secrets.NEO4J_PASSWORD }}
           DATABRICKS_AUTH_TYPE: pat
         run: |
           terraform apply -input=false -auto-approve -lock-timeout=5m tfplan

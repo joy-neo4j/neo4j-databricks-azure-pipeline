@@ -130,64 +130,39 @@ resource "databricks_cluster" "neo4j_ecommerce" {
   }
 
   library {
-    maven {
-      coordinates = "org.neo4j:neo4j-connector-apache-spark_2.12:5.3.0_for_spark_3.5"
-      repo        = "https://repo1.maven.org/maven2/"
-    }
+    jar = "dbfs:${databricks_dbfs_file.neo4j_spark_connector_jar.path}"
   }
 }
 
 ############################################
 # Unity Catalog Schemas
-# NOTE: Requires Unity Catalog (specified by var.catalog_name) to already exist
+# NOTE: Requires Unity Catalog (specified by local.resolved_catalog) to already exist
 #       in the Databricks workspace. This Terraform configuration will create
 #       schemas within the existing catalog.
+#       Schema resources are now defined in uc_and_secrets.tf
 ############################################
-resource "databricks_schema" "bronze" {
-  name         = "bronze"
-  catalog_name = var.catalog_name
-  comment      = "Raw ingested data"
-}
-
-resource "databricks_schema" "silver" {
-  name         = "silver"
-  catalog_name = var.catalog_name
-  comment      = "Validated data"
-}
-
-resource "databricks_schema" "gold" {
-  name         = "gold"
-  catalog_name = var.catalog_name
-  comment      = "Aggregations"
-}
-
-resource "databricks_schema" "graph_ready" {
-  name         = "graph_ready"
-  catalog_name = var.catalog_name
-  comment      = "Neo4j-formatted data"
-}
 
 resource "databricks_schema" "customers" {
   name         = "customers"
-  catalog_name = var.catalog_name
+  catalog_name = local.resolved_catalog
   comment      = "Customer data"
 }
 
 resource "databricks_schema" "products" {
   name         = "products"
-  catalog_name = var.catalog_name
+  catalog_name = local.resolved_catalog
   comment      = "Product data"
 }
 
 resource "databricks_schema" "orders" {
   name         = "orders"
-  catalog_name = var.catalog_name
+  catalog_name = local.resolved_catalog
   comment      = "Order data"
 }
 
 resource "databricks_schema" "analytics" {
   name         = "analytics"
-  catalog_name = var.catalog_name
+  catalog_name = local.resolved_catalog
   comment      = "Analytics"
 }
 
@@ -288,7 +263,7 @@ resource "databricks_job" "ecommerce_pipeline" {
       notebook_path = databricks_workspace_file.customer_360_analytics.path
       base_parameters = {
         environment = var.environment
-        catalog     = var.catalog_name
+        catalog     = local.resolved_catalog
       }
     }
     existing_cluster_id = databricks_cluster.neo4j_ecommerce.id
@@ -303,7 +278,7 @@ resource "databricks_job" "ecommerce_pipeline" {
       notebook_path = databricks_workspace_file.product_recommendations.path
       base_parameters = {
         environment = var.environment
-        catalog     = var.catalog_name
+        catalog     = local.resolved_catalog
       }
     }
     existing_cluster_id = databricks_cluster.neo4j_ecommerce.id
@@ -317,7 +292,7 @@ resource "databricks_job" "ecommerce_pipeline" {
 # Unity Catalog Grants (optional basic grants)
 ############################################
 resource "databricks_grants" "catalog_grants" {
-  catalog = var.catalog_name
+  catalog = local.resolved_catalog
   grant {
     principal  = "users"
     privileges = ["USE_CATALOG"]
@@ -326,7 +301,7 @@ resource "databricks_grants" "catalog_grants" {
 
 resource "databricks_grants" "schema_bronze_grants" {
   schema  = databricks_schema.bronze.name
-  catalog = var.catalog_name
+  catalog = local.resolved_catalog
   grant {
     principal  = "users"
     privileges = ["USE_SCHEMA", "SELECT"]
@@ -335,7 +310,7 @@ resource "databricks_grants" "schema_bronze_grants" {
 
 resource "databricks_grants" "schema_silver_grants" {
   schema  = databricks_schema.silver.name
-  catalog = var.catalog_name
+  catalog = local.resolved_catalog
   grant {
     principal  = "users"
     privileges = ["USE_SCHEMA", "SELECT"]
@@ -344,7 +319,7 @@ resource "databricks_grants" "schema_silver_grants" {
 
 resource "databricks_grants" "schema_gold_grants" {
   schema  = databricks_schema.gold.name
-  catalog = var.catalog_name
+  catalog = local.resolved_catalog
   grant {
     principal  = "users"
     privileges = ["USE_SCHEMA", "SELECT"]
@@ -353,7 +328,7 @@ resource "databricks_grants" "schema_gold_grants" {
 
 resource "databricks_grants" "schema_graph_ready_grants" {
   schema  = databricks_schema.graph_ready.name
-  catalog = var.catalog_name
+  catalog = local.resolved_catalog
   grant {
     principal  = "users"
     privileges = ["USE_SCHEMA", "SELECT"]

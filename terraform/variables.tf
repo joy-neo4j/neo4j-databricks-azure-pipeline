@@ -114,8 +114,6 @@ variable "vnet_address_space" {
 }
 
 # Unity Catalog Configuration
-variable "catalog_name" {
-  description = "Existing Unity Catalog name"
-  type        = string
-  default     = "ecommerce_dev"
-}
+# Note: Unity Catalog selection is now handled automatically via HTTP API
+# See terraform/uc_and_secrets.tf and terraform/variables.uc.tf
+

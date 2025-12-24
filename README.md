@@ -644,9 +644,6 @@ gh secret set DATABRICKS_TOKEN
 
 #### 3. Neo4j Connection Issues
 ```bash
-# Test Aura connection
-python scripts/configure-neo4j-connection.py --test
-
 # Verify credentials
 curl -u <AURA_CLIENT_ID>:<AURA_CLIENT_SECRET> \
   https://api.neo4j.io/v1/instances
@@ -686,15 +683,6 @@ az costmanagement query \
 ```
 
 ## ✅ Validation
-
-### Prerequisites Validation
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Validate prerequisites and environment
-python scripts/validate-prerequisites.py
-```
 
 ### CI/CD Validation
 All workflows include automated validation:
