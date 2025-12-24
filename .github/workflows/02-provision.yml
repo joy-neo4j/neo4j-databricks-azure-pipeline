@@ -43,6 +43,17 @@ jobs:
           echo "ARM_TENANT_ID=$ARM_TENANT_ID" >> $GITHUB_ENV
           echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID" >> $GITHUB_ENV
 
+      - name: Validate required secrets
+        run: |
+          set -euo pipefail
+          missing=0
+          [ -z "${{ secrets.DATABRICKS_HOST }}" ]   && echo "::error::Missing DATABRICKS_HOST"   && missing=1
+          [ -z "${{ secrets.DATABRICKS_TOKEN }}" ]  && echo "::error::Missing DATABRICKS_TOKEN"  && missing=1
+          [ -z "${{ secrets.NEO4J_URI }}" ]         && echo "::error::Missing NEO4J_URI"         && missing=1
+          [ -z "${{ secrets.NEO4J_USERNAME }}" ]    && echo "::error::Missing NEO4J_USERNAME"    && missing=1
+          [ -z "${{ secrets.NEO4J_PASSWORD }}" ]    && echo "::error::Missing NEO4J_PASSWORD"    && missing=1
+          [ $missing -ne 0 ] && exit 1 || true
+
       - name: Download Neo4j Spark Connector JAR
         run: |
           set -euo pipefail
