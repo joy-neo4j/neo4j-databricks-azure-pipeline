@@ -139,32 +139,8 @@ resource "databricks_cluster" "neo4j_ecommerce" {
 # NOTE: Requires Unity Catalog (specified by local.resolved_catalog) to already exist
 #       in the Databricks workspace. This Terraform configuration will create
 #       schemas within the existing catalog.
-#       Schema resources are now defined in uc_and_secrets.tf
+#       Schema resources are defined in uc_and_secrets.tf
 ############################################
-
-resource "databricks_schema" "customers" {
-  name         = "customers"
-  catalog_name = local.resolved_catalog
-  comment      = "Customer data"
-}
-
-resource "databricks_schema" "products" {
-  name         = "products"
-  catalog_name = local.resolved_catalog
-  comment      = "Product data"
-}
-
-resource "databricks_schema" "orders" {
-  name         = "orders"
-  catalog_name = local.resolved_catalog
-  comment      = "Order data"
-}
-
-resource "databricks_schema" "analytics" {
-  name         = "analytics"
-  catalog_name = local.resolved_catalog
-  comment      = "Analytics"
-}
 
 ############################################
 # Upload Notebooks to Workspace
@@ -294,43 +270,47 @@ resource "databricks_job" "ecommerce_pipeline" {
 resource "databricks_grants" "catalog_grants" {
   catalog = local.resolved_catalog
   grant {
-    principal  = "users"
+    principal  = "account users"
     privileges = ["USE_CATALOG"]
   }
 }
 
 resource "databricks_grants" "schema_bronze_grants" {
-  schema  = databricks_schema.bronze.name
-  catalog = local.resolved_catalog
+  depends_on = [databricks_schema.bronze]
+  schema     = databricks_schema.bronze.name
+  catalog    = local.resolved_catalog
   grant {
-    principal  = "users"
+    principal  = "account users"
     privileges = ["USE_SCHEMA", "SELECT"]
   }
 }
 
 resource "databricks_grants" "schema_silver_grants" {
-  schema  = databricks_schema.silver.name
-  catalog = local.resolved_catalog
+  depends_on = [databricks_schema.silver]
+  schema     = databricks_schema.silver.name
+  catalog    = local.resolved_catalog
   grant {
-    principal  = "users"
+    principal  = "account users"
     privileges = ["USE_SCHEMA", "SELECT"]
   }
 }
 
 resource "databricks_grants" "schema_gold_grants" {
-  schema  = databricks_schema.gold.name
-  catalog = local.resolved_catalog
+  depends_on = [databricks_schema.gold]
+  schema     = databricks_schema.gold.name
+  catalog    = local.resolved_catalog
   grant {
-    principal  = "users"
+    principal  = "account users"
     privileges = ["USE_SCHEMA", "SELECT"]
   }
 }
 
 resource "databricks_grants" "schema_graph_ready_grants" {
-  schema  = databricks_schema.graph_ready.name
-  catalog = local.resolved_catalog
+  depends_on = [databricks_schema.graph_ready]
+  schema     = databricks_schema.graph_ready.name
+  catalog    = local.resolved_catalog
   grant {
-    principal  = "users"
+    principal  = "account users"
     privileges = ["USE_SCHEMA", "SELECT"]
   }
 }
