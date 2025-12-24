@@ -265,52 +265,8 @@ resource "databricks_job" "ecommerce_pipeline" {
 }
 
 ############################################
-# Unity Catalog Grants (optional basic grants)
+# Unity Catalog Grants
+# NOTE: Grant management is handled outside Terraform as a prerequisite.
+#       All databricks_grants resources have been removed to avoid
+#       strict grant enforcement failures during Terraform apply.
 ############################################
-resource "databricks_grants" "catalog_grants" {
-  catalog = local.resolved_catalog
-  grant {
-    principal  = "account users"
-    privileges = ["USE_CATALOG"]
-  }
-}
-
-resource "databricks_grants" "schema_bronze_grants" {
-  depends_on = [databricks_schema.bronze]
-  schema     = databricks_schema.bronze.name
-  catalog    = local.resolved_catalog
-  grant {
-    principal  = "account users"
-    privileges = ["USE_SCHEMA", "SELECT"]
-  }
-}
-
-resource "databricks_grants" "schema_silver_grants" {
-  depends_on = [databricks_schema.silver]
-  schema     = databricks_schema.silver.name
-  catalog    = local.resolved_catalog
-  grant {
-    principal  = "account users"
-    privileges = ["USE_SCHEMA", "SELECT"]
-  }
-}
-
-resource "databricks_grants" "schema_gold_grants" {
-  depends_on = [databricks_schema.gold]
-  schema     = databricks_schema.gold.name
-  catalog    = local.resolved_catalog
-  grant {
-    principal  = "account users"
-    privileges = ["USE_SCHEMA", "SELECT"]
-  }
-}
-
-resource "databricks_grants" "schema_graph_ready_grants" {
-  depends_on = [databricks_schema.graph_ready]
-  schema     = databricks_schema.graph_ready.name
-  catalog    = local.resolved_catalog
-  grant {
-    principal  = "account users"
-    privileges = ["USE_SCHEMA", "SELECT"]
-  }
-}
