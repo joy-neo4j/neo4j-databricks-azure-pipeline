@@ -144,18 +144,18 @@ jobs:
               task_result_state = None
               task_life_cycle_state = None
               try:
-                for t in getattr(run_status, "tasks", []) or []:
-                  # Single-task job: look at the only task
+                task_result_state = None
+                task_life_cycle_state = None
                   task_life_cycle_state = getattr(getattr(t, "state", None), "life_cycle_state", None)
                   task_result_state = getattr(getattr(t, "state", None), "result_state", None)
                   break
-              except Exception:
-                pass
+                    task_life_cycle_state = _norm(getattr(getattr(t, "state", None), "life_cycle_state", None))
+                    task_result_state = _norm(getattr(getattr(t, "state", None), "result_state", None))
 
               result_state = _norm(getattr(run_status.state, "result_state", None))
               # Treat any explicit result state as terminal
               terminal_results = ["SUCCESS", "FAILED", "TIMEDOUT", "CANCELED"]
-              if (task_result_state in terminal_results) or (result_state in terminal_results):
+                result_state = _norm(getattr(run_status.state, "result_state", None))
                 details = ""
                 try:
                   out = w.jobs.get_run_output(run.run_id)
@@ -168,7 +168,7 @@ jobs:
                 effective_result = task_result_state or result_state or "FAILED"
                 # Derive success from notebook result text if result_state is missing
                 if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
-                  effective_result = "SUCCESS"
+                  effective_result = task_result_state or result_state or "FAILED"
                 if effective_result == "SUCCESS":
                   write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
                   print("✅ Ingestion completed successfully (result_state)")
@@ -188,7 +188,7 @@ jobs:
                     details = out.error
                 except Exception as e:
                   details = f"No run output available: {e}"
-                effective_result = result_state or task_result_state or "FAILED"
+                  effective_result = result_state or task_result_state or "FAILED"
                 # Derive success from notebook result text if result_state is missing
                 if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
                   effective_result = "SUCCESS"
