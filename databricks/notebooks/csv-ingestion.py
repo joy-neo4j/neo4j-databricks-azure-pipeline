@@ -130,6 +130,25 @@ def ingest_csv_source(source_config):
         # Get schema
         spark_schema = get_spark_schema(source_config['schema'])
 
+        def _normalize_path(path: str) -> str:
+            if not path:
+                return path
+            if path.startswith("dbfs:/"):
+                return path
+            if path.startswith("/dbfs/"):
+                return "dbfs:/" + path[len("/dbfs/"):]
+            if path.startswith("/mnt/"):
+                return "dbfs:" + path  # -> dbfs:/mnt/...
+            if path.startswith("FileStore/"):
+                return "dbfs:/" + path
+            if path.startswith("/FileStore/"):
+                return "dbfs:" + path
+            return path
+
+        normalized_path = _normalize_path(source_path)
+        if normalized_path != source_path:
+            print(f"Normalized path: {normalized_path}")
+
         def _read_csv(path):
             return spark.read \
                 .format("csv") \
@@ -139,9 +158,10 @@ def ingest_csv_source(source_config):
 
         # Attempt primary path, then fallback to DBFS FileStore if missing
         try:
-            df = _read_csv(source_path)
+            df = _read_csv(normalized_path)
         except Exception as e1:
-            if 'PATH_NOT_FOUND' in str(e1):
+            msg = str(e1)
+            if ('PATH_NOT_FOUND' in msg) or ("Missing cloud file system scheme" in msg) or ("INVALID_PARAMETER_VALUE" in msg):
                 filename = source_path.split('/')[-1]
                 fallback_path = f"dbfs:/FileStore/sample-data/{filename}"
                 print(f"Primary path missing; trying fallback: {fallback_path}")
