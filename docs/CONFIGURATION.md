@@ -7,16 +7,7 @@ Complete configuration reference for the Neo4j-Databricks Azure Pipeline.
 ### 1. Terraform Variables (`terraform/variables.tf`)
 
 #### Environment Configuration
-```hcl
-variable "environment" {
-  description = "Environment (dev/staging/prod)"
-  type        = string
-  validation {
-    condition     = contains(["dev", "staging", "prod"], var.environment)
-    error_message = "Must be dev, staging, or prod"
-  }
-}
-```
+Environment parameter has been removed. The pipeline operates in a single environment for simplicity and consistency.
 
 #### Azure Configuration
 ```hcl
@@ -100,21 +91,19 @@ alerts:
 
 See [Secrets Management Guide](SECRETS_MANAGEMENT.md) for complete reference.
 
-## Environment-Specific Settings
+## Single Environment Settings
 
-### Single Environment Configuration
-
-The pipeline now uses a single environment configured via `terraform/terraform.tfvars`:
+Configure the pipeline via `terraform/terraform.tfvars`:
 
 ```hcl
 # terraform/terraform.tfvars.example
-resource_group_name     = "rg-neo4j-dbx-dev"
+resource_group_name     = "rg-neo4j-dbx"
 location                = "uksouth"
 
 storage_account_name    = null
 storage_container_name  = "pipeline-data"
 
-databricks_workspace_name = "dbw-neo4j-dev"
+databricks_workspace_name = "dbw-neo4j"
 databricks_sku            = "premium"
 
 create_databricks_workspace = false
@@ -123,9 +112,8 @@ neo4j_region            = "uksouth"
 neo4j_tier              = "professional"
 neo4j_memory            = "8GB"
 
-catalog_name            = "ecommerce_dev"
-
-environment             = "dev"
+# Unity Catalog override (defaults to neo4j_pipeline if omitted)
+catalog_name_override   = "neo4j_pipeline"
 ```
 
 To customize for your environment:
@@ -139,19 +127,7 @@ cp terraform.tfvars.example terraform.tfvars
 
 ## Workflow Configuration
 
-### GitHub Actions Inputs
-
-```yaml
-environment:
-  description: 'Target environment'
-  type: choice
-  options: [dev, staging, prod]
-  
-action:
-  description: 'Action to perform'
-  type: choice
-  options: [deploy, destroy, backup]
-```
+No environment input is required. Workflows deploy to the single configured environment.
 
 ## Azure Resource Configuration
 
@@ -171,14 +147,14 @@ action:
 
 ### Naming Conventions
 ```
-Resource Groups: rg-{project}-{env}
-Storage: st{project}{env}{random}
-Databricks: dbw-{project}-{env}
+Resource Groups: rg-{project}
+Storage: st{project}{random}
+Databricks: dbw-{project}
 ```
 
 ### Tagging Strategy
 ```yaml
-Environment: dev/staging/prod
+Environment: single
 Project: neo4j-databricks-pipeline
 ManagedBy: terraform
 CostCenter: engineering
@@ -186,8 +162,8 @@ Owner: team-name
 ```
 
 ### Cost Optimization
-- Use auto-pause in non-prod
-- Right-size clusters per environment
+- Use auto-pause where appropriate
+- Right-size clusters
 - Use spot instances where applicable
 - Review costs monthly using Azure Cost Management
 

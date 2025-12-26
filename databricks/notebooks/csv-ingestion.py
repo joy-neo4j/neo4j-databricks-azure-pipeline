@@ -18,20 +18,22 @@
 
 # COMMAND ----------
 
+# MAGIC %pip install pyyaml
+
+# COMMAND ----------
+
 import yaml
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
 from datetime import datetime
 import os
+from pyspark.sql import SparkSession
 
-# Get parameters
-dbutils.widgets.text("environment", "dev", "Environment")
+# Get parameters (single-environment run)
 dbutils.widgets.text("source_name", "", "Source Name (optional)")
 
-environment = dbutils.widgets.get("environment")
 source_name = dbutils.widgets.get("source_name")
 
-print(f"Environment: {environment}")
 print(f"Source: {source_name or 'All sources'}")
 
 # COMMAND ----------
@@ -54,6 +56,32 @@ if source_name:
     sources = [s for s in sources if s['name'] == source_name]
 
 print(f"Processing {len(sources)} data source(s)")
+
+# Resolve Unity Catalog (prefer 'neo4j_pipeline', else first available)
+def _get_catalog_names():
+    try:
+        df = spark.sql("SHOW CATALOGS")
+        rows = df.collect()
+        names = []
+        for r in rows:
+            # Try common fields across runtime variants
+            for attr in ("catalog_name", "catalog", "name"):
+                if hasattr(r, attr):
+                    names.append(getattr(r, attr))
+                    break
+        return names
+    except Exception:
+        return []
+
+catalog_names = _get_catalog_names()
+if not catalog_names:
+    raise Exception("No Unity Catalogs found. Please ensure Unity Catalog is enabled and a catalog exists.")
+
+preferred_catalog = "neo4j_pipeline"
+CATALOG = preferred_catalog if preferred_catalog in catalog_names else catalog_names[0]
+
+print(f"Using catalog: {CATALOG}")
+spark.sql(f"USE CATALOG {CATALOG}")
 
 # COMMAND ----------
 
@@ -113,8 +141,7 @@ def ingest_csv_source(source_config):
         df = df \
             .withColumn("_ingestion_timestamp", F.current_timestamp()) \
             .withColumn("_ingestion_date", F.current_date()) \
-            .withColumn("_source_file", F.input_file_name()) \
-            .withColumn("_environment", F.lit(environment))
+            .withColumn("_source_file", F.input_file_name())
         
         # Show sample
         print(f"Records read: {df.count()}")
@@ -122,7 +149,7 @@ def ingest_csv_source(source_config):
         
         # Write to Bronze Delta table
         bronze_path = f"{storage_config['bronze_path']}/{source_name}"
-        table_name = f"neo4j_pipeline_{environment}.bronze.{source_name}"
+        table_name = f"{CATALOG}.bronze.{source_name}"
         
         df.write \
             .format("delta") \
@@ -206,7 +233,7 @@ if config.get('data_quality', {}).get('enable_validation', True):
     print("="*60)
     
     for source in sources:
-        table_name = f"neo4j_pipeline_{environment}.bronze.{source['name']}"
+        table_name = f"{CATALOG}.bronze.{source['name']}"
         
         try:
             df = spark.table(table_name)

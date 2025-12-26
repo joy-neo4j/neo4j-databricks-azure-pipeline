@@ -15,6 +15,7 @@ jobs:
   provision:
     name: Provision single environment via Terraform
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

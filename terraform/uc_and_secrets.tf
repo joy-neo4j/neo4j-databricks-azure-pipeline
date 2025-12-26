@@ -14,8 +14,10 @@ data "http" "unity_catalog_list" {
 locals {
   catalogs_response = jsondecode(data.http.unity_catalog_list.response_body)
   catalogs_list     = try(local.catalogs_response.catalogs, [])
-  first_catalog     = length(local.catalogs_list) > 0 ? local.catalogs_list[0].name : ""
-  resolved_catalog  = var.catalog_name_override != "" ? var.catalog_name_override : local.first_catalog
+  catalog_names     = [for c in local.catalogs_list : c.name]
+  first_catalog     = length(local.catalog_names) > 0 ? local.catalog_names[0] : ""
+  use_override      = var.catalog_name_override != "" && contains(local.catalog_names, var.catalog_name_override)
+  resolved_catalog  = local.use_override ? var.catalog_name_override : local.first_catalog
 }
 
 # Fail-fast if no catalog found

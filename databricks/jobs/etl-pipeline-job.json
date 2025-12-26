@@ -12,10 +12,7 @@
       "task_key": "csv_ingestion",
       "description": "Ingest CSV data from storage",
       "notebook_task": {
-        "notebook_path": "/Shared/neo4j-pipeline/csv-ingestion",
-        "base_parameters": {
-          "environment": "{{env}}"
-        }
+        "notebook_path": "/Shared/neo4j-pipeline/csv-ingestion"
       },
       "new_cluster": {
         "spark_version": "13.3.x-scala2.12",
@@ -36,10 +33,7 @@
         }
       ],
       "notebook_task": {
-        "notebook_path": "/Shared/neo4j-pipeline/data-validation",
-        "base_parameters": {
-          "environment": "{{env}}"
-        }
+        "notebook_path": "/Shared/neo4j-pipeline/data-validation"
       },
       "new_cluster": {
         "spark_version": "13.3.x-scala2.12",
@@ -57,10 +51,7 @@
         }
       ],
       "notebook_task": {
-        "notebook_path": "/Shared/neo4j-pipeline/graph-transformation",
-        "base_parameters": {
-          "environment": "{{env}}"
-        }
+        "notebook_path": "/Shared/neo4j-pipeline/graph-transformation"
       },
       "new_cluster": {
         "spark_version": "13.3.x-scala2.12",
@@ -80,7 +71,6 @@
       "notebook_task": {
         "notebook_path": "/Shared/neo4j-pipeline/neo4j-loading",
         "base_parameters": {
-          "environment": "{{env}}",
           "batch_size": "1000"
         }
       },

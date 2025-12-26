@@ -51,18 +51,17 @@ gh secret set AURA_CLIENT_ID --body "YOUR_CLIENT_ID"
 gh secret set AURA_CLIENT_SECRET --body "YOUR_CLIENT_SECRET"
 ```
 
-### Step 4: Create GitHub Environments (2 min)
+### Step 4: Branch Protections (optional, 2 min)
 ```bash
 # Via GitHub UI:
-# 1. Go to Settings → Environments
-# 2. Create "dev", "staging", "prod"
-# 3. Set protection rules (2 reviewers for prod)
+# 1. Go to Settings → Branches
+# 2. Protect main branch (e.g., required reviewers)
 ```
 
 ### Step 5: Deploy (2 min)
 ```bash
 # Trigger deployment
-gh workflow run deploy-full-pipeline.yml -f environment=dev
+gh workflow run deploy-full-pipeline.yml
 
 # Monitor progress
 gh run watch
@@ -111,37 +110,8 @@ python3 --version  # Should be 3.8+
 pip install -r requirements.txt
 ```
 
-### Environment Configuration
-
-#### Development Environment
-```bash
-# Minimal resources, auto-pause enabled
-# Cost: ~$200/month
-# Use for: Testing, development, POCs
-
-# Deploy
-gh workflow run deploy-full-pipeline.yml -f environment=dev
-```
-
-#### Staging Environment
-```bash
-# Mid-tier resources, reduced auto-pause
-# Cost: ~$400/month
-# Use for: Pre-production testing, UAT
-
-# Deploy (requires 1 approval)
-gh workflow run deploy-full-pipeline.yml -f environment=staging
-```
-
-#### Production Environment
-```bash
-# High-availability, no auto-pause
-# Cost: ~$1000/month
-# Use for: Production workloads
-
-# Deploy (requires 2 approvals)
-gh workflow run deploy-full-pipeline.yml -f environment=prod
-```
+### Deployment
+Single environment deployment using the workflows below.
 
 ### Deployment Workflows
 
@@ -160,7 +130,7 @@ gh workflow run deploy-full-pipeline.yml -f environment=prod
 **Duration:** 15-20 minutes
 
 ```bash
-gh workflow run deploy-full-pipeline.yml -f environment=dev
+gh workflow run deploy-full-pipeline.yml
 ```
 
 #### Infrastructure Only
@@ -173,7 +143,7 @@ gh workflow run deploy-full-pipeline.yml -f environment=dev
 **Duration:** 8-12 minutes
 
 ```bash
-gh workflow run deploy-infrastructure.yml -f environment=dev
+gh workflow run deploy-infrastructure.yml
 ```
 
 #### Data Pipeline Only
@@ -186,7 +156,7 @@ gh workflow run deploy-infrastructure.yml -f environment=dev
 **Duration:** 5-8 minutes
 
 ```bash
-gh workflow run deploy-data-pipeline.yml -f environment=dev
+gh workflow run deploy-data-pipeline.yml
 ```
 
 ### Post-Deployment Verification
@@ -195,7 +165,7 @@ gh workflow run deploy-data-pipeline.yml -f environment=dev
 ```bash
 # List resources
 az resource list \
-  --resource-group rg-neo4j-databricks-dev \
+  --resource-group rg-neo4j-databricks \
   --output table
 
 # Verify storage account
@@ -211,8 +181,8 @@ az databricks workspace list --output table
 
 # Get workspace URL
 az databricks workspace show \
-  --resource-group rg-neo4j-databricks-dev \
-  --name dbw-neo4j-dev \
+  --resource-group rg-neo4j-databricks \
+  --name dbw-neo4j \
   --query workspaceUrl -o tsv
 ```
 
@@ -227,47 +197,14 @@ curl -u $AURA_CLIENT_ID:$AURA_CLIENT_SECRET \
 #### 4. Run Test Pipeline
 ```bash
 # Trigger ETL job
-gh workflow run scheduled-etl.yml -f environment=dev
+gh workflow run scheduled-etl.yml
 
 # Monitor execution
 gh run watch
 ```
 
-### Environment Promotion
-
-#### Dev to Staging
-```bash
-# 1. Backup dev environment
-gh workflow run manage-environments.yml \
-  -f action=backup \
-  -f source_environment=dev
-
-# 2. Deploy to staging
-gh workflow run deploy-full-pipeline.yml -f environment=staging
-
-# 3. Verify staging deployment
-gh run list --workflow=deploy-full-pipeline.yml
-```
-
-#### Staging to Production
-```bash
-# 1. Create backup
-gh workflow run manage-environments.yml \
-  -f action=backup \
-  -f source_environment=staging
-
-# 2. Promote code
-gh workflow run manage-environments.yml \
-  -f action=promote \
-  -f source_environment=staging \
-  -f target_environment=prod
-
-# 3. Deploy infrastructure
-gh workflow run deploy-infrastructure.yml -f environment=prod
-
-# 4. Verify deployment
-gh run list --workflow=deploy-infrastructure.yml
-```
+### Promotion
+Use standard GitHub pull requests and branch protections; separate environments are not required.
 
 ## Troubleshooting Deployment
 
@@ -347,7 +284,7 @@ cd terraform
 terraform state pull > previous-state.json
 
 # 2. Rollback to previous version
-terraform apply -auto-approve -var-file="environments/dev.tfvars.example"
+terraform apply -auto-approve
 ```
 
 #### Rollback Notebooks
@@ -359,7 +296,7 @@ git log --oneline databricks/notebooks/
 git checkout <commit-hash> databricks/notebooks/
 
 # 3. Redeploy
-gh workflow run deploy-data-pipeline.yml -f environment=dev
+gh workflow run deploy-data-pipeline.yml
 ```
 
 #### Full Environment Rollback
@@ -404,7 +341,7 @@ az ad sp credential reset --name neo4j-databricks-sp --years 1
 gh secret set AZURE_CREDENTIALS < new-credentials.json
 
 # 3. Test deployment
-gh workflow run deploy-infrastructure.yml -f environment=dev
+gh workflow run deploy-infrastructure.yml
 
 # 4. Revoke old credentials (after verification)
 ```
@@ -413,13 +350,11 @@ gh workflow run deploy-infrastructure.yml -f environment=dev
 ```bash
 # Pause all clusters
 gh workflow run cleanup-resources.yml \
-  -f environment=dev \
   -f action=pause-clusters \
   -f confirm=CONFIRM
 
 # Delete temporary resources
 gh workflow run cleanup-resources.yml \
-  -f environment=dev \
   -f action=delete-temporary-resources \
   -f confirm=CONFIRM
 ```
@@ -449,7 +384,7 @@ custom:
     "spark.custom.config": "value"
 ```
 
-### Environment Variables
+### Variables
 ```bash
 # .env file (never commit!)
 DATABRICKS_HOST=https://...

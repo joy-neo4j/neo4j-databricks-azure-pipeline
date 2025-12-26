@@ -252,8 +252,7 @@ gh secret list
 # Set secret
 gh secret set AZURE_CREDENTIALS < credentials.json
 
-# Verify environment access
-# Check environment name matches workflow
+# Verify workflow permissions
 ```
 
 #### Workflow Timeout
@@ -285,7 +284,6 @@ az resource list --query "[?type=='Microsoft.Compute/virtualMachines']"
 
 # Stop all clusters
 gh workflow run cleanup-resources.yml \
-  -f environment=dev \
   -f action=stop-clusters \
   -f confirm=CONFIRM
 
@@ -298,10 +296,10 @@ az consumption usage list --start-date 2024-01-01
 ### Check Infrastructure
 ```bash
 # List all resources
-az resource list --resource-group rg-neo4j-databricks-dev --output table
+az resource list --resource-group rg-neo4j-databricks --output table
 
 # Check Databricks workspace
-az databricks workspace show --name dbw-neo4j-dev --resource-group rg-neo4j-databricks-dev
+az databricks workspace show --name dbw-neo4j --resource-group rg-neo4j-databricks
 
 # Check storage
 az storage account show --name <storage-account-name>
@@ -328,7 +326,7 @@ databricks clusters get --cluster-id <cluster-id>
 gh run view <run-id> --log
 
 # Azure Activity Log
-az monitor activity-log list --resource-group rg-neo4j-databricks-dev
+az monitor activity-log list --resource-group rg-neo4j-databricks
 
 # Databricks job logs
 databricks runs get --run-id <run-id>
@@ -426,7 +424,7 @@ databricks --version
 gh run view <run-id> --log > workflow.log
 
 # Terraform logs
-terraform apply -var-file=dev.tfvars 2>&1 | tee terraform.log
+terraform apply 2>&1 | tee terraform.log
 ```
 
 ### Support Channels

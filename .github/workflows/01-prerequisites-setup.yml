@@ -15,6 +15,7 @@ jobs:
   validate-credentials:
     name: Validate Azure and Neo4j Credentials
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     environment: dev
     outputs:
       azure_valid: ${{ steps.azure-check.outputs.valid }}
@@ -192,6 +193,7 @@ jobs:
   validate-region-configuration:
     name: Validate UK South Region Configuration
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: validate-credentials
     steps:
       - name: Checkout code
@@ -216,6 +218,7 @@ jobs:
   summary:
     name: Prerequisites Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: [validate-credentials, validate-region-configuration]
     steps:
       - name: Prerequisites Summary

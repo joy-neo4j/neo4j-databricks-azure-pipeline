@@ -10,12 +10,12 @@
 - **Tests:** `pytest tests/unit/` and `pytest tests/integration/`. Config shape expectations in tests.
 
 ## Configuration Conventions
-- **Terraform:** Environment vars via `terraform/environments/*.tfvars.example`. Required vars defined in [terraform/variables.tf](terraform/variables.tf#L1); keep `environment` one of `dev|staging|prod` and align resource naming/tagging per [docs/CONFIGURATION.md](docs/CONFIGURATION.md#L1).
+- **Terraform:** Single-environment setup; avoid per-env variables in workflows and notebooks. Use consistent resource naming/tagging per [docs/CONFIGURATION.md](docs/CONFIGURATION.md#L1).
 - **Runtime configs:**
   - Data sources in [configs/data-sources.yml](configs/data-sources.yml) with `schema`, `validation` blocks.
   - Clusters per env in [configs/cluster-configurations.yml](configs/cluster-configurations.yml) (node types, workers, autotermination).
   - Monitoring alerts in [configs/monitoring-config.yml](configs/monitoring-config.yml).
-- **Databricks job params:** Each notebook task passes `base_parameters: { environment }`; preserve task ordering and dependencies.
+- **Databricks job params:** Notebooks run without `environment` parameters; preserve task ordering and dependencies.
 
 ## Secrets & Auth
 - **Required secrets:** `AZURE_CREDENTIALS`, `AZURE_SUBSCRIPTION_ID`, `AZURE_TENANT_ID`, `DATABRICKS_TOKEN`, `AURA_CLIENT_ID`, `AURA_CLIENT_SECRET`, `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD` (see [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md#L1)).
@@ -27,7 +27,7 @@
 - **Delta layers:**
   - Bronze: raw append-only tables.
   - Silver: cleaned/validated tables.
-  - Gold: graph-ready nodes/relationships (naming like `neo4j_pipeline_{env}.gold.nodes`).
+  - Gold: graph-ready nodes/relationships (naming like `neo4j_pipeline.gold.nodes`).
 - **Terraform changes:** Keep variable validations intact and update env `*.tfvars.example` when adding new inputs; do not hardcode per-env values in `main.tf`.
 - **Resource naming & tags:** Use conventions in [docs/CONFIGURATION.md](docs/CONFIGURATION.md#L100) for RG/Storage/KeyVault/Databricks; keep `ManagedBy=terraform`, `Environment`, `Project` tags.
 
@@ -45,7 +45,7 @@
 ## Gotchas
 - Ensure GitHub secrets are configured; missing credentials will fail Terraform apply.
 - Tests assume keys in YAML configs; breaking schema in `configs/*.yml` will fail tests.
-- Keep workflow names and environment labels (`dev|staging|prod`) consistent across Terraform, configs, jobs, and GH Actions inputs.
+- Use single-environment naming across Terraform, configs, jobs, and GH Actions inputs.
 - Unity Catalog must exist before running Terraform; Terraform will select first available or fail with clear error.
 
 ---

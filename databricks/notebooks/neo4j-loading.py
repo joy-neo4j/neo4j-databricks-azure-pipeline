@@ -25,15 +25,13 @@ from pyspark.sql import functions as F
 from neo4j import GraphDatabase
 import json
 import os
+from pyspark.sql import SparkSession
 
 # Get parameters
-dbutils.widgets.text("environment", "dev", "Environment")
 dbutils.widgets.text("batch_size", "1000", "Batch Size")
 
-environment = dbutils.widgets.get("environment")
 batch_size = int(dbutils.widgets.get("batch_size"))
 
-print(f"Environment: {environment}")
 print(f"Batch Size: {batch_size}")
 
 # COMMAND ----------
@@ -47,9 +45,9 @@ print(f"Batch Size: {batch_size}")
 # These should be configured via: databricks secrets put --scope pipeline-secrets --key <secret_name>
 
 try:
-    neo4j_uri = dbutils.secrets.get(scope="pipeline-secrets", key=f"neo4j-uri-{environment}")
-    neo4j_username = dbutils.secrets.get(scope="pipeline-secrets", key=f"neo4j-username-{environment}")
-    neo4j_password = dbutils.secrets.get(scope="pipeline-secrets", key=f"neo4j-password-{environment}")
+    neo4j_uri = dbutils.secrets.get(scope="pipeline-secrets", key="neo4j-uri")
+    neo4j_username = dbutils.secrets.get(scope="pipeline-secrets", key="neo4j-username")
+    neo4j_password = dbutils.secrets.get(scope="pipeline-secrets", key="neo4j-password")
     
     print(f"✅ Neo4j credentials loaded from secrets")
     print(f"URI: {neo4j_uri}")
@@ -102,9 +100,34 @@ if not test_neo4j_connection(neo4j_uri, neo4j_username, neo4j_password):
 
 # COMMAND ----------
 
+# Resolve Unity Catalog (prefer 'neo4j_pipeline', else first available)
+def _get_catalog_names():
+    try:
+        df = spark.sql("SHOW CATALOGS")
+        rows = df.collect()
+        names = []
+        for r in rows:
+            for attr in ("catalog_name", "catalog", "name"):
+                if hasattr(r, attr):
+                    names.append(getattr(r, attr))
+                    break
+        return names
+    except Exception:
+        return []
+
+catalog_names = _get_catalog_names()
+if not catalog_names:
+    raise Exception("No Unity Catalogs found. Please ensure Unity Catalog is enabled and a catalog exists.")
+
+preferred_catalog = "neo4j_pipeline"
+CATALOG = preferred_catalog if preferred_catalog in catalog_names else catalog_names[0]
+
+print(f"Using catalog: {CATALOG}")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 # Read nodes and relationships
-nodes_df = spark.table(f"neo4j_pipeline_{environment}.gold.nodes")
-relationships_df = spark.table(f"neo4j_pipeline_{environment}.gold.relationships")
+nodes_df = spark.table(f"{CATALOG}.gold.nodes")
+relationships_df = spark.table(f"{CATALOG}.gold.relationships")
 
 print(f"Nodes to load: {nodes_df.count()}")
 print(f"Relationships to load: {relationships_df.count()}")
@@ -355,14 +378,12 @@ verify_neo4j_load(neo4j_uri, neo4j_username, neo4j_password)
 summary = {
     'nodes_loaded': nodes_loaded,
     'relationships_loaded': relationships_loaded,
-    'environment': environment,
     'neo4j_uri': neo4j_uri
 }
 
 print("\n" + "="*60)
 print("LOADING SUMMARY")
 print("="*60)
-print(f"\nEnvironment: {environment}")
 print(f"Neo4j URI: {neo4j_uri}")
 print(f"Nodes Loaded: {summary['nodes_loaded']}")
 print(f"Relationships Loaded: {summary['relationships_loaded']}")

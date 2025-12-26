@@ -2,13 +2,13 @@
 
 ## Overview
 
-This guide provides comprehensive instructions for managing GitHub secrets in the Neo4j-Databricks pipeline deployment. The system supports both repository-level and environment-specific secrets with automatic fallback mechanisms.
+This guide provides comprehensive instructions for managing GitHub secrets in the Neo4j-Databricks pipeline deployment. The system uses repository-level secrets with a simple fallback to Azure Key Vault when configured.
 
 ## Table of Contents
 
 - [Secret Types](#secret-types)
 - [Required Secrets](#required-secrets)
-- [Environment-Specific Secrets](#environment-specific-secrets)
+- [Azure Key Vault Fallback](#azure-key-vault-fallback)
 - [Setup Instructions](#setup-instructions)
 - [Fallback Mechanism](#fallback-mechanism)
 - [Secret Validation](#secret-validation)
@@ -25,10 +25,7 @@ Shared across all environments and workflows. Suitable for:
 - Shared API keys
 
 ### Environment Secrets
-Specific to each environment (dev, staging, prod). Required for:
-- Production credentials
-- Environment-specific configurations
-- Sensitive production keys
+Not required. The pipeline operates in a single environment. Use repository secrets for all deployments.
 
 ## Required Secrets
 
@@ -139,32 +136,8 @@ az account show --query tenantId -o tsv
 - Created at the same time as Client ID
 - **Important:** Save immediately, cannot be retrieved later
 
-## Environment-Specific Secrets
-
-For production deployments, use environment-specific secrets that override repository secrets:
-
-### Naming Convention
-`{ENVIRONMENT}_{SECRET_NAME}`
-
-Examples:
-- `PROD_AZURE_CREDENTIALS`
-- `PROD_DATABRICKS_TOKEN`
-- `STAGING_DATABRICKS_HOST`
-
-### Configuration
-
-1. **Create GitHub Environment:**
-   - Go to: Settings → Environments
-   - Create environment: `prod`
-   - Add protection rules:
-     - Required reviewers: 2
-     - Deployment branches: `main` only
-
-2. **Add Environment Secrets:**
-   - Select environment: `prod`
-   - Click "Add Secret"
-   - Enter secret name (without environment prefix)
-   - Enter value
+## Azure Key Vault Fallback
+Optionally configure secrets in Azure Key Vault and reference them from workflows when needed.
 
 ## Setup Instructions
 
@@ -227,16 +200,15 @@ Examples:
 The pipeline implements an intelligent fallback strategy:
 
 ### Priority Order
-1. **Environment-Specific Secret:** `PROD_AZURE_CREDENTIALS`
-2. **Repository Secret:** `AZURE_CREDENTIALS`
-3. **Azure Key Vault:** `keyvault://prod/azure-credentials`
-4. **Error:** Secret not found
+1. **Repository Secret:** `AZURE_CREDENTIALS`
+2. **Azure Key Vault:** `keyvault://azure-credentials`
+3. **Error:** Secret not found
 
 ### Implementation Example
 ```yaml
 # In GitHub Actions workflow
 env:
-  AZURE_CREDS: ${{ secrets[format('{0}_AZURE_CREDENTIALS', inputs.environment)] || secrets.AZURE_CREDENTIALS }}
+   AZURE_CREDS: ${{ secrets.AZURE_CREDENTIALS }}
 ```
 
 ### Behavior
@@ -313,11 +285,10 @@ The monitoring configuration includes alerts for secrets expiring within 14 days
 
 ### Security
 1. **Never commit secrets to code**
-2. **Use environment-specific secrets for production**
-3. **Enable secret scanning in repository settings**
-4. **Rotate secrets regularly**
-5. **Use minimal required permissions**
-6. **Audit secret access logs**
+2. **Enable secret scanning in repository settings**
+3. **Rotate secrets regularly**
+4. **Use minimal required permissions**
+5. **Audit secret access logs**
 
 ### Organization
 1. **Use consistent naming conventions**
@@ -328,10 +299,9 @@ The monitoring configuration includes alerts for secrets expiring within 14 days
 
 ### Access Control
 1. **Limit secret access to necessary personnel**
-2. **Use environment protection rules**
-3. **Require approvals for production**
-4. **Enable audit logging**
-5. **Review access regularly**
+2. **Require approvals on protected branches**
+3. **Enable audit logging**
+4. **Review access regularly**
 
 ## Troubleshooting
 
@@ -343,7 +313,7 @@ Error: Required secret AZURE_CREDENTIALS not found
 **Solutions:**
 1. Verify secret name (case-sensitive)
 2. Check secret is in correct scope (repository vs environment)
-3. Validate workflow has access to environment
+3. Validate workflow permissions
 4. Check typos in secret reference
 
 ### Invalid Secret Format

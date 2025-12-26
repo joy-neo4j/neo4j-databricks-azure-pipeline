@@ -11,13 +11,16 @@
 # MAGIC 4. Graph Ready: Neo4j formatted data
 # MAGIC 
 # MAGIC **Parameters:**
-# MAGIC - `environment`: Target environment (dev/staging/prod)
-# MAGIC - `catalog`: Unity Catalog name
+# MAGIC - `catalog`: Unity Catalog name (single environment)
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC ## Setup and Configuration
+
+# COMMAND ----------
+
+# MAGIC %pip install pyyaml
 
 # COMMAND ----------
 
@@ -27,15 +30,19 @@ from pyspark.sql.window import Window
 from datetime import datetime
 import yaml
 
-# Get parameters
-dbutils.widgets.text("environment", "dev", "Environment")
-dbutils.widgets.text("catalog", "ecommerce_dev", "Unity Catalog")
+# Resolve Unity Catalog (prefer 'neo4j_pipeline', else first available)
+def _get_catalog_names():
+    try:
+        df = spark.sql("SHOW CATALOGS")
+        return [row.catalog for row in df.collect()]
+    except Exception:
+        return []
 
-environment = dbutils.widgets.get("environment")
-catalog = dbutils.widgets.get("catalog")
-
-print(f"Environment: {environment}")
-print(f"Catalog: {catalog}")
+preferred_catalog = "neo4j_pipeline"
+catalogs = _get_catalog_names()
+catalog = preferred_catalog if preferred_catalog in catalogs else (catalogs[0] if catalogs else preferred_catalog)
+print(f"Catalog resolved to: {catalog}")
+spark.sql(f"USE CATALOG {catalog}")
 
 # COMMAND ----------
 
@@ -393,7 +400,6 @@ print(f"✅ Created {reviewed_rels.count()} REVIEWED relationships")
 print("=" * 60)
 print("E-commerce ETL Pipeline Complete")
 print("=" * 60)
-print(f"\nEnvironment: {environment}")
 print(f"Catalog: {catalog}")
 print("\nData Processed:")
 print(f"  Customers: {customers_silver.count()}")

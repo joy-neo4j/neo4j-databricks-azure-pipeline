@@ -22,16 +22,15 @@
 
 # COMMAND ----------
 
+# MAGIC %pip install pyyaml
+
+# COMMAND ----------
+
 import yaml
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
 from datetime import datetime
-
-# Get parameters
-dbutils.widgets.text("environment", "dev", "Environment")
-environment = dbutils.widgets.get("environment")
-
-print(f"Environment: {environment}")
+from pyspark.sql import SparkSession
 
 # COMMAND ----------
 
@@ -47,6 +46,31 @@ sources = config['sources']
 dq_config = config.get('data_quality', {})
 
 print(f"Validating {len(sources)} source(s)")
+
+# Resolve Unity Catalog (prefer 'neo4j_pipeline', else first available)
+def _get_catalog_names():
+    try:
+        df = spark.sql("SHOW CATALOGS")
+        rows = df.collect()
+        names = []
+        for r in rows:
+            for attr in ("catalog_name", "catalog", "name"):
+                if hasattr(r, attr):
+                    names.append(getattr(r, attr))
+                    break
+        return names
+    except Exception:
+        return []
+
+catalog_names = _get_catalog_names()
+if not catalog_names:
+    raise Exception("No Unity Catalogs found. Please ensure Unity Catalog is enabled and a catalog exists.")
+
+preferred_catalog = "neo4j_pipeline"
+CATALOG = preferred_catalog if preferred_catalog in catalog_names else catalog_names[0]
+
+print(f"Using catalog: {CATALOG}")
+spark.sql(f"USE CATALOG {CATALOG}")
 
 # COMMAND ----------
 
@@ -105,14 +129,14 @@ def validate_unique_columns(df, source_name, unique_columns):
     
     return issues
 
-def validate_foreign_keys(df, source_name, fk_config, environment):
+def validate_foreign_keys(df, source_name, fk_config):
     """Validate foreign key relationships."""
     issues = []
     
     for fk in fk_config:
         fk_column = fk['column']
         ref_table, ref_column = fk['references'].split('.')
-        ref_table_full = f"neo4j_pipeline_{environment}.bronze.{ref_table}"
+        ref_table_full = f"{CATALOG}.bronze.{ref_table}"
         
         try:
             ref_df = spark.table(ref_table_full)
@@ -166,7 +190,7 @@ validation_results = []
 
 for source in sources:
     source_name = source['name']
-    table_name = f"neo4j_pipeline_{environment}.bronze.{source_name}"
+    table_name = f"{CATALOG}.bronze.{source_name}"
     
     print(f"\n{'='*60}")
     print(f"Validating: {source_name}")
@@ -195,7 +219,7 @@ for source in sources:
         # Validate foreign keys
         if 'foreign_keys' in validation:
             issues.extend(validate_foreign_keys(
-                df, source_name, validation['foreign_keys'], environment
+                df, source_name, validation['foreign_keys']
             ))
         
         all_issues.extend(issues)
@@ -250,7 +274,7 @@ for result in validation_results:
         
         try:
             # Read from Bronze
-            bronze_table = f"neo4j_pipeline_{environment}.bronze.{source_name}"
+            bronze_table = f"{CATALOG}.bronze.{source_name}"
             df = spark.table(bronze_table)
             
             # Add validation metadata
@@ -260,7 +284,7 @@ for result in validation_results:
             
             # Write to Silver
             silver_path = f"{config['storage']['silver_path']}/{source_name}"
-            silver_table = f"neo4j_pipeline_{environment}.silver.{source_name}"
+            silver_table = f"{CATALOG}.silver.{source_name}"
             
             df.write \
                 .format("delta") \

@@ -20,23 +20,28 @@
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
 from pyspark.sql.types import *
-from neo4j import GraphDatabase
 import json
 
-# Get parameters
-dbutils.widgets.text("environment", "dev", "Environment")
-dbutils.widgets.text("catalog", "ecommerce_dev", "Unity Catalog")
+# Get parameters (single environment)
 dbutils.widgets.text("customer_id", "", "Customer ID (optional)")
 dbutils.widgets.text("top_n", "10", "Number of recommendations")
-
-environment = dbutils.widgets.get("environment")
-catalog = dbutils.widgets.get("catalog")
 customer_id_filter = dbutils.widgets.get("customer_id")
 top_n = int(dbutils.widgets.get("top_n"))
 
-print(f"Environment: {environment}")
-print(f"Catalog: {catalog}")
+# Resolve Unity Catalog (prefer 'neo4j_pipeline', else first available)
+def _get_catalog_names():
+    try:
+        df = spark.sql("SHOW CATALOGS")
+        return [row.catalog for row in df.collect()]
+    except Exception:
+        return []
+
+preferred_catalog = "neo4j_pipeline"
+catalogs = _get_catalog_names()
+catalog = preferred_catalog if preferred_catalog in catalogs else (catalogs[0] if catalogs else preferred_catalog)
+print(f"Catalog resolved to: {catalog}")
 print(f"Top N Recommendations: {top_n}")
+spark.sql(f"USE CATALOG {catalog}")
 
 # COMMAND ----------
 
@@ -115,7 +120,6 @@ print(f"✅ Generated collaborative filtering recommendations")
 # MAGIC ## Category-Based Recommendations
 
 # COMMAND ----------
-
 # Find customer's favorite categories
 customer_category_prefs = spark.table(f"{catalog}.silver.orders").alias("o") \
     .join(
@@ -362,7 +366,6 @@ coverage_pct = (customers_with_recs / total_customers) * 100
 print("=" * 60)
 print("Product Recommendation Engine Summary")
 print("=" * 60)
-print(f"\nEnvironment: {environment}")
 print(f"Catalog: {catalog}")
 print("\nRecommendation Coverage:")
 print(f"  Total Customers: {total_customers}")

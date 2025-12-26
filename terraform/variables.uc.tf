@@ -2,7 +2,7 @@
 variable "catalog_name_override" {
   description = "Optional: Override catalog name (if empty, will use first available catalog)"
   type        = string
-  default     = ""
+  default     = "neo4j_pipeline"
 }
 
 # Neo4j Connection Variables for Databricks Secrets

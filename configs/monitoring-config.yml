@@ -22,7 +22,7 @@ application_insights:
 # Azure Monitor
 azure_monitor:
   enabled: true
-  log_analytics_workspace: log-neo4j-{environment}
+  log_analytics_workspace: log-neo4j
   retention_days:
     dev: 30
     staging: 60

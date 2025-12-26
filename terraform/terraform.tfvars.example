@@ -1,11 +1,11 @@
-# Copy to terraform.tfvars and modify for your environment
-resource_group_name     = "rg-neo4j-dbx-dev"
+# Copy to terraform.tfvars and modify for single environment
+resource_group_name     = "rg-neo4j-dbx"
 location                = "uksouth"
 
 storage_account_name    = null
 storage_container_name  = "pipeline-data"
 
-databricks_workspace_name = "dbw-neo4j-dev"
+databricks_workspace_name = "dbw-neo4j"
 databricks_sku            = "premium"
 
 create_databricks_workspace = false
@@ -14,6 +14,5 @@ neo4j_region            = "uksouth"
 neo4j_tier              = "professional"
 neo4j_memory            = "8GB"
 
-catalog_name            = "ecommerce_dev"
-
-environment             = "dev"
+# Unity Catalog override (defaults to neo4j_pipeline if omitted)
+catalog_name_override   = "neo4j_pipeline"

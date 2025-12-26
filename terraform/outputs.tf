@@ -70,7 +70,7 @@ output "neo4j_password" {
 output "deployment_info" {
   description = "Summary of deployment information"
   value = {
-    environment          = var.environment
+    environment          = "single"
     resource_group       = azurerm_resource_group.main.name
     location             = azurerm_resource_group.main.location
     databricks_workspace = var.create_databricks_workspace ? module.azure_databricks[0].workspace_name : "existing-workspace"

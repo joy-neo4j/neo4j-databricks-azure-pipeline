@@ -21,20 +21,25 @@
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
 from pyspark.sql.types import *
-from neo4j import GraphDatabase
 import json
 
-# Get parameters
-dbutils.widgets.text("environment", "dev", "Environment")
-dbutils.widgets.text("catalog", "ecommerce_dev", "Unity Catalog")
+# Get parameters (single environment)
 dbutils.widgets.text("customer_id", "", "Customer ID (optional)")
-
-environment = dbutils.widgets.get("environment")
-catalog = dbutils.widgets.get("catalog")
 customer_id_filter = dbutils.widgets.get("customer_id")
 
-print(f"Environment: {environment}")
-print(f"Catalog: {catalog}")
+# Resolve Unity Catalog (prefer 'neo4j_pipeline', else first available)
+def _get_catalog_names():
+    try:
+        df = spark.sql("SHOW CATALOGS")
+        return [row.catalog for row in df.collect()]
+    except Exception:
+        return []
+
+preferred_catalog = "neo4j_pipeline"
+catalogs = _get_catalog_names()
+catalog = preferred_catalog if preferred_catalog in catalogs else (catalogs[0] if catalogs else preferred_catalog)
+print(f"Catalog resolved to: {catalog}")
+spark.sql(f"USE CATALOG {catalog}")
 
 # COMMAND ----------
 
@@ -333,8 +338,7 @@ print(f"✅ Prepared {neo4j_customers.count()} enriched customer nodes for Neo4j
 print("=" * 60)
 print("Customer 360 Analytics Complete")
 print("=" * 60)
-print(f"\nEnvironment: {environment}")
-print(f"Catalog: {catalog}")
+print(f"\nCatalog: {catalog}")
 print("\nCustomer Insights:")
 print(f"  Total Customers: {customer_360.count()}")
 print(f"  Active Customers (< 90 days): {customer_360.filter(F.col('days_since_last_order') < 90).count()}")

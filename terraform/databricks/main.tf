@@ -4,7 +4,7 @@ provider "databricks" {
 }
 
 resource "databricks_cluster" "neo4j_ecommerce" {
-  cluster_name            = "neo4j-ecommerce-dev"
+  cluster_name            = "neo4j-ecommerce"
   spark_version           = "13.3.x-scala2.12"
   node_type_id            = "Standard_DS3_v2"
   autotermination_minutes = 120
@@ -15,7 +15,7 @@ resource "databricks_cluster" "neo4j_ecommerce" {
     "spark.databricks.delta.preview.enabled" = "true"
   }
   custom_tags = {
-    Environment = "dev"
+    Environment = "single"
     Purpose     = "Neo4j-Integration"
   }
   library {

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solution that transforms relational data into graph format and loads it into Neo4j Aura. The architecture follows modern cloud best practices with multi-environment support, comprehensive monitoring, and automated deployment.
+The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solution that transforms relational data into graph format and loads it into Neo4j Aura. The architecture follows modern cloud best practices with single-environment operation, comprehensive monitoring, and automated deployment.
 
 ## High-Level Architecture
 
@@ -51,7 +51,7 @@ The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solu
 
 #### Resource Group
 - Logical container for all Azure resources
-- Environment-specific naming: `rg-neo4j-databricks-{env}`
+- Naming: `rg-neo4j-databricks`
 - Tagging for cost tracking and organization
 
 #### Storage Account
@@ -85,9 +85,9 @@ The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solu
 - Schema validation on read
 
 **Tables:**
-- `neo4j_pipeline_{env}.bronze.customers`
-- `neo4j_pipeline_{env}.bronze.products`
-- `neo4j_pipeline_{env}.bronze.orders`
+- `neo4j_pipeline.bronze.customers`
+- `neo4j_pipeline.bronze.products`
+- `neo4j_pipeline.bronze.orders`
 
 #### Silver Layer (Validated Data)
 **Purpose:** Store cleaned, validated, and conformed data
@@ -100,9 +100,9 @@ The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solu
 - Business rule validation
 
 **Tables:**
-- `neo4j_pipeline_{env}.silver.customers`
-- `neo4j_pipeline_{env}.silver.products`
-- `neo4j_pipeline_{env}.silver.orders`
+- `neo4j_pipeline.silver.customers`
+- `neo4j_pipeline.silver.products`
+- `neo4j_pipeline.silver.orders`
 
 #### Gold Layer (Graph-Ready Data)
 **Purpose:** Store business-level aggregates and graph structures
@@ -115,8 +115,8 @@ The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solu
 - Optimized for Neo4j ingestion
 
 **Tables:**
-- `neo4j_pipeline_{env}.gold.nodes`
-- `neo4j_pipeline_{env}.gold.relationships`
+- `neo4j_pipeline.gold.nodes`
+- `neo4j_pipeline.gold.relationships`
 
 ### 3. Graph Database Layer (Neo4j Aura)
 
@@ -198,10 +198,9 @@ CREATE INDEX order_date FOR (o:Order) ON (o.order_date);
 - Monitoring and alerting
 - **Duration:** Varies by data volume
 
-**5. Environment Management**
-- Promote between environments
-- Rollback capabilities
+**5. Maintenance**
 - Backup and restore
+- Rollback capabilities
 - **Duration:** 5-10 minutes
 
 **6. Resource Cleanup**
@@ -336,7 +335,7 @@ Each stage includes:
 - Structured JSON logging
 - Databricks job logs
 - Query-based analysis
-- Retention policies by environment
+- Retention policies
 
 ### Alerts
 - Job failures (critical)
@@ -381,29 +380,13 @@ Each stage includes:
 4. **Scheduled execution** during off-peak hours
 5. **Data lifecycle** policies (archival/deletion)
 
-### Cost Breakdown (Monthly Estimates)
-
-**Development Environment: $200-400**
-- Databricks: $150-250
-- Neo4j Aura: $50-100
-- Azure Storage: $10-50
-
-**Staging Environment: $400-600**
-- Databricks: $250-400
-- Neo4j Aura: $100-150
-- Azure Storage: $50-100
-
-**Production Environment: $800-1500**
-- Databricks: $500-1000
-- Neo4j Aura: $200-400
-- Azure Storage: $100-200
+### Cost Notes
+- Actual costs vary by data volume and runtime
 
 ## Deployment Strategy
 
-### Environment Progression
-```
-Development → Staging → Production
-```
+### Deployment Notes
+- Single environment deployment; use branch protections for safety
 
 ### Approval Gates
 - **Development:** No approval required

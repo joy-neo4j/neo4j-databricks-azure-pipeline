@@ -3,7 +3,7 @@ resource "azurerm_resource_group" "main" {
   name     = var.resource_group_name
   location = var.location
   tags = merge(var.tags, {
-    Environment = var.environment
+    Environment = "single"
     ManagedBy   = "Terraform"
     Project     = "Neo4j-Databricks-Pipeline"
   })
@@ -18,11 +18,11 @@ resource "random_string" "suffix" {
 
 # Storage Account for Data
 resource "azurerm_storage_account" "main" {
-  name                     = coalesce(var.storage_account_name, "stneo4j${var.environment}${random_string.suffix.result}")
+  name                     = coalesce(var.storage_account_name, "stneo4j${random_string.suffix.result}")
   resource_group_name      = azurerm_resource_group.main.name
   location                 = azurerm_resource_group.main.location
   account_tier             = "Standard"
-  account_replication_type = var.environment == "prod" ? "GRS" : "LRS"
+  account_replication_type = "LRS"
   is_hns_enabled           = true
 
   tags = azurerm_resource_group.main.tags
@@ -40,11 +40,9 @@ data "azurerm_client_config" "current" {}
 module "azure_databricks" {
   count  = var.create_databricks_workspace ? 1 : 0
   source = "./modules/azure-databricks"
-
-  environment         = var.environment
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
-  workspace_name      = coalesce(var.databricks_workspace_name, "dbw-neo4j-${var.environment}-${random_string.suffix.result}")
+  workspace_name      = coalesce(var.databricks_workspace_name, "dbw-neo4j-${random_string.suffix.result}")
   sku                 = var.databricks_sku
 
   storage_account_name   = azurerm_storage_account.main.name
@@ -69,7 +67,7 @@ resource "random_password" "neo4j" {
 resource "null_resource" "neo4j_aura_instance" {
   provisioner "local-exec" {
     command = <<-EOT
-      echo "Creating Neo4j Aura instance: neo4j-ecommerce-${var.environment}"
+      echo "Creating Neo4j Aura instance: neo4j-ecommerce"
       echo "Tier: ${var.neo4j_tier}, Memory: ${var.neo4j_memory}, Region: ${var.neo4j_region}"
       # In production, this would call:
       # curl -X POST https://api.neo4j.io/v1/instances \
@@ -85,7 +83,7 @@ resource "null_resource" "neo4j_aura_instance" {
   }
 
   triggers = {
-    instance_name = "neo4j-ecommerce-${var.environment}"
+    instance_name = "neo4j-ecommerce"
     tier          = var.neo4j_tier
     memory        = var.neo4j_memory
     region        = var.neo4j_region
@@ -94,7 +92,7 @@ resource "null_resource" "neo4j_aura_instance" {
 
 # Store instance metadata (placeholders until actual API integration)
 locals {
-  neo4j_instance_id    = "neo4j-${var.environment}-${substr(md5("neo4j-ecommerce-${var.environment}"), 0, 8)}"
+  neo4j_instance_id    = "neo4j-${substr(md5("neo4j-ecommerce"), 0, 8)}"
   neo4j_connection_uri = "neo4j+s://${local.neo4j_instance_id}.databases.neo4j.io"
   neo4j_username       = "neo4j"
   neo4j_password       = random_password.neo4j.result
@@ -112,7 +110,7 @@ locals {
 # Databricks Cluster
 ############################################
 resource "databricks_cluster" "neo4j_ecommerce" {
-  cluster_name            = "neo4j-ecommerce-${var.environment}"
+  cluster_name            = "neo4j-ecommerce"
   spark_version           = "13.3.x-scala2.12"
   node_type_id            = "Standard_DS3_v2"
   autotermination_minutes = 120
@@ -125,7 +123,7 @@ resource "databricks_cluster" "neo4j_ecommerce" {
   }
 
   custom_tags = {
-    Environment = var.environment
+    Environment = "single"
     Purpose     = "Neo4j-Integration"
   }
 
@@ -183,13 +181,12 @@ resource "databricks_workspace_file" "product_recommendations" {
 # Jobs: ETL, Validation, Graph Transform, Neo4j Loading, Analytics
 ############################################
 resource "databricks_job" "ecommerce_pipeline" {
-  name = "Neo4j ETL Pipeline - ${var.environment}"
+  name = "Neo4j ETL Pipeline"
 
   task {
     task_key = "csv_ingestion"
     notebook_task {
       notebook_path   = databricks_workspace_file.csv_ingestion.path
-      base_parameters = { environment = var.environment }
     }
     existing_cluster_id = databricks_cluster.neo4j_ecommerce.id
   }
@@ -201,7 +198,6 @@ resource "databricks_job" "ecommerce_pipeline" {
     }
     notebook_task {
       notebook_path   = databricks_workspace_file.data_validation.path
-      base_parameters = { environment = var.environment }
     }
     existing_cluster_id = databricks_cluster.neo4j_ecommerce.id
   }
@@ -213,7 +209,6 @@ resource "databricks_job" "ecommerce_pipeline" {
     }
     notebook_task {
       notebook_path   = databricks_workspace_file.graph_transformation.path
-      base_parameters = { environment = var.environment }
     }
     existing_cluster_id = databricks_cluster.neo4j_ecommerce.id
   }
@@ -225,7 +220,6 @@ resource "databricks_job" "ecommerce_pipeline" {
     }
     notebook_task {
       notebook_path   = databricks_workspace_file.neo4j_loading.path
-      base_parameters = { environment = var.environment }
     }
     existing_cluster_id = databricks_cluster.neo4j_ecommerce.id
   }
@@ -237,10 +231,6 @@ resource "databricks_job" "ecommerce_pipeline" {
     }
     notebook_task {
       notebook_path = databricks_workspace_file.customer_360_analytics.path
-      base_parameters = {
-        environment = var.environment
-        catalog     = local.resolved_catalog
-      }
     }
     existing_cluster_id = databricks_cluster.neo4j_ecommerce.id
   }
@@ -252,10 +242,6 @@ resource "databricks_job" "ecommerce_pipeline" {
     }
     notebook_task {
       notebook_path = databricks_workspace_file.product_recommendations.path
-      base_parameters = {
-        environment = var.environment
-        catalog     = local.resolved_catalog
-      }
     }
     existing_cluster_id = databricks_cluster.neo4j_ecommerce.id
   }

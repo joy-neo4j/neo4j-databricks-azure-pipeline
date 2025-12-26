@@ -18,16 +18,15 @@
 
 # COMMAND ----------
 
+# MAGIC %pip install pyyaml
+
+# COMMAND ----------
+
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
 from pyspark.sql.window import Window
 import yaml
-
-# Get parameters
-dbutils.widgets.text("environment", "dev", "Environment")
-environment = dbutils.widgets.get("environment")
-
-print(f"Environment: {environment}")
+from pyspark.sql import SparkSession
 
 # COMMAND ----------
 
@@ -36,10 +35,35 @@ print(f"Environment: {environment}")
 
 # COMMAND ----------
 
+# Resolve Unity Catalog (prefer 'neo4j_pipeline', else first available)
+def _get_catalog_names():
+    try:
+        df = spark.sql("SHOW CATALOGS")
+        rows = df.collect()
+        names = []
+        for r in rows:
+            for attr in ("catalog_name", "catalog", "name"):
+                if hasattr(r, attr):
+                    names.append(getattr(r, attr))
+                    break
+        return names
+    except Exception:
+        return []
+
+catalog_names = _get_catalog_names()
+if not catalog_names:
+    raise Exception("No Unity Catalogs found. Please ensure Unity Catalog is enabled and a catalog exists.")
+
+preferred_catalog = "neo4j_pipeline"
+CATALOG = preferred_catalog if preferred_catalog in catalog_names else catalog_names[0]
+
+print(f"Using catalog: {CATALOG}")
+spark.sql(f"USE CATALOG {CATALOG}")
+
 # Read Silver tables
-customers_df = spark.table(f"neo4j_pipeline_{environment}.silver.customers")
-products_df = spark.table(f"neo4j_pipeline_{environment}.silver.products")
-orders_df = spark.table(f"neo4j_pipeline_{environment}.silver.orders")
+customers_df = spark.table(f"{CATALOG}.silver.customers")
+products_df = spark.table(f"{CATALOG}.silver.products")
+orders_df = spark.table(f"{CATALOG}.silver.orders")
 
 print(f"Customers: {customers_df.count()}")
 print(f"Products: {products_df.count()}")
@@ -212,7 +236,7 @@ gold_path = config['storage']['gold_path']
 
 # Write nodes
 nodes_path = f"{gold_path}/nodes"
-nodes_table = f"neo4j_pipeline_{environment}.gold.nodes"
+nodes_table = f"{CATALOG}.gold.nodes"
 
 all_nodes_enriched.write \
     .format("delta") \
@@ -225,7 +249,7 @@ print(f"✅ Nodes written to: {nodes_table}")
 
 # Write relationships
 relationships_path = f"{gold_path}/relationships"
-relationships_table = f"neo4j_pipeline_{environment}.gold.relationships"
+relationships_table = f"{CATALOG}.gold.relationships"
 
 all_relationships.write \
     .format("delta") \
