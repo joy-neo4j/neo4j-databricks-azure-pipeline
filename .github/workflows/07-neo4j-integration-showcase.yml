@@ -124,12 +124,28 @@ jobs:
             print(f"Running ingestion job: {job.settings.name}")
             run = w.jobs.run_now(job_id=job.job_id)
             print(f"Job run started: {run.run_id}")
+            start_ts = time.time(); max_wait_seconds = 1500  # Safety timeout (25m); GH job has 30m cap
             while True:
               run_status = w.jobs.get_run(run.run_id)
-              state = run_status.state.life_cycle_state
-              print(f"Status: {state}")
-              if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
-                result_state = getattr(run_status.state, "result_state", None)
+              state = getattr(run_status.state, "life_cycle_state", None)
+              state_msg = getattr(run_status.state, "state_message", "")
+              print(f"Status: {state} | {state_msg}")
+              # Prefer task-level state/result for faster detection
+              task_result_state = None
+              task_life_cycle_state = None
+              try:
+                for t in getattr(run_status, "tasks", []) or []:
+                  # Single-task job: look at the only task
+                  task_life_cycle_state = getattr(getattr(t, "state", None), "life_cycle_state", None)
+                  task_result_state = getattr(getattr(t, "state", None), "result_state", None)
+                  break
+              except Exception:
+                pass
+
+              result_state = getattr(run_status.state, "result_state", None)
+              # Treat any explicit result state as terminal
+              terminal_results = ["SUCCESS", "FAILED", "TIMEDOUT", "CANCELED"]
+              if (task_result_state in terminal_results) or (result_state in terminal_results):
                 details = ""
                 try:
                   out = w.jobs.get_run_output(run.run_id)
@@ -139,15 +155,45 @@ jobs:
                     details = out.error
                 except Exception as e:
                   details = f"No run output available: {e}"
-                if result_state == "SUCCESS":
-                  write_summary(run.run_id, state, result_state, details)
+                effective_result = task_result_state or result_state or "FAILED"
+                if effective_result == "SUCCESS":
+                  write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
+                  print("✅ Ingestion completed successfully (result_state)")
+                  break
+                else:
+                  write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
+                  print(f"❌ Ingestion failed (result_state): {effective_result}")
+                  raise SystemExit(1)
+              # Global terminal life-cycle states
+              if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
+                details = ""
+                try:
+                  out = w.jobs.get_run_output(run.run_id)
+                  if getattr(out, "notebook_output", None) and getattr(out.notebook_output, "result", None):
+                    details = out.notebook_output.result
+                  elif getattr(out, "error", None):
+                    details = out.error
+                except Exception as e:
+                  details = f"No run output available: {e}"
+                effective_result = result_state or task_result_state or "FAILED"
+                if effective_result == "SUCCESS":
+                  write_summary(run.run_id, state, effective_result, details)
                   print("✅ Ingestion completed successfully")
                   break
                 else:
-                  write_summary(run.run_id, state, result_state or "FAILED", details)
-                  print(f"❌ Ingestion failed: {result_state}")
+                  write_summary(run.run_id, state, effective_result, details)
+                  print(f"❌ Ingestion failed: {effective_result}")
                   raise SystemExit(1)
-              time.sleep(30)
+              # If the task itself has finished but cluster is still terminating, allow early exit on success
+              if (task_life_cycle_state in ["TERMINATED", "SKIPPED"]) and (task_result_state == "SUCCESS"):
+                write_summary(run.run_id, task_life_cycle_state, task_result_state, "Task completed; cluster still terminating")
+                print("✅ Ingestion task completed; exiting early before cluster termination")
+                break
+
+              time.sleep(10)
+              if (time.time() - start_ts) > max_wait_seconds:
+                print("❌ Ingestion monitoring timed out")
+                raise SystemExit(1)
 
           job = ensure_job()
           run_job(job)
@@ -250,12 +296,28 @@ jobs:
             print(f"Running Neo4j loading job: {job.settings.name}")
             run = w.jobs.run_now(job_id=job.job_id)
             print(f"Job run started: {run.run_id}")
+            start_ts = time.time(); max_wait_seconds = 1800
             while True:
               run_status = w.jobs.get_run(run.run_id)
-              state = run_status.state.life_cycle_state
-              print(f"Status: {state}")
-              if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
-                result_state = getattr(run_status.state, "result_state", None)
+              state = getattr(run_status.state, "life_cycle_state", None)
+              state_msg = getattr(run_status.state, "state_message", "")
+              print(f"Status: {state} | {state_msg}")
+
+              # Task-level inspection for multi-task job
+              task_result_state = None
+              task_life_cycle_state = None
+              try:
+                for t in getattr(run_status, "tasks", []) or []:
+                  # Prefer the last task (neo4j_loading) for final result
+                  task_life_cycle_state = getattr(getattr(t, "state", None), "life_cycle_state", None)
+                  task_result_state = getattr(getattr(t, "state", None), "result_state", None)
+                # fallthrough: task_result_state/task_life_cycle_state set from last iter
+              except Exception:
+                pass
+
+              result_state = getattr(run_status.state, "result_state", None)
+              terminal_results = ["SUCCESS", "FAILED", "TIMEDOUT", "CANCELED"]
+              if (task_result_state in terminal_results) or (result_state in terminal_results):
                 details = ""
                 try:
                   out = w.jobs.get_run_output(run.run_id)
@@ -265,15 +327,46 @@ jobs:
                     details = out.error
                 except Exception as e:
                   details = f"No run output available: {e}"
-                if result_state == "SUCCESS":
-                  write_summary(run.run_id, state, result_state, details)
+                effective_result = task_result_state or result_state or "FAILED"
+                if effective_result == "SUCCESS":
+                  write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
                   print("✅ Neo4j loading completed successfully")
                   break
                 else:
-                  write_summary(run.run_id, state, result_state or "FAILED", details)
-                  print(f"❌ Neo4j loading failed: {result_state}")
+                  write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
+                  print(f"❌ Neo4j loading failed: {effective_result}")
                   raise SystemExit(1)
-              time.sleep(30)
+
+              if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
+                details = ""
+                try:
+                  out = w.jobs.get_run_output(run.run_id)
+                  if getattr(out, "notebook_output", None) and getattr(out.notebook_output, "result", None):
+                    details = out.notebook_output.result
+                  elif getattr(out, "error", None):
+                    details = out.error
+                except Exception as e:
+                  details = f"No run output available: {e}"
+                effective_result = result_state or task_result_state or "FAILED"
+                if effective_result == "SUCCESS":
+                  write_summary(run.run_id, state, effective_result, details)
+                  print("✅ Neo4j loading completed successfully")
+                  break
+                else:
+                  write_summary(run.run_id, state, effective_result, details)
+                  print(f"❌ Neo4j loading failed: {effective_result}")
+                  raise SystemExit(1)
+
+              # Early exit when last task finished successfully
+              if (task_life_cycle_state in ["TERMINATED", "SKIPPED"]) and (task_result_state == "SUCCESS"):
+                write_summary(run.run_id, task_life_cycle_state, task_result_state, "Tasks completed; cluster still terminating")
+                print("✅ Loading tasks completed; exiting early before cluster termination")
+                break
+
+              time.sleep(10)
+              if (time.time() - start_ts) > max_wait_seconds:
+                print("❌ Loading monitoring timed out")
+                raise SystemExit(1)
 
           job = ensure_job()
           run_job(job)
