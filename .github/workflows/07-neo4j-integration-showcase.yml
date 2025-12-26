@@ -127,7 +127,17 @@ jobs:
             start_ts = time.time(); max_wait_seconds = 1500  # Safety timeout (25m); GH job has 30m cap
             while True:
               run_status = w.jobs.get_run(run.run_id)
-              state = getattr(run_status.state, "life_cycle_state", None)
+              def _norm(x):
+                if x is None:
+                  return None
+                try:
+                  v = getattr(x, "value", None)
+                  s = str(v if v is not None else x)
+                except Exception:
+                  s = str(x)
+                return s.split(".")[-1].upper()
+
+              state = _norm(getattr(run_status.state, "life_cycle_state", None))
               state_msg = getattr(run_status.state, "state_message", "")
               print(f"Status: {state} | {state_msg}")
               # Prefer task-level state/result for faster detection
@@ -142,7 +152,7 @@ jobs:
               except Exception:
                 pass
 
-              result_state = getattr(run_status.state, "result_state", None)
+              result_state = _norm(getattr(run_status.state, "result_state", None))
               # Treat any explicit result state as terminal
               terminal_results = ["SUCCESS", "FAILED", "TIMEDOUT", "CANCELED"]
               if (task_result_state in terminal_results) or (result_state in terminal_results):
@@ -156,6 +166,9 @@ jobs:
                 except Exception as e:
                   details = f"No run output available: {e}"
                 effective_result = task_result_state or result_state or "FAILED"
+                # Derive success from notebook result text if result_state is missing
+                if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
+                  effective_result = "SUCCESS"
                 if effective_result == "SUCCESS":
                   write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
                   print("✅ Ingestion completed successfully (result_state)")
@@ -176,6 +189,9 @@ jobs:
                 except Exception as e:
                   details = f"No run output available: {e}"
                 effective_result = result_state or task_result_state or "FAILED"
+                # Derive success from notebook result text if result_state is missing
+                if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
+                  effective_result = "SUCCESS"
                 if effective_result == "SUCCESS":
                   write_summary(run.run_id, state, effective_result, details)
                   print("✅ Ingestion completed successfully")
@@ -299,7 +315,17 @@ jobs:
             start_ts = time.time(); max_wait_seconds = 1800
             while True:
               run_status = w.jobs.get_run(run.run_id)
-              state = getattr(run_status.state, "life_cycle_state", None)
+              def _norm(x):
+                if x is None:
+                  return None
+                try:
+                  v = getattr(x, "value", None)
+                  s = str(v if v is not None else x)
+                except Exception:
+                  s = str(x)
+                return s.split(".")[-1].upper()
+
+              state = _norm(getattr(run_status.state, "life_cycle_state", None))
               state_msg = getattr(run_status.state, "state_message", "")
               print(f"Status: {state} | {state_msg}")
 
@@ -309,13 +335,13 @@ jobs:
               try:
                 for t in getattr(run_status, "tasks", []) or []:
                   # Prefer the last task (neo4j_loading) for final result
-                  task_life_cycle_state = getattr(getattr(t, "state", None), "life_cycle_state", None)
-                  task_result_state = getattr(getattr(t, "state", None), "result_state", None)
+                  task_life_cycle_state = _norm(getattr(getattr(t, "state", None), "life_cycle_state", None))
+                  task_result_state = _norm(getattr(getattr(t, "state", None), "result_state", None))
                 # fallthrough: task_result_state/task_life_cycle_state set from last iter
               except Exception:
                 pass
 
-              result_state = getattr(run_status.state, "result_state", None)
+              result_state = _norm(getattr(run_status.state, "result_state", None))
               terminal_results = ["SUCCESS", "FAILED", "TIMEDOUT", "CANCELED"]
               if (task_result_state in terminal_results) or (result_state in terminal_results):
                 details = ""
@@ -328,6 +354,9 @@ jobs:
                 except Exception as e:
                   details = f"No run output available: {e}"
                 effective_result = task_result_state or result_state or "FAILED"
+                # Derive success from notebook result text if result_state is missing
+                if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
+                  effective_result = "SUCCESS"
                 if effective_result == "SUCCESS":
                   write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
                   print("✅ Neo4j loading completed successfully")
@@ -348,6 +377,9 @@ jobs:
                 except Exception as e:
                   details = f"No run output available: {e}"
                 effective_result = result_state or task_result_state or "FAILED"
+                # Derive success from notebook result text if result_state is missing
+                if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
+                  effective_result = "SUCCESS"
                 if effective_result == "SUCCESS":
                   write_summary(run.run_id, state, effective_result, details)
                   print("✅ Neo4j loading completed successfully")
