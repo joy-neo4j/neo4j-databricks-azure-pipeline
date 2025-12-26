@@ -129,13 +129,25 @@ def ingest_csv_source(source_config):
     try:
         # Get schema
         spark_schema = get_spark_schema(source_config['schema'])
-        
-        # Read CSV
-        df = spark.read \
-            .format("csv") \
-            .option("header", "true") \
-            .schema(spark_schema) \
-            .load(source_path)
+
+        def _read_csv(path):
+            return spark.read \
+                .format("csv") \
+                .option("header", "true") \
+                .schema(spark_schema) \
+                .load(path)
+
+        # Attempt primary path, then fallback to DBFS FileStore if missing
+        try:
+            df = _read_csv(source_path)
+        except Exception as e1:
+            if 'PATH_NOT_FOUND' in str(e1):
+                filename = source_path.split('/')[-1]
+                fallback_path = f"dbfs:/FileStore/sample-data/{filename}"
+                print(f"Primary path missing; trying fallback: {fallback_path}")
+                df = _read_csv(fallback_path)
+            else:
+                raise
         
         # Add metadata columns
         df = df \
@@ -262,6 +274,7 @@ if config.get('data_quality', {}).get('enable_validation', True):
 # COMMAND ----------
 
 if failed:
-    dbutils.notebook.exit(f"FAILED: {len(failed)} source(s) failed ingestion")
+    # Raise an exception so Databricks Jobs mark the task as failed
+    raise RuntimeError(f"FAILED: {len(failed)} source(s) failed ingestion")
 else:
     dbutils.notebook.exit(f"SUCCESS: {len(successful)} source(s) ingested successfully")

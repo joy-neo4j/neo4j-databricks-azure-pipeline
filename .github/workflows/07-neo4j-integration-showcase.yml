@@ -48,6 +48,13 @@ jobs:
           databricks fs cp configs/monitoring-config.yml dbfs:/FileStore/configs/monitoring-config.yml --overwrite
           databricks fs cp configs/neo4j-connector-config.yml dbfs:/FileStore/configs/neo4j-connector-config.yml --overwrite
           databricks fs cp configs/secrets-config.yml dbfs:/FileStore/configs/secrets-config.yml --overwrite
+          databricks fs mkdirs dbfs:/FileStore/sample-data || true
+          databricks fs cp sample-data/customers.csv dbfs:/FileStore/sample-data/customers.csv --overwrite
+          databricks fs cp sample-data/products.csv dbfs:/FileStore/sample-data/products.csv --overwrite
+          databricks fs cp sample-data/orders.csv dbfs:/FileStore/sample-data/orders.csv --overwrite
+          databricks fs cp sample-data/reviews.csv dbfs:/FileStore/sample-data/reviews.csv --overwrite
+          databricks fs cp sample-data/suppliers.csv dbfs:/FileStore/sample-data/suppliers.csv --overwrite
+          databricks fs cp sample-data/categories.csv dbfs:/FileStore/sample-data/categories.csv --overwrite
 
       - name: Upload notebooks to Databricks workspace
         run: |
@@ -119,7 +126,8 @@ jobs:
           job = ensure_job()
           run_job(job)
           EOF
-          python /tmp/run-ingestion.py || echo "Ingestion job will run manually"
+          # Fail the workflow if ingestion job fails
+          python /tmp/run-ingestion.py
 
       - name: Run Graph Transformation and Neo4j Loading
         run: |
@@ -197,7 +205,8 @@ jobs:
           job = ensure_job()
           run_job(job)
           EOF
-          python /tmp/run-neo4j-loading.py || echo "Neo4j loading job will run manually"
+          # Fail the workflow if loading job fails
+          python /tmp/run-neo4j-loading.py
 
   verify-graph-data:
     name: Verify Neo4j Graph Data
