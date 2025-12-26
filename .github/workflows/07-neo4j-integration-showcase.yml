@@ -105,6 +105,20 @@ jobs:
             subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/ingestion-job.json"], check=True)
             return list(WorkspaceClient().jobs.list(name=JOB_NAME))[0]
 
+          def write_summary(run_id: int, state: str, result: str, details: str = ""):
+            try:
+              with open("/tmp/ingestion-summary.txt", "w", encoding="utf-8") as f:
+                f.write("Ingestion Job Summary\n")
+                f.write("=====================\n")
+                f.write(f"Run ID: {run_id}\n")
+                f.write(f"State: {state}\n")
+                f.write(f"Result: {result}\n")
+                if details:
+                  f.write("\nDetails:\n")
+                  f.write(details + "\n")
+            except Exception as e:
+              print(f"Failed to write summary: {e}")
+
           def run_job(job):
             w = WorkspaceClient()
             print(f"Running ingestion job: {job.settings.name}")
@@ -115,11 +129,23 @@ jobs:
               state = run_status.state.life_cycle_state
               print(f"Status: {state}")
               if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
-                if run_status.state.result_state == "SUCCESS":
+                result_state = getattr(run_status.state, "result_state", None)
+                details = ""
+                try:
+                  out = w.jobs.get_run_output(run.run_id)
+                  if getattr(out, "notebook_output", None) and getattr(out.notebook_output, "result", None):
+                    details = out.notebook_output.result
+                  elif getattr(out, "error", None):
+                    details = out.error
+                except Exception as e:
+                  details = f"No run output available: {e}"
+                if result_state == "SUCCESS":
+                  write_summary(run.run_id, state, result_state, details)
                   print("✅ Ingestion completed successfully")
                   break
                 else:
-                  print(f"❌ Ingestion failed: {run_status.state.result_state}")
+                  write_summary(run.run_id, state, result_state or "FAILED", details)
+                  print(f"❌ Ingestion failed: {result_state}")
                   raise SystemExit(1)
               time.sleep(30)
 
@@ -129,7 +155,28 @@ jobs:
           # Fail the workflow if ingestion job fails
           python /tmp/run-ingestion.py
 
+      - name: Upload Ingestion Summary
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ingestion-summary
+          path: /tmp/ingestion-summary.txt
+          if-no-files-found: ignore
+
+      - name: Append Ingestion Summary to Job Summary
+        if: ${{ always() }}
+        run: |
+          if [ -f /tmp/ingestion-summary.txt ]; then
+            echo "### Ingestion Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            sed 's/^/    /' /tmp/ingestion-summary.txt >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "(No ingestion summary file found)" >> $GITHUB_STEP_SUMMARY
+          fi
+
       - name: Run Graph Transformation and Neo4j Loading
+        if: ${{ success() }}
         run: |
           cat > /tmp/run-neo4j-loading.py << 'EOF'
           from databricks.sdk import WorkspaceClient
@@ -184,6 +231,20 @@ jobs:
             subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/neo4j-loading-job.json"], check=True)
             return list(WorkspaceClient().jobs.list(name=JOB_NAME))[0]
 
+          def write_summary(run_id: int, state: str, result: str, details: str = ""):
+            try:
+              with open("/tmp/loading-summary.txt", "w", encoding="utf-8") as f:
+                f.write("Loading Job Summary\n")
+                f.write("===================\n")
+                f.write(f"Run ID: {run_id}\n")
+                f.write(f"State: {state}\n")
+                f.write(f"Result: {result}\n")
+                if details:
+                  f.write("\nDetails:\n")
+                  f.write(details + "\n")
+            except Exception as e:
+              print(f"Failed to write summary: {e}")
+
           def run_job(job):
             w = WorkspaceClient()
             print(f"Running Neo4j loading job: {job.settings.name}")
@@ -194,11 +255,23 @@ jobs:
               state = run_status.state.life_cycle_state
               print(f"Status: {state}")
               if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
-                if run_status.state.result_state == "SUCCESS":
+                result_state = getattr(run_status.state, "result_state", None)
+                details = ""
+                try:
+                  out = w.jobs.get_run_output(run.run_id)
+                  if getattr(out, "notebook_output", None) and getattr(out.notebook_output, "result", None):
+                    details = out.notebook_output.result
+                  elif getattr(out, "error", None):
+                    details = out.error
+                except Exception as e:
+                  details = f"No run output available: {e}"
+                if result_state == "SUCCESS":
+                  write_summary(run.run_id, state, result_state, details)
                   print("✅ Neo4j loading completed successfully")
                   break
                 else:
-                  print(f"❌ Neo4j loading failed: {run_status.state.result_state}")
+                  write_summary(run.run_id, state, result_state or "FAILED", details)
+                  print(f"❌ Neo4j loading failed: {result_state}")
                   raise SystemExit(1)
               time.sleep(30)
 
@@ -207,6 +280,26 @@ jobs:
           EOF
           # Fail the workflow if loading job fails
           python /tmp/run-neo4j-loading.py
+
+      - name: Upload Loading Summary
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: loading-summary
+          path: /tmp/loading-summary.txt
+          if-no-files-found: ignore
+
+      - name: Append Loading Summary to Job Summary
+        if: ${{ always() }}
+        run: |
+          if [ -f /tmp/loading-summary.txt ]; then
+            echo "### Loading Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            sed 's/^/    /' /tmp/loading-summary.txt >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "(No loading summary file found)" >> $GITHUB_STEP_SUMMARY
+          fi
 
   verify-graph-data:
     name: Verify Neo4j Graph Data
