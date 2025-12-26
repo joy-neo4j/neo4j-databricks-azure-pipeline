@@ -114,12 +114,18 @@ jobs:
           pip install neo4j
 
       - name: Verify Graph Structure
-        if: ${{ secrets.NEO4J_URI != '' && secrets.NEO4J_USERNAME != '' && secrets.NEO4J_PASSWORD != '' }}
         env:
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
           NEO4J_USER: ${{ secrets.NEO4J_USERNAME }}     # aligned to secret name
           NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
         run: |
+          set -euo pipefail
+          # Skip if any secrets are missing
+          if [ -z "${NEO4J_URI:-}" ] || [ -z "${NEO4J_USER:-}" ] || [ -z "${NEO4J_PASSWORD:-}" ]; then
+            echo "::warning::Skipping Neo4j verification because one or more secrets are not set (NEO4J_URI/NEO4J_USERNAME/NEO4J_PASSWORD)."
+            exit 0
+          fi
+
           cat > /tmp/verify-graph.py << 'EOF'
           from neo4j import GraphDatabase
           import os, sys
@@ -134,8 +140,3 @@ jobs:
               print(f"❌ Failed to verify graph: {str(e)}"); sys.exit(1)
           EOF
           python /tmp/verify-graph.py
-
-      - name: Skip verify (secrets missing)
-        if: ${{ secrets.NEO4J_URI == '' || secrets.NEO4J_USERNAME == '' || secrets.NEO4J_PASSWORD == '' }}
-        run: |
-          echo "::warning::Skipping Neo4j verification because one or more secrets are not set (NEO4J_URI/NEO4J_USERNAME/NEO4J_PASSWORD)."
