@@ -179,36 +179,15 @@ def ingest_csv_source(source_config):
         print(f"Records read: {df.count()}")
         df.show(5)
         
-        # Write to Bronze Delta table
-        bronze_base = storage_config.get('bronze_path', '/mnt/data/bronze')
-        normalized_bronze_base = _normalize_path(bronze_base)
-        # If pointing to a mount that may not exist, fallback to FileStore
-        if normalized_bronze_base.startswith('dbfs:/mnt/'):
-            print(f"Bronze base path is a mount; falling back to FileStore bronze location")
-            normalized_bronze_base = 'dbfs:/FileStore/bronze'
-        bronze_path = f"{normalized_bronze_base}/{source_name}"
+        # Write Bronze as a managed Unity Catalog table (no explicit DBFS path)
+        spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.bronze")
         table_name = f"{CATALOG}.bronze.{source_name}"
-
-        try:
-            df.write \
-                .format("delta") \
-                .mode("overwrite") \
-                .option("mergeSchema", "true") \
-                .option("path", bronze_path) \
-                .saveAsTable(table_name)
-        except Exception as we:
-            msg = str(we)
-            if ('INVALID_PARAMETER_VALUE' in msg) or ('Missing cloud file system scheme' in msg) or ('PATH_NOT_FOUND' in msg):
-                alt_path = f"dbfs:/FileStore/bronze/{source_name}"
-                print(f"Write path issue detected; attempting fallback path: {alt_path}")
-                df.write \
-                    .format("delta") \
-                    .mode("overwrite") \
-                    .option("mergeSchema", "true") \
-                    .option("path", alt_path) \
-                    .saveAsTable(table_name)
-            else:
-                raise
+        
+        df.write \
+            .format("delta") \
+            .mode("overwrite") \
+            .option("mergeSchema", "true") \
+            .saveAsTable(table_name)
         
         print(f"✅ Successfully ingested to: {table_name}")
         
