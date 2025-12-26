@@ -38,32 +38,77 @@ jobs:
           token = $DATABRICKS_TOKEN
           EOF
 
+      - name: Upload notebooks to Databricks workspace
+        run: |
+          set -euo pipefail
+          databricks workspace mkdirs /Shared/neo4j-pipeline || true
+          databricks workspace import --overwrite --language PYTHON --format SOURCE databricks/notebooks/csv-ingestion.py /Shared/neo4j-pipeline/csv-ingestion
+          databricks workspace import --overwrite --language PYTHON --format SOURCE databricks/notebooks/data-validation.py /Shared/neo4j-pipeline/data-validation
+          databricks workspace import --overwrite --language PYTHON --format SOURCE databricks/notebooks/graph-transformation.py /Shared/neo4j-pipeline/graph-transformation
+          databricks workspace import --overwrite --language PYTHON --format SOURCE databricks/notebooks/neo4j-loading.py /Shared/neo4j-pipeline/neo4j-loading
+
       - name: Run E-commerce Data Ingestion
         run: |
           cat > /tmp/run-ingestion.py << 'EOF'
           from databricks.sdk import WorkspaceClient
-          import time
-          w = WorkspaceClient()
-          jobs = list(w.jobs.list(name="E-commerce Data Ingestion - dev"))
-          if jobs:
-              job = jobs[0]
-              print(f"Running ingestion job: {job.settings.name}")
-              run = w.jobs.run_now(job_id=job.job_id)
-              print(f"Job run started: {run.run_id}")
-              while True:
-                  run_status = w.jobs.get_run(run.run_id)
-                  state = run_status.state.life_cycle_state
-                  print(f"Status: {state}")
-                  if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
-                      if run_status.state.result_state == "SUCCESS":
-                          print("✅ Ingestion completed successfully")
-                          break
-                      else:
-                          print(f"❌ Ingestion failed: {run_status.state.result_state}")
-                          exit(1)
-                  time.sleep(30)
-          else:
-              print("Ingestion job not found, will be created")
+          import subprocess, json, time
+
+          ENV = "dev"
+          JOB_NAME = f"E-commerce Data Ingestion - {ENV}"
+
+          def ensure_job():
+            w = WorkspaceClient()
+            jobs = list(w.jobs.list(name=JOB_NAME))
+            if jobs:
+              return jobs[0]
+            print(f"Job '{JOB_NAME}' not found. Creating it now…")
+            payload = {
+              "name": JOB_NAME,
+              "timeout_seconds": 3600,
+              "max_concurrent_runs": 1,
+              "tasks": [
+                {
+                  "task_key": "csv_ingestion",
+                  "description": "Ingest CSV data from storage",
+                  "notebook_task": {
+                    "notebook_path": "/Shared/neo4j-pipeline/csv-ingestion",
+                    "base_parameters": {"environment": ENV}
+                  },
+                  "new_cluster": {
+                    "spark_version": "13.3.x-scala2.12",
+                    "node_type_id": "Standard_DS3_v2",
+                    "num_workers": 2,
+                    "spark_conf": {"spark.databricks.delta.preview.enabled": "true"}
+                  },
+                  "timeout_seconds": 1200
+                }
+              ]
+            }
+            with open("/tmp/ingestion-job.json", "w") as f:
+              json.dump(payload, f)
+            subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/ingestion-job.json"], check=True)
+            return list(WorkspaceClient().jobs.list(name=JOB_NAME))[0]
+
+          def run_job(job):
+            w = WorkspaceClient()
+            print(f"Running ingestion job: {job.settings.name}")
+            run = w.jobs.run_now(job_id=job.job_id)
+            print(f"Job run started: {run.run_id}")
+            while True:
+              run_status = w.jobs.get_run(run.run_id)
+              state = run_status.state.life_cycle_state
+              print(f"Status: {state}")
+              if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
+                if run_status.state.result_state == "SUCCESS":
+                  print("✅ Ingestion completed successfully")
+                  break
+                else:
+                  print(f"❌ Ingestion failed: {run_status.state.result_state}")
+                  raise SystemExit(1)
+              time.sleep(30)
+
+          job = ensure_job()
+          run_job(job)
           EOF
           python /tmp/run-ingestion.py || echo "Ingestion job will run manually"
 
@@ -71,28 +116,79 @@ jobs:
         run: |
           cat > /tmp/run-neo4j-loading.py << 'EOF'
           from databricks.sdk import WorkspaceClient
-          import time
-          w = WorkspaceClient()
-          jobs = list(w.jobs.list(name="Neo4j Graph Loading - dev"))
-          if jobs:
-              job = jobs[0]
-              print(f"Running Neo4j loading job: {job.settings.name}")
-              run = w.jobs.run_now(job_id=job.job_id)
-              print(f"Job run started: {run.run_id}")
-              while True:
-                  run_status = w.jobs.get_run(run.run_id)
-                  state = run_status.state.life_cycle_state
-                  print(f"Status: {state}")
-                  if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
-                      if run_status.state.result_state == "SUCCESS":
-                          print("✅ Neo4j loading completed successfully")
-                          break
-                      else:
-                          print(f"❌ Neo4j loading failed: {run_status.state.result_state}")
-                          exit(1)
-                  time.sleep(30)
-          else:
-              print("Neo4j loading job not found")
+          import subprocess, json, time
+
+          ENV = "dev"
+          JOB_NAME = f"Neo4j Graph Loading - {ENV}"
+
+          def ensure_job():
+            w = WorkspaceClient()
+            jobs = list(w.jobs.list(name=JOB_NAME))
+            if jobs:
+              return jobs[0]
+            print(f"Job '{JOB_NAME}' not found. Creating it now…")
+            payload = {
+              "name": JOB_NAME,
+              "timeout_seconds": 3600,
+              "max_concurrent_runs": 1,
+              "tasks": [
+                {
+                  "task_key": "graph_transformation",
+                  "description": "Transform data to graph format",
+                  "notebook_task": {
+                    "notebook_path": "/Shared/neo4j-pipeline/graph-transformation",
+                    "base_parameters": {"environment": ENV}
+                  },
+                  "new_cluster": {
+                    "spark_version": "13.3.x-scala2.12",
+                    "node_type_id": "Standard_DS3_v2",
+                    "num_workers": 2
+                  },
+                  "timeout_seconds": 1200
+                },
+                {
+                  "task_key": "neo4j_loading",
+                  "description": "Load data to Neo4j Aura",
+                  "depends_on": [{"task_key": "graph_transformation"}],
+                  "notebook_task": {
+                    "notebook_path": "/Shared/neo4j-pipeline/neo4j-loading",
+                    "base_parameters": {"environment": ENV, "batch_size": "1000"}
+                  },
+                  "new_cluster": {
+                    "spark_version": "13.3.x-scala2.12",
+                    "node_type_id": "Standard_DS3_v2",
+                    "num_workers": 2,
+                    "spark_conf": {"spark.databricks.delta.preview.enabled": "true"}
+                  },
+                  "timeout_seconds": 1800
+                }
+              ]
+            }
+            with open("/tmp/neo4j-loading-job.json", "w") as f:
+              json.dump(payload, f)
+            subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/neo4j-loading-job.json"], check=True)
+            return list(WorkspaceClient().jobs.list(name=JOB_NAME))[0]
+
+          def run_job(job):
+            w = WorkspaceClient()
+            print(f"Running Neo4j loading job: {job.settings.name}")
+            run = w.jobs.run_now(job_id=job.job_id)
+            print(f"Job run started: {run.run_id}")
+            while True:
+              run_status = w.jobs.get_run(run.run_id)
+              state = run_status.state.life_cycle_state
+              print(f"Status: {state}")
+              if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
+                if run_status.state.result_state == "SUCCESS":
+                  print("✅ Neo4j loading completed successfully")
+                  break
+                else:
+                  print(f"❌ Neo4j loading failed: {run_status.state.result_state}")
+                  raise SystemExit(1)
+              time.sleep(30)
+
+          job = ensure_job()
+          run_job(job)
           EOF
           python /tmp/run-neo4j-loading.py || echo "Neo4j loading job will run manually"
 
