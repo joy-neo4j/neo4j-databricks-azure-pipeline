@@ -66,10 +66,12 @@ jobs:
           databricks workspace import --overwrite --language PYTHON --format SOURCE databricks/notebooks/neo4j-loading.py /Shared/neo4j-pipeline/neo4j-loading
 
       - name: Run E-commerce Data Ingestion
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
         run: |
           cat > /tmp/run-ingestion.py << 'EOF'
           from databricks.sdk import WorkspaceClient
-          import subprocess, json, time
+          import subprocess, json, time, os
 
           JOB_NAME = "E-commerce Data Ingestion"
 
@@ -105,14 +107,19 @@ jobs:
             subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/ingestion-job.json"], check=True)
             return list(WorkspaceClient().jobs.list(name=JOB_NAME))[0]
 
-          def write_summary(run_id: int, state: str, result: str, details: str = ""):
+          def write_summary(job_id: int, run_id: int, state: str, result: str, details: str = "", state_msg: str = ""):
             try:
               with open("/tmp/ingestion-summary.txt", "w", encoding="utf-8") as f:
                 f.write("Ingestion Job Summary\n")
                 f.write("=====================\n")
+                host = os.environ.get("DATABRICKS_HOST")
+                if host:
+                  f.write(f"Run URL: {host}#job/{job_id}/run/{run_id}\n")
                 f.write(f"Run ID: {run_id}\n")
                 f.write(f"State: {state}\n")
                 f.write(f"Result: {result}\n")
+                if state_msg:
+                  f.write(f"State Message: {state_msg}\n")
                 if details:
                   f.write("\nDetails:\n")
                   f.write(details + "\n")
@@ -144,18 +151,17 @@ jobs:
               task_result_state = None
               task_life_cycle_state = None
               try:
-                task_result_state = None
-                task_life_cycle_state = None
-                  task_life_cycle_state = getattr(getattr(t, "state", None), "life_cycle_state", None)
-                  task_result_state = getattr(getattr(t, "state", None), "result_state", None)
+                for t in getattr(run_status, "tasks", []) or []:
+                  task_life_cycle_state = _norm(getattr(getattr(t, "state", None), "life_cycle_state", None))
+                  task_result_state = _norm(getattr(getattr(t, "state", None), "result_state", None))
                   break
-                    task_life_cycle_state = _norm(getattr(getattr(t, "state", None), "life_cycle_state", None))
-                    task_result_state = _norm(getattr(getattr(t, "state", None), "result_state", None))
+              except Exception:
+                pass
 
               result_state = _norm(getattr(run_status.state, "result_state", None))
               # Treat any explicit result state as terminal
               terminal_results = ["SUCCESS", "FAILED", "TIMEDOUT", "CANCELED"]
-                result_state = _norm(getattr(run_status.state, "result_state", None))
+              if (task_result_state in terminal_results) or (result_state in terminal_results):
                 details = ""
                 try:
                   out = w.jobs.get_run_output(run.run_id)
@@ -168,13 +174,13 @@ jobs:
                 effective_result = task_result_state or result_state or "FAILED"
                 # Derive success from notebook result text if result_state is missing
                 if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
-                  effective_result = task_result_state or result_state or "FAILED"
+                  effective_result = "SUCCESS"
                 if effective_result == "SUCCESS":
-                  write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
+                  write_summary(job.job_id, run.run_id, state or (task_life_cycle_state or ""), effective_result, details, state_msg)
                   print("✅ Ingestion completed successfully (result_state)")
                   break
                 else:
-                  write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
+                  write_summary(job.job_id, run.run_id, state or (task_life_cycle_state or ""), effective_result, details, state_msg)
                   print(f"❌ Ingestion failed (result_state): {effective_result}")
                   raise SystemExit(1)
               # Global terminal life-cycle states
@@ -188,16 +194,16 @@ jobs:
                     details = out.error
                 except Exception as e:
                   details = f"No run output available: {e}"
-                  effective_result = result_state or task_result_state or "FAILED"
+                effective_result = result_state or task_result_state or "FAILED"
                 # Derive success from notebook result text if result_state is missing
                 if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
                   effective_result = "SUCCESS"
                 if effective_result == "SUCCESS":
-                  write_summary(run.run_id, state, effective_result, details)
+                  write_summary(job.job_id, run.run_id, state, effective_result, details, state_msg)
                   print("✅ Ingestion completed successfully")
                   break
                 else:
-                  write_summary(run.run_id, state, effective_result, details)
+                  write_summary(job.job_id, run.run_id, state, effective_result, details, state_msg)
                   print(f"❌ Ingestion failed: {effective_result}")
                   raise SystemExit(1)
               # If the task itself has finished but cluster is still terminating, allow early exit on success
@@ -239,10 +245,12 @@ jobs:
 
       - name: Run Graph Transformation and Neo4j Loading
         if: ${{ success() }}
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
         run: |
           cat > /tmp/run-neo4j-loading.py << 'EOF'
           from databricks.sdk import WorkspaceClient
-          import subprocess, json, time
+          import subprocess, json, time, os
 
           JOB_NAME = "Neo4j Graph Loading"
 
@@ -293,14 +301,19 @@ jobs:
             subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/neo4j-loading-job.json"], check=True)
             return list(WorkspaceClient().jobs.list(name=JOB_NAME))[0]
 
-          def write_summary(run_id: int, state: str, result: str, details: str = ""):
+          def write_summary(job_id: int, run_id: int, state: str, result: str, details: str = "", state_msg: str = ""):
             try:
               with open("/tmp/loading-summary.txt", "w", encoding="utf-8") as f:
                 f.write("Loading Job Summary\n")
                 f.write("===================\n")
+                host = os.environ.get("DATABRICKS_HOST")
+                if host:
+                  f.write(f"Run URL: {host}#job/{job_id}/run/{run_id}\n")
                 f.write(f"Run ID: {run_id}\n")
                 f.write(f"State: {state}\n")
                 f.write(f"Result: {result}\n")
+                if state_msg:
+                  f.write(f"State Message: {state_msg}\n")
                 if details:
                   f.write("\nDetails:\n")
                   f.write(details + "\n")
@@ -346,7 +359,12 @@ jobs:
               if (task_result_state in terminal_results) or (result_state in terminal_results):
                 details = ""
                 try:
-                  out = w.jobs.get_run_output(run.run_id)
+                  # Prefer output of the final task in multi-task jobs
+                  out = None
+                  try:
+                    out = w.jobs.get_run_output(run.run_id, task_key="neo4j_loading")
+                  except Exception:
+                    out = w.jobs.get_run_output(run.run_id)
                   if getattr(out, "notebook_output", None) and getattr(out.notebook_output, "result", None):
                     details = out.notebook_output.result
                   elif getattr(out, "error", None):
@@ -358,18 +376,22 @@ jobs:
                 if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
                   effective_result = "SUCCESS"
                 if effective_result == "SUCCESS":
-                  write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
+                  write_summary(job.job_id, run.run_id, state or (task_life_cycle_state or ""), effective_result, details, state_msg)
                   print("✅ Neo4j loading completed successfully")
                   break
                 else:
-                  write_summary(run.run_id, state or (task_life_cycle_state or ""), effective_result, details)
+                  write_summary(job.job_id, run.run_id, state or (task_life_cycle_state or ""), effective_result, details, state_msg)
                   print(f"❌ Neo4j loading failed: {effective_result}")
                   raise SystemExit(1)
 
               if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
                 details = ""
                 try:
-                  out = w.jobs.get_run_output(run.run_id)
+                  out = None
+                  try:
+                    out = w.jobs.get_run_output(run.run_id, task_key="neo4j_loading")
+                  except Exception:
+                    out = w.jobs.get_run_output(run.run_id)
                   if getattr(out, "notebook_output", None) and getattr(out.notebook_output, "result", None):
                     details = out.notebook_output.result
                   elif getattr(out, "error", None):
@@ -381,11 +403,11 @@ jobs:
                 if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
                   effective_result = "SUCCESS"
                 if effective_result == "SUCCESS":
-                  write_summary(run.run_id, state, effective_result, details)
+                  write_summary(job.job_id, run.run_id, state, effective_result, details, state_msg)
                   print("✅ Neo4j loading completed successfully")
                   break
                 else:
-                  write_summary(run.run_id, state, effective_result, details)
+                  write_summary(job.job_id, run.run_id, state, effective_result, details, state_msg)
                   print(f"❌ Neo4j loading failed: {effective_result}")
                   raise SystemExit(1)
 
