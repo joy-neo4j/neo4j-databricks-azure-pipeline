@@ -287,11 +287,25 @@ jobs:
                 "max_concurrent_runs": 1,
                 "tasks": [
                   {
+                    "task_key": "data_validation",
+                    "description": "Validate and promote data to Silver",
+                    "notebook_task": {
+                      "notebook_path": "/Shared/neo4j-pipeline/data-validation"
+                    },
+                    "new_cluster": {
+                      "spark_version": "13.3.x-scala2.12",
+                      "node_type_id": "Standard_DS3_v2",
+                      "num_workers": 2
+                    },
+                    "timeout_seconds": 1200
+                  },
+                  {
                     "task_key": "graph_transformation",
                     "description": "Transform data to graph format",
                     "notebook_task": {
                       "notebook_path": "/Shared/neo4j-pipeline/graph-transformation"
                     },
+                    "depends_on": [{"task_key": "data_validation"}],
                     "new_cluster": {
                       "spark_version": "13.3.x-scala2.12",
                       "node_type_id": "Standard_DS3_v2",
