@@ -68,6 +68,7 @@ jobs:
       - name: Run E-commerce Data Ingestion
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           cat > /tmp/run-ingestion.py << 'EOF'
           from databricks.sdk import WorkspaceClient
@@ -75,8 +76,15 @@ jobs:
 
           JOB_NAME = "E-commerce Data Ingestion"
 
+          def get_client():
+            host = os.environ.get("DATABRICKS_HOST")
+            token = os.environ.get("DATABRICKS_TOKEN")
+            if not host or not token:
+              raise ValueError("Missing DATABRICKS_HOST or DATABRICKS_TOKEN for Databricks SDK auth")
+            return WorkspaceClient(host=host, token=token)
+
           def ensure_job():
-            w = WorkspaceClient()
+            w = get_client()
             jobs = list(w.jobs.list(name=JOB_NAME))
             if jobs:
               return jobs[0]
@@ -105,7 +113,7 @@ jobs:
             with open("/tmp/ingestion-job.json", "w") as f:
               json.dump(payload, f)
             subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/ingestion-job.json"], check=True)
-            return list(WorkspaceClient().jobs.list(name=JOB_NAME))[0]
+            return list(get_client().jobs.list(name=JOB_NAME))[0]
 
           def write_summary(job_id: int, run_id: int, state: str, result: str, details: str = "", state_msg: str = ""):
             try:
@@ -127,7 +135,7 @@ jobs:
               print(f"Failed to write summary: {e}")
 
           def run_job(job):
-            w = WorkspaceClient()
+            w = get_client()
             print(f"Running ingestion job: {job.settings.name}")
             run = w.jobs.run_now(job_id=job.job_id)
             print(f"Job run started: {run.run_id}")
@@ -239,6 +247,11 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             sed 's/^/    /' /tmp/ingestion-summary.txt >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
+            RUN_URL=$(grep -E '^Run URL:' /tmp/ingestion-summary.txt | awk -F': ' '{print $2}')
+            if [ -n "$RUN_URL" ]; then
+              echo "[Open Databricks run]($RUN_URL)" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
           else
             echo "(No ingestion summary file found)" >> $GITHUB_STEP_SUMMARY
           fi
@@ -247,6 +260,7 @@ jobs:
         if: ${{ success() }}
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           cat > /tmp/run-neo4j-loading.py << 'EOF'
           from databricks.sdk import WorkspaceClient
@@ -254,8 +268,15 @@ jobs:
 
           JOB_NAME = "Neo4j Graph Loading"
 
+          def get_client():
+            host = os.environ.get("DATABRICKS_HOST")
+            token = os.environ.get("DATABRICKS_TOKEN")
+            if not host or not token:
+              raise ValueError("Missing DATABRICKS_HOST or DATABRICKS_TOKEN for Databricks SDK auth")
+            return WorkspaceClient(host=host, token=token)
+
           def ensure_job():
-            w = WorkspaceClient()
+            w = get_client()
             jobs = list(w.jobs.list(name=JOB_NAME))
             if jobs:
               return jobs[0]
@@ -299,7 +320,7 @@ jobs:
             with open("/tmp/neo4j-loading-job.json", "w") as f:
               json.dump(payload, f)
             subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/neo4j-loading-job.json"], check=True)
-            return list(WorkspaceClient().jobs.list(name=JOB_NAME))[0]
+            return list(get_client().jobs.list(name=JOB_NAME))[0]
 
           def write_summary(job_id: int, run_id: int, state: str, result: str, details: str = "", state_msg: str = ""):
             try:
@@ -321,7 +342,7 @@ jobs:
               print(f"Failed to write summary: {e}")
 
           def run_job(job):
-            w = WorkspaceClient()
+            w = get_client()
             print(f"Running Neo4j loading job: {job.settings.name}")
             run = w.jobs.run_now(job_id=job.job_id)
             print(f"Job run started: {run.run_id}")
@@ -444,6 +465,11 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             sed 's/^/    /' /tmp/loading-summary.txt >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
+            RUN_URL=$(grep -E '^Run URL:' /tmp/loading-summary.txt | awk -F': ' '{print $2}')
+            if [ -n "$RUN_URL" ]; then
+              echo "[Open Databricks run]($RUN_URL)" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
           else
             echo "(No loading summary file found)" >> $GITHUB_STEP_SUMMARY
           fi
