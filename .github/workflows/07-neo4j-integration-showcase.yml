@@ -42,9 +42,9 @@ jobs:
           echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
           echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
 
-      - name: Configure Jobs API version
-        run: |
-          databricks jobs configure --version=2.1
+      # - name: Configure Jobs API version
+      #   run: |
+      #     databricks jobs configure --version=2.1
 
       - name: Verify Databricks CLI auth (optional)
         run: |
