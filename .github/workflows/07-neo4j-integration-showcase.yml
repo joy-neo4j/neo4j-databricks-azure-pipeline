@@ -71,10 +71,10 @@ jobs:
         run: |
           set -euo pipefail
           databricks workspace mkdirs /Shared/neo4j-pipeline || true
-          databricks workspace import --overwrite --language PYTHON --format SOURCE databricks/notebooks/csv-ingestion.py /Shared/neo4j-pipeline/csv-ingestion
-          databricks workspace import --overwrite --language PYTHON --format SOURCE databricks/notebooks/data-validation.py /Shared/neo4j-pipeline/data-validation
-          databricks workspace import --overwrite --language PYTHON --format SOURCE databricks/notebooks/graph-transformation.py /Shared/neo4j-pipeline/graph-transformation
-          databricks workspace import --overwrite --language PYTHON --format SOURCE databricks/notebooks/neo4j-loading.py /Shared/neo4j-pipeline/neo4j-loading
+          databricks workspace import /Shared/neo4j-pipeline/csv-ingestion --file databricks/notebooks/csv-ingestion.py --language PYTHON --format SOURCE --overwrite
+          databricks workspace import /Shared/neo4j-pipeline/data-validation --file databricks/notebooks/data-validation.py --language PYTHON --format SOURCE --overwrite
+          databricks workspace import /Shared/neo4j-pipeline/graph-transformation --file databricks/notebooks/graph-transformation.py --language PYTHON --format SOURCE --overwrite
+          databricks workspace import /Shared/neo4j-pipeline/neo4j-loading --file databricks/notebooks/neo4j-loading.py --language PYTHON --format SOURCE --overwrite
 
       - name: Run E-commerce Data Ingestion
         if: ${{ !inputs.skip_ingestion }}
