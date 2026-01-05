@@ -1,23 +1,12 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Neo4j Loading Notebook
+# MAGIC # Neo4j Loading (Graph Ready → Neo4j)
 # MAGIC 
-# MAGIC This notebook loads graph data from Gold layer into Neo4j Aura.
+# MAGIC Reads {catalog}.graph_ready.* and loads into Neo4j Aura.
 # MAGIC 
-# MAGIC **Parameters:**
-# MAGIC - `environment`: Target environment
+# MAGIC Parameters:
+# MAGIC - `catalog`: Unity Catalog name (optional)
 # MAGIC - `batch_size`: Batch size for loading (default: 1000)
-# MAGIC 
-# MAGIC **Features:**
-# MAGIC - Batch loading for performance
-# MAGIC - Error handling and retry logic
-# MAGIC - Progress tracking
-# MAGIC - Connection validation
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Setup
 
 # COMMAND ----------
 
@@ -25,24 +14,37 @@ from pyspark.sql import functions as F
 from neo4j import GraphDatabase
 import json
 import os
-from pyspark.sql import SparkSession
 
 # Get parameters
+dbutils.widgets.text("catalog", "", "Unity Catalog name")
 dbutils.widgets.text("batch_size", "1000", "Batch Size")
 
+catalog_param = dbutils.widgets.get("catalog")
 batch_size = int(dbutils.widgets.get("batch_size"))
 
 print(f"Batch Size: {batch_size}")
 
+# Catalog resolution
+def _get_catalog_names():
+    try:
+        df = spark.sql("SHOW CATALOGS")
+        names = []
+        for r in df.collect():
+            for attr in ("catalog_name","catalog","name"):
+                if hasattr(r, attr):
+                    names.append(getattr(r, attr)); break
+        return names
+    except Exception:
+        return []
+
+catalog_names = _get_catalog_names()
+preferred_catalog = "neo4j_pipeline"
+CATALOG = catalog_param or (preferred_catalog if preferred_catalog in catalog_names else (catalog_names[0] if catalog_names else preferred_catalog))
+spark.sql(f"USE CATALOG {CATALOG}")
+print(f"Using catalog: {CATALOG}")
+
 # COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Get Neo4j Connection Details
-
-# COMMAND ----------
-
 # Get Neo4j credentials from Databricks secrets
-# These should be configured via: databricks secrets put --scope pipeline-secrets --key <secret_name>
 
 try:
     neo4j_uri = dbutils.secrets.get(scope="pipeline-secrets", key="neo4j-uri")
@@ -58,11 +60,7 @@ except Exception as e:
     dbutils.notebook.exit("FAILED: Missing Neo4j credentials")
 
 # COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Test Neo4j Connection
-
-# COMMAND ----------
+# Test Neo4j connection
 
 def test_neo4j_connection(uri, username, password):
     """Test Neo4j connection."""
@@ -94,50 +92,38 @@ if not test_neo4j_connection(neo4j_uri, neo4j_username, neo4j_password):
     dbutils.notebook.exit("FAILED: Cannot connect to Neo4j")
 
 # COMMAND ----------
+# Read graph_ready tables and normalize to expected schemas
 
-# MAGIC %md
-# MAGIC ## Load Data from Gold Layer
-
-# COMMAND ----------
-
-# Resolve Unity Catalog (prefer 'neo4j_pipeline', else first available)
-def _get_catalog_names():
-    try:
-        df = spark.sql("SHOW CATALOGS")
-        rows = df.collect()
-        names = []
-        for r in rows:
-            for attr in ("catalog_name", "catalog", "name"):
-                if hasattr(r, attr):
-                    names.append(getattr(r, attr))
-                    break
-        return names
-    except Exception:
-        return []
-
-catalog_names = _get_catalog_names()
-if not catalog_names:
-    raise Exception("No Unity Catalogs found. Please ensure Unity Catalog is enabled and a catalog exists.")
-
-preferred_catalog = "neo4j_pipeline"
-CATALOG = preferred_catalog if preferred_catalog in catalog_names else catalog_names[0]
-
-print(f"Using catalog: {CATALOG}")
-spark.sql(f"USE CATALOG {CATALOG}")
-
-# Read nodes and relationships
-nodes_df = spark.table(f"{CATALOG}.gold.nodes")
-relationships_df = spark.table(f"{CATALOG}.gold.relationships")
-
+cust_nodes = spark.table(f"{CATALOG}.graph_ready.customer_nodes").select(
+    F.col("node_id"), F.col("properties"), F.lit("Customer").alias("node_label")
+)
+prod_nodes = spark.table(f"{CATALOG}.graph_ready.product_nodes").select(
+    F.col("node_id"), F.col("properties"), F.lit("Product").alias("node_label")
+)
+nodes_df = cust_nodes.unionByName(prod_nodes)
 print(f"Nodes to load: {nodes_df.count()}")
+
+purchased = spark.table(f"{CATALOG}.graph_ready.purchased_relationships").select(
+    F.col("from_id").alias("source_node_id"),
+    F.lit("Customer").alias("source_node_label"),
+    F.col("to_id").alias("target_node_id"),
+    F.lit("Product").alias("target_node_label"),
+    F.lit("PURCHASED").alias("relationship_type"),
+    F.col("properties")
+)
+reviewed = spark.table(f"{CATALOG}.graph_ready.reviewed_relationships").select(
+    F.col("from_id").alias("source_node_id"),
+    F.lit("Customer").alias("source_node_label"),
+    F.col("to_id").alias("target_node_id"),
+    F.lit("Product").alias("target_node_label"),
+    F.lit("REVIEWED").alias("relationship_type"),
+    F.col("properties")
+)
+relationships_df = purchased.unionByName(reviewed)
 print(f"Relationships to load: {relationships_df.count()}")
 
 # COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Setup Constraints in Neo4j
-
-# COMMAND ----------
+# Setup constraints in Neo4j
 
 def setup_neo4j_constraints(uri, username, password):
     """Create constraints and indexes in Neo4j."""
@@ -145,14 +131,12 @@ def setup_neo4j_constraints(uri, username, password):
     
     constraints = [
         "CREATE CONSTRAINT customer_id IF NOT EXISTS FOR (c:Customer) REQUIRE c.id IS UNIQUE",
-        "CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE",
-        "CREATE CONSTRAINT order_id IF NOT EXISTS FOR (o:Order) REQUIRE o.id IS UNIQUE"
+        "CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE"
     ]
     
     indexes = [
         "CREATE INDEX customer_name IF NOT EXISTS FOR (c:Customer) ON (c.name)",
-        "CREATE INDEX product_name IF NOT EXISTS FOR (p:Product) ON (p.name)",
-        "CREATE INDEX order_date IF NOT EXISTS FOR (o:Order) ON (o.order_date)"
+        "CREATE INDEX product_name IF NOT EXISTS FOR (p:Product) ON (p.name)"
     ]
     
     try:
@@ -179,11 +163,7 @@ def setup_neo4j_constraints(uri, username, password):
 setup_neo4j_constraints(neo4j_uri, neo4j_username, neo4j_password)
 
 # COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Load Nodes to Neo4j
-
-# COMMAND ----------
+# Load nodes to Neo4j
 
 def load_nodes_to_neo4j(nodes_df, uri, username, password, batch_size):
     """Load nodes to Neo4j in batches."""
@@ -247,11 +227,7 @@ nodes_loaded = load_nodes_to_neo4j(
 )
 
 # COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Load Relationships to Neo4j
-
-# COMMAND ----------
+# Load relationships to Neo4j
 
 def load_relationships_to_neo4j(rels_df, uri, username, password, batch_size):
     """Load relationships to Neo4j in batches."""
@@ -283,14 +259,6 @@ def load_relationships_to_neo4j(rels_df, uri, username, password, batch_size):
             
             try:
                 with driver.session() as session:
-                    query = f"""
-                    UNWIND $rels AS rel
-                    MATCH (source:{{rel.source_label}} {{id: rel.source_id}})
-                    MATCH (target:{{rel.target_label}} {{id: rel.target_id}})
-                    MERGE (source)-[r:{rel_type}]->(target)
-                    SET r += rel.properties
-                    """
-                    
                     # Prepare batch data
                     batch_data = []
                     for rel in batch:
@@ -336,11 +304,7 @@ relationships_loaded = load_relationships_to_neo4j(
 )
 
 # COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Verify Load in Neo4j
-
-# COMMAND ----------
+# Verify load in Neo4j
 
 def verify_neo4j_load(uri, username, password):
     """Verify data in Neo4j."""
@@ -369,11 +333,7 @@ def verify_neo4j_load(uri, username, password):
 verify_neo4j_load(neo4j_uri, neo4j_username, neo4j_password)
 
 # COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Summary
-
-# COMMAND ----------
+# Summary and Exit
 
 summary = {
     'nodes_loaded': nodes_loaded,
@@ -388,12 +348,5 @@ print(f"Neo4j URI: {neo4j_uri}")
 print(f"Nodes Loaded: {summary['nodes_loaded']}")
 print(f"Relationships Loaded: {summary['relationships_loaded']}")
 print(f"\n✅ Data successfully loaded to Neo4j Aura")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Exit
-
-# COMMAND ----------
 
 dbutils.notebook.exit(f"SUCCESS: Loaded {summary['nodes_loaded']} nodes and {summary['relationships_loaded']} relationships to Neo4j")

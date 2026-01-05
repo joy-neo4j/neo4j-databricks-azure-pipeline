@@ -216,7 +216,7 @@ jobs:
                   raise SystemExit(1)
               # If the task itself has finished but cluster is still terminating, allow early exit on success
               if (task_life_cycle_state in ["TERMINATED", "SKIPPED"]) and (task_result_state == "SUCCESS"):
-                write_summary(run.run_id, task_life_cycle_state, task_result_state, "Task completed; cluster still terminating")
+                write_summary(job.job_id, run.run_id, task_life_cycle_state, task_result_state, "Task completed; cluster still terminating")
                 print("✅ Ingestion task completed; exiting early before cluster termination")
                 break
 
@@ -290,7 +290,8 @@ jobs:
                     "task_key": "data_validation",
                     "description": "Validate and promote data to Silver",
                     "notebook_task": {
-                      "notebook_path": "/Shared/neo4j-pipeline/data-validation"
+                      "notebook_path": "/Shared/neo4j-pipeline/data-validation",
+                      "base_parameters": {"catalog": "neo4j_pipeline"}
                     },
                     "new_cluster": {
                       "spark_version": "13.3.x-scala2.12",
@@ -303,7 +304,8 @@ jobs:
                     "task_key": "graph_transformation",
                     "description": "Transform data to graph format",
                     "notebook_task": {
-                      "notebook_path": "/Shared/neo4j-pipeline/graph-transformation"
+                      "notebook_path": "/Shared/neo4j-pipeline/graph-transformation",
+                      "base_parameters": {"catalog": "neo4j_pipeline"}
                     },
                     "depends_on": [{"task_key": "data_validation"}],
                     "new_cluster": {
@@ -319,7 +321,7 @@ jobs:
                     "depends_on": [{"task_key": "graph_transformation"}],
                     "notebook_task": {
                       "notebook_path": "/Shared/neo4j-pipeline/neo4j-loading",
-                      "base_parameters": {"batch_size": "1000"}
+                      "base_parameters": {"batch_size": "1000", "catalog": "neo4j_pipeline"}
                     },
                     "new_cluster": {
                       "spark_version": "13.3.x-scala2.12",
@@ -448,7 +450,7 @@ jobs:
 
               # Early exit when last task finished successfully
               if (task_life_cycle_state in ["TERMINATED", "SKIPPED"]) and (task_result_state == "SUCCESS"):
-                write_summary(run.run_id, task_life_cycle_state, task_result_state, "Tasks completed; cluster still terminating")
+                write_summary(job.job_id, run.run_id, task_life_cycle_state, task_result_state, "Tasks completed; cluster still terminating")
                 print("✅ Loading tasks completed; exiting early before cluster termination")
                 break
 
