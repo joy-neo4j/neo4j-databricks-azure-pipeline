@@ -27,7 +27,7 @@ neo4j_password = dbutils.secrets.get(scope="pipeline-secrets", key="neo4j-passwo
 if not neo4j_uri or not neo4j_username or not neo4j_password:
     raise ValueError("Neo4j connection secrets not found. Ensure 'pipeline-secrets' scope contains required keys.")
 
-print(f"✓ Neo4j URI: {neo4j_uri[:20]}...")
+print("✓ Neo4j credentials loaded from secrets")
 
 # COMMAND ----------
 

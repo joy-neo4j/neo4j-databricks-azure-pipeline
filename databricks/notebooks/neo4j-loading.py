@@ -50,14 +50,11 @@ try:
     neo4j_uri = dbutils.secrets.get(scope="pipeline-secrets", key="neo4j-uri")
     neo4j_username = dbutils.secrets.get(scope="pipeline-secrets", key="neo4j-username")
     neo4j_password = dbutils.secrets.get(scope="pipeline-secrets", key="neo4j-password")
-    
-    print(f"✅ Neo4j credentials loaded from secrets")
-    print(f"URI: {neo4j_uri}")
-    print(f"Username: {neo4j_username}")
+    print("✅ Neo4j credentials loaded from secrets")
 except Exception as e:
-    print(f"❌ Error loading secrets: {str(e)}")
-    print("Make sure Neo4j secrets are configured in Databricks")
-    dbutils.notebook.exit("FAILED: Missing Neo4j credentials")
+    print(f"❌ Error loading secrets: {e}")
+    # Fail the job task so the Databricks run is marked as FAILED
+    raise RuntimeError("FAILED: Missing Neo4j credentials")
 
 # COMMAND ----------
 # Test Neo4j connection
@@ -69,27 +66,26 @@ def test_neo4j_connection(uri, username, password):
         with driver.session() as session:
             result = session.run("RETURN 1 as test")
             value = result.single()["test"]
-            
             if value == 1:
                 print("✅ Neo4j connection successful")
-                
-                # Get database info
-                result = session.run("CALL dbms.components() YIELD name, versions, edition")
-                for record in result:
-                    print(f"   {record['name']}: {record['versions'][0]} ({record['edition']})")
-                
+                # Optional: lightweight metadata (avoid sensitive info)
+                try:
+                    comp = session.run("CALL dbms.components() YIELD name, versions, edition RETURN name, versions[0] as version, edition")
+                    for r in comp:
+                        print(f"   {r['name']}: {r['version']} ({r['edition']})")
+                except Exception:
+                    pass
                 driver.close()
                 return True
-        
         driver.close()
         return False
-    
     except Exception as e:
-        print(f"❌ Connection failed: {str(e)}")
+        print(f"❌ Connection failed: {e}")
         return False
 
 if not test_neo4j_connection(neo4j_uri, neo4j_username, neo4j_password):
-    dbutils.notebook.exit("FAILED: Cannot connect to Neo4j")
+    # Fail the job task so the Databricks run is marked as FAILED
+    raise RuntimeError("FAILED: Cannot connect to Neo4j")
 
 # COMMAND ----------
 # Read graph_ready tables and normalize to expected schemas
@@ -337,14 +333,12 @@ verify_neo4j_load(neo4j_uri, neo4j_username, neo4j_password)
 
 summary = {
     'nodes_loaded': nodes_loaded,
-    'relationships_loaded': relationships_loaded,
-    'neo4j_uri': neo4j_uri
+    'relationships_loaded': relationships_loaded
 }
 
 print("\n" + "="*60)
 print("LOADING SUMMARY")
 print("="*60)
-print(f"Neo4j URI: {neo4j_uri}")
 print(f"Nodes Loaded: {summary['nodes_loaded']}")
 print(f"Relationships Loaded: {summary['relationships_loaded']}")
 print(f"\n✅ Data successfully loaded to Neo4j Aura")
