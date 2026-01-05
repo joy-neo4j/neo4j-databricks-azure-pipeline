@@ -1,20 +1,17 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Graph Transformation Notebook
+# MAGIC # Graph Transformation (Silver → Graph Ready)
 # MAGIC 
-# MAGIC This notebook transforms relational data from Silver layer into graph-ready format in Gold layer.
+# MAGIC Transforms Silver tables into Neo4j-ready nodes and relationships.
 # MAGIC 
-# MAGIC **Graph Schema:**
-# MAGIC - Nodes: Customer, Product, Order
-# MAGIC - Relationships: PLACED_ORDER, CONTAINS_PRODUCT
+# MAGIC Parameters:
+# MAGIC - `catalog`: Unity Catalog name (optional)
 # MAGIC 
-# MAGIC **Parameters:**
-# MAGIC - `environment`: Target environment
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Setup
+# MAGIC Outputs (Graph Ready):
+# MAGIC - {catalog}.graph_ready.customer_nodes
+# MAGIC - {catalog}.graph_ready.product_nodes
+# MAGIC - {catalog}.graph_ready.purchased_relationships
+# MAGIC - {catalog}.graph_ready.reviewed_relationships
 
 # COMMAND ----------
 
@@ -24,24 +21,17 @@
 
 from pyspark.sql import functions as F
 from pyspark.sql.types import *
-from pyspark.sql.window import Window
 import yaml
-from pyspark.sql import SparkSession
 
-# COMMAND ----------
+# Catalog resolution with optional override
+dbutils.widgets.text("catalog", "", "Unity Catalog name")
+catalog_param = dbutils.widgets.get("catalog")
 
-# MAGIC %md
-# MAGIC ## Load Data from Silver Layer
-
-# COMMAND ----------
-
-# Resolve Unity Catalog (prefer 'neo4j_pipeline', else first available)
 def _get_catalog_names():
     try:
         df = spark.sql("SHOW CATALOGS")
-        rows = df.collect()
         names = []
-        for r in rows:
+        for r in df.collect():
             for attr in ("catalog_name", "catalog", "name"):
                 if hasattr(r, attr):
                     names.append(getattr(r, attr))
@@ -51,310 +41,114 @@ def _get_catalog_names():
         return []
 
 catalog_names = _get_catalog_names()
-if not catalog_names:
-    raise Exception("No Unity Catalogs found. Please ensure Unity Catalog is enabled and a catalog exists.")
-
 preferred_catalog = "neo4j_pipeline"
-CATALOG = preferred_catalog if preferred_catalog in catalog_names else catalog_names[0]
-
-print(f"Using catalog: {CATALOG}")
+CATALOG = catalog_param or (preferred_catalog if preferred_catalog in catalog_names else (catalog_names[0] if catalog_names else preferred_catalog))
 spark.sql(f"USE CATALOG {CATALOG}")
-
-# Read Silver tables
-customers_df = spark.table(f"{CATALOG}.silver.customers")
-products_df = spark.table(f"{CATALOG}.silver.products")
-orders_df = spark.table(f"{CATALOG}.silver.orders")
-
-print(f"Customers: {customers_df.count()}")
-print(f"Products: {products_df.count()}")
-print(f"Orders: {orders_df.count()}")
+print(f"Using catalog: {CATALOG}")
+spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.graph_ready")
 
 # COMMAND ----------
+# Read Silver tables (fail fast with a clear message)
 
-# MAGIC %md
-# MAGIC ## Transform to Graph Nodes
+def must_table(t):
+    try:
+        df = spark.table(t)
+        c = df.count()
+        print(f"Loaded {c} rows from {t}")
+        return df
+    except Exception as e:
+        raise RuntimeError(f"Missing required table {t}: {e}")
+
+customers_df = must_table(f"{CATALOG}.silver.customers")
+products_df  = must_table(f"{CATALOG}.silver.products")
+orders_df    = must_table(f"{CATALOG}.silver.orders")
+reviews_df   = must_table(f"{CATALOG}.silver.reviews")
 
 # COMMAND ----------
+# Build nodes (Graph Ready)
 
-# Customer Nodes
 customer_nodes = customers_df.select(
     F.col("id").alias("node_id"),
-    F.lit("Customer").alias("node_label"),
     F.to_json(F.struct(
         F.col("name"),
         F.col("email"),
-        F.col("created_at")
-    )).alias("properties"),
-    F.current_timestamp().alias("transform_timestamp")
-)
+        F.col("age"),
+        F.col("gender"),
+        F.col("city"),
+        F.col("country"),
+        F.col("customer_segment"),
+        F.col("preferences"),
+        F.col("age_group")
+    )).alias("properties")
+).withColumn("label", F.lit("Customer"))
 
-print(f"\nCustomer nodes: {customer_nodes.count()}")
-customer_nodes.show(5, truncate=False)
-
-# COMMAND ----------
-
-# Product Nodes
 product_nodes = products_df.select(
     F.col("id").alias("node_id"),
-    F.lit("Product").alias("node_label"),
     F.to_json(F.struct(
         F.col("name"),
+        F.col("description"),
         F.col("category"),
+        F.col("subcategory"),
         F.col("price"),
-        F.col("created_at")
-    )).alias("properties"),
-    F.current_timestamp().alias("transform_timestamp")
-)
-
-print(f"\nProduct nodes: {product_nodes.count()}")
-product_nodes.show(5, truncate=False)
+        F.col("stock_quantity"),
+        F.col("price_tier"),
+        F.col("in_stock")
+    )).alias("properties")
+).withColumn("label", F.lit("Product"))
 
 # COMMAND ----------
+# Build relationships (Graph Ready)
 
-# Order Nodes
-order_nodes = orders_df.select(
-    F.col("id").alias("node_id"),
-    F.lit("Order").alias("node_label"),
+purchased_rels = orders_df.select(
+    F.col("customer_id").alias("from_id"),
+    F.col("product_id").alias("to_id"),
     F.to_json(F.struct(
+        F.col("id").alias("order_id"),
+        F.col("quantity"),
+        F.col("total_amount"),
         F.col("order_date"),
-        F.col("total_amount")
-    )).alias("properties"),
-    F.current_timestamp().alias("transform_timestamp")
-)
+        F.col("status"),
+        F.col("payment_method")
+    )).alias("properties")
+).withColumn("rel_type", F.lit("PURCHASED"))
 
-print(f"\nOrder nodes: {order_nodes.count()}")
-order_nodes.show(5, truncate=False)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Transform to Graph Relationships
-
-# COMMAND ----------
-
-# Customer PLACED_ORDER Relationship
-placed_order_rels = orders_df.select(
-    F.concat(F.lit("customer_"), F.col("customer_id"), F.lit("_order_"), F.col("id")).alias("relationship_id"),
-    F.lit("PLACED_ORDER").alias("relationship_type"),
-    F.col("customer_id").alias("source_node_id"),
-    F.lit("Customer").alias("source_node_label"),
-    F.col("id").alias("target_node_id"),
-    F.lit("Order").alias("target_node_label"),
+reviewed_rels = reviews_df.select(
+    F.col("customer_id").alias("from_id"),
+    F.col("product_id").alias("to_id"),
     F.to_json(F.struct(
-        F.col("order_date")
-    )).alias("properties"),
-    F.current_timestamp().alias("transform_timestamp")
-)
-
-print(f"\nPLACED_ORDER relationships: {placed_order_rels.count()}")
-placed_order_rels.show(5, truncate=False)
-
-# COMMAND ----------
-
-# Order CONTAINS_PRODUCT Relationship
-contains_product_rels = orders_df.select(
-    F.concat(F.lit("order_"), F.col("id"), F.lit("_product_"), F.col("product_id")).alias("relationship_id"),
-    F.lit("CONTAINS_PRODUCT").alias("relationship_type"),
-    F.col("id").alias("source_node_id"),
-    F.lit("Order").alias("source_node_label"),
-    F.col("product_id").alias("target_node_id"),
-    F.lit("Product").alias("target_node_label"),
-    F.to_json(F.struct(
-        F.col("quantity")
-    )).alias("properties"),
-    F.current_timestamp().alias("transform_timestamp")
-)
-
-print(f"\nCONTAINS_PRODUCT relationships: {contains_product_rels.count()}")
-contains_product_rels.show(5, truncate=False)
+        F.col("rating"),
+        F.col("review_text"),
+        F.col("review_date"),
+        F.col("sentiment")
+    )).alias("properties")
+).withColumn("rel_type", F.lit("REVIEWED"))
 
 # COMMAND ----------
+# Write Graph Ready tables
 
-# MAGIC %md
-# MAGIC ## Combine All Nodes and Relationships
+spark.sql(f"CREATE SCHEMA IF NOT EXISTS {CATALOG}.graph_ready")
 
-# COMMAND ----------
+customer_nodes.write.format("delta").mode("overwrite").saveAsTable(f"{CATALOG}.graph_ready.customer_nodes")
+print(f"✅ Wrote {customer_nodes.count()} → {CATALOG}.graph_ready.customer_nodes")
 
-# Union all nodes
-all_nodes = customer_nodes \
-    .union(product_nodes) \
-    .union(order_nodes)
+product_nodes.write.format("delta").mode("overwrite").saveAsTable(f"{CATALOG}.graph_ready.product_nodes")
+print(f"✅ Wrote {product_nodes.count()} → {CATALOG}.graph_ready.product_nodes")
 
-print(f"\nTotal nodes: {all_nodes.count()}")
+purchased_rels.write.format("delta").mode("overwrite").saveAsTable(f"{CATALOG}.graph_ready.purchased_relationships")
+print(f"✅ Wrote {purchased_rels.count()} → {CATALOG}.graph_ready.purchased_relationships")
 
-# Union all relationships
-all_relationships = placed_order_rels \
-    .union(contains_product_rels)
-
-print(f"Total relationships: {all_relationships.count()}")
+reviewed_rels.write.format("delta").mode("overwrite").saveAsTable(f"{CATALOG}.graph_ready.reviewed_relationships")
+print(f"✅ Wrote {reviewed_rels.count()} → {CATALOG}.graph_ready.reviewed_relationships")
 
 # COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Add Graph Metrics
-
-# COMMAND ----------
-
-# Add node degree (number of relationships)
-node_degrees = all_relationships \
-    .groupBy("source_node_id") \
-    .agg(F.count("*").alias("out_degree")) \
-    .union(
-        all_relationships
-        .groupBy("target_node_id")
-        .agg(F.count("*").alias("in_degree"))
-        .withColumnRenamed("target_node_id", "source_node_id")
-        .withColumnRenamed("in_degree", "out_degree")
-    ) \
-    .groupBy("source_node_id") \
-    .agg(F.sum("out_degree").alias("total_degree"))
-
-# Enrich nodes with degree information
-all_nodes_enriched = all_nodes.alias("n") \
-    .join(
-        node_degrees.alias("d"),
-        F.col("n.node_id") == F.col("d.source_node_id"),
-        "left"
-    ) \
-    .select(
-        "n.*",
-        F.coalesce(F.col("d.total_degree"), F.lit(0)).alias("node_degree")
-    )
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Write to Gold Layer
-
-# COMMAND ----------
-
-# Load configuration
-with open("/dbfs/FileStore/configs/data-sources.yml", "r") as f:
-    config = yaml.safe_load(f)
-
-gold_path = config['storage']['gold_path']
-
-# Write nodes
-nodes_path = f"{gold_path}/nodes"
-nodes_table = f"{CATALOG}.gold.nodes"
-
-all_nodes_enriched.write \
-    .format("delta") \
-    .mode("overwrite") \
-    .option("mergeSchema", "true") \
-    .option("path", nodes_path) \
-    .saveAsTable(nodes_table)
-
-print(f"✅ Nodes written to: {nodes_table}")
-
-# Write relationships
-relationships_path = f"{gold_path}/relationships"
-relationships_table = f"{CATALOG}.gold.relationships"
-
-all_relationships.write \
-    .format("delta") \
-    .mode("overwrite") \
-    .option("mergeSchema", "true") \
-    .option("path", relationships_path) \
-    .saveAsTable(relationships_table)
-
-print(f"✅ Relationships written to: {relationships_table}")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Graph Statistics
-
-# COMMAND ----------
+# Summary and Exit
 
 print("\n" + "="*60)
-print("GRAPH STATISTICS")
+print("GRAPH READY SUMMARY")
 print("="*60)
+print(f"Customer Nodes: {customer_nodes.count()}")
+print(f"Product Nodes:  {product_nodes.count()}")
+print(f"PURCHASED Rels: {purchased_rels.count()}")
+print(f"REVIEWED Rels:  {reviewed_rels.count()}")
 
-# Node statistics
-node_stats = all_nodes_enriched.groupBy("node_label").agg(
-    F.count("*").alias("count"),
-    F.avg("node_degree").alias("avg_degree"),
-    F.max("node_degree").alias("max_degree")
-)
-
-print("\nNode Statistics:")
-node_stats.show(truncate=False)
-
-# Relationship statistics
-rel_stats = all_relationships.groupBy("relationship_type").agg(
-    F.count("*").alias("count")
-)
-
-print("\nRelationship Statistics:")
-rel_stats.show(truncate=False)
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Data Quality Checks
-
-# COMMAND ----------
-
-print("\n" + "="*60)
-print("DATA QUALITY CHECKS")
-print("="*60)
-
-# Check for orphaned nodes (nodes with no relationships)
-orphaned_nodes = all_nodes_enriched.filter(F.col("node_degree") == 0)
-orphan_count = orphaned_nodes.count()
-
-if orphan_count > 0:
-    print(f"\n⚠️  Found {orphan_count} orphaned nodes")
-    orphaned_nodes.groupBy("node_label").count().show()
-else:
-    print("\n✅ No orphaned nodes found")
-
-# Check for invalid relationships (missing source or target nodes)
-nodes_ids = all_nodes.select("node_id").distinct()
-
-invalid_sources = all_relationships \
-    .join(nodes_ids, all_relationships.source_node_id == nodes_ids.node_id, "left_anti") \
-    .count()
-
-invalid_targets = all_relationships \
-    .join(nodes_ids, all_relationships.target_node_id == nodes_ids.node_id, "left_anti") \
-    .count()
-
-if invalid_sources > 0 or invalid_targets > 0:
-    print(f"\n⚠️  Found invalid relationships:")
-    print(f"  - Invalid sources: {invalid_sources}")
-    print(f"  - Invalid targets: {invalid_targets}")
-else:
-    print("\n✅ All relationships are valid")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Summary
-
-# COMMAND ----------
-
-summary = {
-    'nodes_total': all_nodes_enriched.count(),
-    'relationships_total': all_relationships.count(),
-    'orphaned_nodes': orphan_count,
-    'invalid_relationships': invalid_sources + invalid_targets
-}
-
-print("\n" + "="*60)
-print("TRANSFORMATION SUMMARY")
-print("="*60)
-print(f"\nTotal Nodes: {summary['nodes_total']}")
-print(f"Total Relationships: {summary['relationships_total']}")
-print(f"Orphaned Nodes: {summary['orphaned_nodes']}")
-print(f"Invalid Relationships: {summary['invalid_relationships']}")
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Exit
-
-# COMMAND ----------
-
-dbutils.notebook.exit(f"SUCCESS: Transformed {summary['nodes_total']} nodes and {summary['relationships_total']} relationships")
+dbutils.notebook.exit("SUCCESS: Graph Ready data prepared")
