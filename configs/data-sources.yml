@@ -4,32 +4,43 @@
 sources:
   - name: customers
     type: csv
-    path: /mnt/data/customers.csv
+    path: dbfs:/FileStore/sample-data/customers.csv
     schema:
       id: integer
       name: string
       email: string
       created_at: timestamp
+      age: integer
+      gender: string
+      city: string
+      country: string
+      signup_date: timestamp
+      customer_segment: string
+      preferences: string
     validation:
       required_columns: [id, name, email]
       unique_columns: [id, email]
     
   - name: products
     type: csv
-    path: /mnt/data/products.csv
+    path: dbfs:/FileStore/sample-data/products.csv
     schema:
       id: integer
       name: string
+      description: string
       category: string
+      subcategory: string
       price: decimal
       created_at: timestamp
+      stock_quantity: integer
+      supplier_id: integer
     validation:
       required_columns: [id, name, price]
       unique_columns: [id]
   
   - name: orders
     type: csv
-    path: /mnt/data/orders.csv
+    path: dbfs:/FileStore/sample-data/orders.csv
     schema:
       id: integer
       customer_id: integer
@@ -37,6 +48,8 @@ sources:
       quantity: integer
       total_amount: decimal
       order_date: timestamp
+      status: string
+      payment_method: string
     validation:
       required_columns: [id, customer_id, product_id, quantity, total_amount]
       unique_columns: [id]
@@ -46,11 +59,56 @@ sources:
         - column: product_id
           references: products.id
 
+  - name: reviews
+    type: csv
+    path: dbfs:/FileStore/sample-data/reviews.csv
+    schema:
+      id: integer
+      customer_id: integer
+      product_id: integer
+      rating: integer
+      review_text: string
+      review_date: timestamp
+    validation:
+      required_columns: [id, customer_id, product_id, rating]
+      unique_columns: [id]
+      foreign_keys:
+        - column: customer_id
+          references: customers.id
+        - column: product_id
+          references: products.id
+
+  - name: suppliers
+    type: csv
+    path: dbfs:/FileStore/sample-data/suppliers.csv
+    schema:
+      id: integer
+      name: string
+      country: string
+      contact_email: string
+      reliability_score: double
+    validation:
+      required_columns: [id, name]
+      unique_columns: [id]
+
+  - name: categories
+    type: csv
+    path: dbfs:/FileStore/sample-data/categories.csv
+    schema:
+      id: integer
+      name: string
+      description: string
+      parent_category: string
+      active: boolean
+    validation:
+      required_columns: [id, name]
+      unique_columns: [id]
+
 # Storage Configuration
 storage:
-  bronze_path: /mnt/data/bronze
-  silver_path: /mnt/data/silver
-  gold_path: /mnt/data/gold
+  bronze_path: dbfs:/tables/bronze
+  silver_path: dbfs:/tables/silver
+  graph_ready_path: dbfs:/tables/graph_ready
   checkpoint_path: /mnt/data/checkpoints
   
 # Processing Configuration
@@ -59,6 +117,7 @@ processing:
   max_retries: 3
   timeout_seconds: 3600
   enable_streaming: false
+  enable_validation: true
   
 # Data Quality Rules
 data_quality:

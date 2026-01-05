@@ -176,16 +176,20 @@ def promote_customers():
     df = spark.table(f"{CATALOG}.bronze.customers")
     cleaned = df.dropDuplicates(["id"]) \
         .filter(F.col("email").isNotNull()) \
-        .filter(F.col("email").rlike("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) \
-        .withColumn("age_group",
+        .filter(F.col("email").rlike("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"))
+    
+    # Add age_group only if age column exists
+    if "age" in df.columns:
+        cleaned = cleaned.withColumn("age_group",
             F.when(F.col("age") < 25, "18-24")
              .when(F.col("age") < 35, "25-34")
              .when(F.col("age") < 45, "35-44")
              .when(F.col("age") < 55, "45-54")
              .when(F.col("age") < 65, "55-64")
              .otherwise("65+")
-        ) \
-        .withColumn("processing_timestamp", F.current_timestamp())
+        )
+    
+    cleaned = cleaned.withColumn("processing_timestamp", F.current_timestamp())
     cleaned.write.format("delta").mode("overwrite").saveAsTable(f"{CATALOG}.silver.customers")
     print(f"✅ Cleaned {cleaned.count()} customers → {CATALOG}.silver.customers")
 
@@ -198,17 +202,26 @@ def promote_products():
              .when(F.col("price") < 200, "Mid-range")
              .when(F.col("price") < 500, "Premium")
              .otherwise("Luxury")
-        ) \
-        .withColumn("in_stock", F.col("stock_quantity") > 0) \
-        .withColumn("processing_timestamp", F.current_timestamp())
+        )
+    
+    # Add in_stock only if stock_quantity exists
+    if "stock_quantity" in df.columns:
+        cleaned = cleaned.withColumn("in_stock", F.col("stock_quantity") > 0)
+    
+    cleaned = cleaned.withColumn("processing_timestamp", F.current_timestamp())
     cleaned.write.format("delta").mode("overwrite").saveAsTable(f"{CATALOG}.silver.products")
     print(f"✅ Cleaned {cleaned.count()} products → {CATALOG}.silver.products")
 
 def promote_orders():
     df = spark.table(f"{CATALOG}.bronze.orders")
     cleaned = df.dropDuplicates(["id"]) \
-        .filter(F.col("total_amount") > 0) \
-        .filter(F.col("status").isin(["completed", "shipped", "processing", "cancelled"])) \
+        .filter(F.col("total_amount") > 0)
+    
+    # Add status filter only if status column exists
+    if "status" in df.columns:
+        cleaned = cleaned.filter(F.col("status").isin(["completed", "shipped", "processing", "cancelled"]))
+    
+    cleaned = cleaned \
         .withColumn("order_year", F.year(F.col("order_date"))) \
         .withColumn("order_month", F.month(F.col("order_date"))) \
         .withColumn("order_quarter", F.quarter(F.col("order_date"))) \
@@ -217,17 +230,54 @@ def promote_orders():
     print(f"✅ Cleaned {cleaned.count()} orders → {CATALOG}.silver.orders")
 
 def promote_reviews():
-    df = spark.table(f"{CATALOG}.bronze.reviews")
-    cleaned = df.dropDuplicates(["id"]) \
-        .filter(F.col("rating").between(1, 5)) \
-        .withColumn("sentiment",
-            F.when(F.col("rating") >= 4, "Positive")
-             .when(F.col("rating") == 3, "Neutral")
-             .otherwise("Negative")
-        ) \
-        .withColumn("processing_timestamp", F.current_timestamp())
-    cleaned.write.format("delta").mode("overwrite").saveAsTable(f"{CATALOG}.silver.reviews")
-    print(f"✅ Cleaned {cleaned.count()} reviews → {CATALOG}.silver.reviews")
+    try:
+        df = spark.table(f"{CATALOG}.bronze.reviews")
+        cleaned = df.dropDuplicates(["id"]) \
+            .filter(F.col("rating").between(1, 5)) \
+            .withColumn("sentiment",
+                F.when(F.col("rating") >= 4, "Positive")
+                 .when(F.col("rating") == 3, "Neutral")
+                 .otherwise("Negative")
+            ) \
+            .withColumn("processing_timestamp", F.current_timestamp())
+        cleaned.write.format("delta").mode("overwrite").saveAsTable(f"{CATALOG}.silver.reviews")
+        print(f"✅ Cleaned {cleaned.count()} reviews → {CATALOG}.silver.reviews")
+    except Exception as e:
+        error_msg = str(e)
+        if "TABLE_OR_VIEW_NOT_FOUND" in error_msg or "Path does not exist" in error_msg:
+            print(f"⚠️  Skipping reviews: Bronze table not found")
+        else:
+            raise
+
+def promote_suppliers():
+    try:
+        df = spark.table(f"{CATALOG}.bronze.suppliers")
+        cleaned = df.dropDuplicates(["id"]) \
+            .filter(F.col("name").isNotNull()) \
+            .withColumn("processing_timestamp", F.current_timestamp())
+        cleaned.write.format("delta").mode("overwrite").saveAsTable(f"{CATALOG}.silver.suppliers")
+        print(f"✅ Cleaned {cleaned.count()} suppliers → {CATALOG}.silver.suppliers")
+    except Exception as e:
+        error_msg = str(e)
+        if "TABLE_OR_VIEW_NOT_FOUND" in error_msg or "Path does not exist" in error_msg:
+            print(f"⚠️  Skipping suppliers: Bronze table not found")
+        else:
+            raise
+
+def promote_categories():
+    try:
+        df = spark.table(f"{CATALOG}.bronze.categories")
+        cleaned = df.dropDuplicates(["id"]) \
+            .filter(F.col("name").isNotNull()) \
+            .withColumn("processing_timestamp", F.current_timestamp())
+        cleaned.write.format("delta").mode("overwrite").saveAsTable(f"{CATALOG}.silver.categories")
+        print(f"✅ Cleaned {cleaned.count()} categories → {CATALOG}.silver.categories")
+    except Exception as e:
+        error_msg = str(e)
+        if "TABLE_OR_VIEW_NOT_FOUND" in error_msg or "Path does not exist" in error_msg:
+            print(f"⚠️  Skipping categories: Bronze table not found")
+        else:
+            raise
 
 # Iterate configured sources, run validations, then promote with cleaning if source is recognized
 for source in sources:
@@ -278,6 +328,14 @@ try:
     promote_reviews()
 except Exception as e:
     print(f"❌ Reviews promotion failed: {e}")
+try:
+    promote_suppliers()
+except Exception as e:
+    print(f"❌ Suppliers promotion failed: {e}")
+try:
+    promote_categories()
+except Exception as e:
+    print(f"❌ Categories promotion failed: {e}")
 
 # COMMAND ----------
 # Save Validation Report (unchanged)

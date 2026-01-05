@@ -2,6 +2,11 @@ name: 07 - Neo4j Integration Showcase (Single Environment)
 
 on:
   workflow_dispatch:
+    inputs:
+      skip_ingestion:
+        description: "Skip CSV ingestion (expects Bronze to exist in selected catalog)"
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -28,6 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install databricks-cli databricks-sdk neo4j
+          databricks jobs configure --version=2.1
 
       - name: Configure Databricks
         env:
@@ -66,9 +72,11 @@ jobs:
           databricks workspace import --overwrite --language PYTHON --format SOURCE databricks/notebooks/neo4j-loading.py /Shared/neo4j-pipeline/neo4j-loading
 
       - name: Run E-commerce Data Ingestion
+        if: ${{ !inputs.skip_ingestion }}
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+          CATALOG_NAME: dbx_poc
         run: |
           cat > /tmp/run-ingestion.py << 'EOF'
           from databricks.sdk import WorkspaceClient
@@ -86,34 +94,38 @@ jobs:
           def ensure_job():
             w = get_client()
             jobs = list(w.jobs.list(name=JOB_NAME))
-            if jobs:
-              return jobs[0]
-            print(f"Job '{JOB_NAME}' not found. Creating it now…")
+            cat = os.environ.get("CATALOG_NAME", "neo4j_pipeline")
             payload = {
-                "name": JOB_NAME,
-                "timeout_seconds": 3600,
-                "max_concurrent_runs": 1,
-                "tasks": [
-                  {
-                    "task_key": "csv_ingestion",
-                    "description": "Ingest CSV data from storage",
-                    "notebook_task": {
-                      "notebook_path": "/Shared/neo4j-pipeline/csv-ingestion"
-                    },
-                    "new_cluster": {
-                      "spark_version": "13.3.x-scala2.12",
-                      "node_type_id": "Standard_DS3_v2",
-                      "num_workers": 2,
-                      "spark_conf": {"spark.databricks.delta.preview.enabled": "true"}
-                    },
-                    "timeout_seconds": 1200
-                  }
-                ]
-              }
+              "name": JOB_NAME,
+              "timeout_seconds": 3600,
+              "max_concurrent_runs": 1,
+              "tasks": [
+                {
+                  "task_key": "csv_ingestion",
+                  "description": "Ingest CSV data from storage",
+                  "notebook_task": {
+                    "notebook_path": "/Shared/neo4j-pipeline/csv-ingestion",
+                    "base_parameters": {"catalog": cat}
+                  },
+                  "new_cluster": {
+                    "spark_version": "13.3.x-scala2.12",
+                    "node_type_id": "Standard_DS3_v2",
+                    "num_workers": 2,
+                    "spark_conf": {"spark.databricks.delta.preview.enabled": "true"}
+                  },
+                  "timeout_seconds": 1200
+                }
+              ]
+            }
             with open("/tmp/ingestion-job.json", "w") as f:
               json.dump(payload, f)
-            subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/ingestion-job.json"], check=True)
-            return list(get_client().jobs.list(name=JOB_NAME))[0]
+            if jobs:
+              job_id = jobs[0].job_id
+              subprocess.run(["databricks", "jobs", "reset", "--job-id", str(job_id), "--json-file", "/tmp/ingestion-job.json"], check=True)
+              return list(get_client().jobs.list(name=JOB_NAME))[0]
+            else:
+              subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/ingestion-job.json"], check=True)
+              return list(get_client().jobs.list(name=JOB_NAME))[0]
 
           def write_summary(job_id: int, run_id: int, state: str, result: str, details: str = "", state_msg: str = ""):
             try:
@@ -232,7 +244,7 @@ jobs:
           python /tmp/run-ingestion.py
 
       - name: Upload Ingestion Summary
-        if: ${{ always() }}
+        if: ${{ always() && !inputs.skip_ingestion }}
         uses: actions/upload-artifact@v4
         with:
           name: ingestion-summary
@@ -240,7 +252,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Append Ingestion Summary to Job Summary
-        if: ${{ always() }}
+        if: ${{ always() && !inputs.skip_ingestion }}
         run: |
           if [ -f /tmp/ingestion-summary.txt ]; then
             echo "### Ingestion Summary" >> $GITHUB_STEP_SUMMARY
@@ -257,7 +269,6 @@ jobs:
           fi
 
       - name: Run Graph Transformation and Neo4j Loading
-        if: ${{ success() }}
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}

@@ -31,8 +31,10 @@ from pyspark.sql import SparkSession
 
 # Get parameters (single-environment run)
 dbutils.widgets.text("source_name", "", "Source Name (optional)")
+dbutils.widgets.text("catalog", "", "Unity Catalog name")
 
 source_name = dbutils.widgets.get("source_name")
+catalog_param = dbutils.widgets.get("catalog")
 
 print(f"Source: {source_name or 'All sources'}")
 
@@ -78,7 +80,7 @@ if not catalog_names:
     raise Exception("No Unity Catalogs found. Please ensure Unity Catalog is enabled and a catalog exists.")
 
 preferred_catalog = "neo4j_pipeline"
-CATALOG = preferred_catalog if preferred_catalog in catalog_names else catalog_names[0]
+CATALOG = catalog_param or (preferred_catalog if preferred_catalog in catalog_names else catalog_names[0])
 
 print(f"Using catalog: {CATALOG}")
 spark.sql(f"USE CATALOG {CATALOG}")
