@@ -123,14 +123,25 @@ jobs:
               ]
             }
             with open("/tmp/ingestion-job.json", "w") as f:
-              json.dump(payload, f)
+                json.dump(payload, f)
+
             if jobs:
-              job_id = jobs[0].job_id
-              subprocess.run(["databricks", "jobs", "reset", "--job-id", str(job_id), "--json-file", "/tmp/ingestion-job.json"], check=True)
-              return list(get_client().jobs.list(name=JOB_NAME))[0]
+                job_id = jobs[0].job_id
+                reset_body = {"job_id": job_id, "new_settings": payload}
+                with open("/tmp/ingestion-reset.json", "w") as f:
+                    json.dump(reset_body, f)
+                # Go CLI: pass the entire request via --json
+                subprocess.run(
+                    ["databricks", "jobs", "reset", "--json", "@/tmp/ingestion-reset.json"],
+                    check=True
+                )
+                return list(get_client().jobs.list(name=JOB_NAME))[0]
             else:
-              subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/ingestion-job.json"], check=True)
-              return list(get_client().jobs.list(name=JOB_NAME))[0]
+                subprocess.run(
+                    ["databricks", "jobs", "create", "--json", "@/tmp/ingestion-job.json"],
+                    check=True
+                )
+                return list(get_client().jobs.list(name=JOB_NAME))[0]
 
           def write_summary(job_id: int, run_id: int, state: str, result: str, details: str = "", state_msg: str = ""):
             try:
@@ -349,23 +360,26 @@ jobs:
                 }
               ]
             }
-
-            # Write desired settings to JSON
+            
             with open("/tmp/neo4j-loading-job.json", "w") as f:
-              json.dump(payload, f)
+                json.dump(payload, f)
 
             if jobs:
-              # Job exists: reset with new settings so base_parameters take effect
-              job_id = jobs[0].job_id
-              subprocess.run(
-                ["databricks", "jobs", "reset", "--job-id", str(job_id), "--json-file", "/tmp/neo4j-loading-job.json"],
-                check=True
-              )
-              return list(get_client().jobs.list(name=JOB_NAME))[0]
+                job_id = jobs[0].job_id
+                reset_body = {"job_id": job_id, "new_settings": payload}
+                with open("/tmp/neo4j-loading-reset.json", "w") as f:
+                    json.dump(reset_body, f)
+                subprocess.run(
+                    ["databricks", "jobs", "reset", "--json", "@/tmp/neo4j-loading-reset.json"],
+                    check=True
+                )
+                return list(get_client().jobs.list(name=JOB_NAME))[0]
             else:
-              # Create new job
-              subprocess.run(["databricks", "jobs", "create", "--json-file", "/tmp/neo4j-loading-job.json"], check=True)
-              return list(get_client().jobs.list(name=JOB_NAME))[0]
+                subprocess.run(
+                    ["databricks", "jobs", "create", "--json", "@/tmp/neo4j-loading-job.json"],
+                    check=True
+                )
+                return list(get_client().jobs.list(name=JOB_NAME))[0]
 
           def write_summary(job_id: int, run_id: int, state: str, result: str, details: str = "", state_msg: str = ""):
             try:
