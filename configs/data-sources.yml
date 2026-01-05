@@ -14,6 +14,7 @@ sources:
       gender: string
       city: string
       country: string
+      signup_date: timestamp
       customer_segment: string
       preferences: string
     validation:
