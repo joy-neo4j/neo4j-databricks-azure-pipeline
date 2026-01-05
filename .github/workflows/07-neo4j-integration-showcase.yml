@@ -30,27 +30,25 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install Databricks CLI (Go) and Python SDK
         run: |
-          pip install databricks-cli databricks-sdk neo4j
-          databricks jobs configure --version=2.1
+          set -euo pipefail
+          pip install databricks-sdk neo4j
+          curl -fsSL https://raw.githubusercontent.com/databricks/cli/main/install.sh | sh
+          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
 
-      - name: Configure Databricks
-        env:
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-        run: |
-          cat > ~/.databrickscfg << EOF
-          [DEFAULT]
-          host = ${{ secrets.DATABRICKS_HOST }}
-          token = $DATABRICKS_TOKEN
-          EOF
-
-      - name: Make Databricks env available to all steps
+      - name: Export Databricks env to all steps
         run: |
           echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
           echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
-          echo "DATABRICKS_CONFIG_PROFILE=DEFAULT" >> $GITHUB_ENV
-          echo "DATABRICKS_CONFIG_FILE=$HOME/.databrickscfg" >> $GITHUB_ENV
+
+      - name: Configure Jobs API version
+        run: |
+          databricks jobs configure --version=2.1
+
+      - name: Verify Databricks CLI auth (optional)
+        run: |
+          databricks auth whoami || true
 
       - name: Upload configs to DBFS
         run: |
