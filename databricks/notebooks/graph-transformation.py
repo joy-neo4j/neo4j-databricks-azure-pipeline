@@ -65,61 +65,53 @@ orders_df    = must_table(f"{CATALOG}.silver.orders")
 reviews_df   = must_table(f"{CATALOG}.silver.reviews")
 
 # COMMAND ----------
-# Build nodes (Graph Ready)
+# Build nodes (Graph Ready) with robust struct creation
+
+def struct_if_exists(df, *cols):
+    """Build a struct only with columns that exist in the dataframe."""
+    available_cols = [F.col(c) for c in cols if c in df.columns]
+    if not available_cols:
+        return F.struct()
+    return F.struct(*available_cols)
 
 customer_nodes = customers_df.select(
     F.col("id").alias("node_id"),
-    F.to_json(F.struct(
-        F.col("name"),
-        F.col("email"),
-        F.col("age"),
-        F.col("gender"),
-        F.col("city"),
-        F.col("country"),
-        F.col("customer_segment"),
-        F.col("preferences"),
-        F.col("age_group")
+    F.to_json(struct_if_exists(
+        customers_df,
+        "name", "email", "age", "gender", "city", "country",
+        "customer_segment", "preferences", "age_group"
     )).alias("properties")
 ).withColumn("label", F.lit("Customer"))
 
 product_nodes = products_df.select(
     F.col("id").alias("node_id"),
-    F.to_json(F.struct(
-        F.col("name"),
-        F.col("description"),
-        F.col("category"),
-        F.col("subcategory"),
-        F.col("price"),
-        F.col("stock_quantity"),
-        F.col("price_tier"),
-        F.col("in_stock")
+    F.to_json(struct_if_exists(
+        products_df,
+        "name", "description", "category", "subcategory", "price",
+        "stock_quantity", "price_tier", "in_stock"
     )).alias("properties")
 ).withColumn("label", F.lit("Product"))
 
 # COMMAND ----------
 # Build relationships (Graph Ready)
 
+# Build purchased relationships with order_id included
+purchased_props_cols = ["quantity", "total_amount", "order_date", "status", "payment_method"]
+purchased_props_struct_cols = [F.col(c) for c in purchased_props_cols if c in orders_df.columns]
+purchased_props_struct_cols.insert(0, F.col("id").alias("order_id"))
+
 purchased_rels = orders_df.select(
     F.col("customer_id").alias("from_id"),
     F.col("product_id").alias("to_id"),
-    F.to_json(F.struct(
-        F.col("id").alias("order_id"),
-        F.col("quantity"),
-        F.col("total_amount"),
-        F.col("order_date"),
-        F.col("status"),
-        F.col("payment_method")
-    )).alias("properties")
+    F.to_json(F.struct(*purchased_props_struct_cols)).alias("properties")
 ).withColumn("rel_type", F.lit("PURCHASED"))
 
 reviewed_rels = reviews_df.select(
     F.col("customer_id").alias("from_id"),
     F.col("product_id").alias("to_id"),
-    F.to_json(F.struct(
-        F.col("rating"),
-        F.col("review_text"),
-        F.col("review_date"),
-        F.col("sentiment")
+    F.to_json(struct_if_exists(
+        reviews_df,
+        "rating", "review_text", "review_date", "sentiment"
     )).alias("properties")
 ).withColumn("rel_type", F.lit("REVIEWED"))
 
