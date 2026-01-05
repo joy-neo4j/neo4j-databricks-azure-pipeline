@@ -45,6 +45,13 @@ jobs:
           token = $DATABRICKS_TOKEN
           EOF
 
+      - name: Make Databricks env available to all steps
+        run: |
+          echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
+          echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
+          echo "DATABRICKS_CONFIG_PROFILE=DEFAULT" >> $GITHUB_ENV
+          echo "DATABRICKS_CONFIG_FILE=$HOME/.databrickscfg" >> $GITHUB_ENV
+
       - name: Upload configs to DBFS
         run: |
           set -euo pipefail
