@@ -9,7 +9,7 @@
 # MAGIC - `batch_size`: Batch size for loading (default: 1000)
 
 # COMMAND ----------
-
+# MAGIC %pip install neo4j
 from pyspark.sql import functions as F
 from neo4j import GraphDatabase
 import json
