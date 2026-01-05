@@ -207,17 +207,20 @@ jobs:
                     details = out.error
                 except Exception as e:
                   details = f"No run output available: {e}"
-                effective_result = task_result_state or result_state or "FAILED"
-                # Derive success from notebook result text if result_state is missing
-                if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
+                effective_result = task_result_state or result_state or ""
+                text = (details or "")
+                text_lower = text.lower()
+                if ("failed:" in text_lower) or ("error" in text_lower):
+                  effective_result = "FAILED"
+                elif ("success:" in text_lower) and not effective_result:
                   effective_result = "SUCCESS"
                 if effective_result == "SUCCESS":
                   write_summary(job.job_id, run.run_id, state or (task_life_cycle_state or ""), effective_result, details, state_msg)
-                  print("✅ Ingestion completed successfully (result_state)")
+                  print("✅ Ingestion completed successfully")
                   break
                 else:
                   write_summary(job.job_id, run.run_id, state or (task_life_cycle_state or ""), effective_result, details, state_msg)
-                  print(f"❌ Ingestion failed (result_state): {effective_result}")
+                  print(f"❌ Ingestion failed: {effective_result or 'FAILED'}")
                   raise SystemExit(1)
               # Global terminal life-cycle states
               if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
@@ -230,9 +233,12 @@ jobs:
                     details = out.error
                 except Exception as e:
                   details = f"No run output available: {e}"
-                effective_result = result_state or task_result_state or "FAILED"
-                # Derive success from notebook result text if result_state is missing
-                if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
+                effective_result = result_state or task_result_state or ""
+                text = (details or "")
+                text_lower = text.lower()
+                if ("failed:" in text_lower) or ("error" in text_lower):
+                  effective_result = "FAILED"
+                elif ("success:" in text_lower) and not effective_result:
                   effective_result = "SUCCESS"
                 if effective_result == "SUCCESS":
                   write_summary(job.job_id, run.run_id, state, effective_result, details, state_msg)
@@ -240,7 +246,7 @@ jobs:
                   break
                 else:
                   write_summary(job.job_id, run.run_id, state, effective_result, details, state_msg)
-                  print(f"❌ Ingestion failed: {effective_result}")
+                  print(f"❌ Ingestion failed: {effective_result or 'FAILED'}")
                   raise SystemExit(1)
               # If the task itself has finished but cluster is still terminating, allow early exit on success
               if (task_life_cycle_state in ["TERMINATED", "SKIPPED"]) and (task_result_state == "SUCCESS"):
@@ -449,8 +455,12 @@ jobs:
                 except Exception as e:
                   details = f"No run output available: {e}"
 
-                effective_result = task_result_state or result_state or "FAILED"
-                if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
+                effective_result = task_result_state or result_state or ""
+                text = (details or "")
+                text_lower = text.lower()
+                if ("failed:" in text_lower) or ("error" in text_lower):
+                  effective_result = "FAILED"
+                elif ("success:" in text_lower) and not effective_result:
                   effective_result = "SUCCESS"
 
                 if effective_result == "SUCCESS":
@@ -459,7 +469,7 @@ jobs:
                   break
                 else:
                   write_summary(job.job_id, run.run_id, state or (task_life_cycle_state or ""), effective_result, details, state_msg)
-                  print(f"❌ Neo4j loading failed: {effective_result}")
+                  print(f"❌ Neo4j loading failed: {effective_result or 'FAILED'}")
                   raise SystemExit(1)
 
               if state in ["TERMINATED", "SKIPPED", "INTERNAL_ERROR"]:
@@ -477,8 +487,12 @@ jobs:
                 except Exception as e:
                   details = f"No run output available: {e}"
 
-                effective_result = result_state or task_result_state or "FAILED"
-                if effective_result not in terminal_results and isinstance(details, str) and "SUCCESS:" in details:
+                effective_result = result_state or task_result_state or ""
+                text = (details or "")
+                text_lower = text.lower()
+                if ("failed:" in text_lower) or ("error" in text_lower):
+                  effective_result = "FAILED"
+                elif ("success:" in text_lower) and not effective_result:
                   effective_result = "SUCCESS"
 
                 if effective_result == "SUCCESS":
@@ -487,7 +501,7 @@ jobs:
                   break
                 else:
                   write_summary(job.job_id, run.run_id, state, effective_result, details, state_msg)
-                  print(f"❌ Neo4j loading failed: {effective_result}")
+                  print(f"❌ Neo4j loading failed: {effective_result or 'FAILED'}")
                   raise SystemExit(1)
 
               if (task_life_cycle_state in ["TERMINATED", "SKIPPED"]) and (task_result_state == "SUCCESS"):
