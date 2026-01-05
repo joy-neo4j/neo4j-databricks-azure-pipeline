@@ -34,7 +34,7 @@ jobs:
         run: |
           set -euo pipefail
           pip install databricks-sdk neo4j
-          curl -fsSL https://raw.githubusercontent.com/databricks/cli/main/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
           echo "$HOME/.databricks/bin" >> $GITHUB_PATH
 
       - name: Export Databricks env to all steps
