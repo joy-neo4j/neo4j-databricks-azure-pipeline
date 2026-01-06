@@ -56,7 +56,6 @@ jobs:
           databricks fs mkdirs dbfs:/FileStore/configs || true
           databricks fs cp configs/data-sources.yml dbfs:/FileStore/configs/data-sources.yml --overwrite
           databricks fs cp configs/cluster-configurations.yml dbfs:/FileStore/configs/cluster-configurations.yml --overwrite
-          # Removed: monitoring-config.yml and secrets-config.yml uploads (no longer used)
           databricks fs mkdirs dbfs:/FileStore/sample-data || true
           databricks fs cp sample-data/customers.csv dbfs:/FileStore/sample-data/customers.csv --overwrite
           databricks fs cp sample-data/products.csv dbfs:/FileStore/sample-data/products.csv --overwrite

@@ -362,7 +362,7 @@ gh workflow run 10-stop-compute.yml \
   -f action=stop-dbx-clusters \
   -f confirm=CONFIRM
 
-# Pause Aura instance (uses /pause endpoint with tenant-aware fallback)
+# Pause Aura instance (uses /instances/{id}/pause with tenant-aware fallback)
 gh workflow run 10-stop-compute.yml \
   -f action=stop-aura \
   -f confirm=CONFIRM
@@ -374,9 +374,9 @@ gh workflow run 10-stop-compute.yml \
 ```
 
 **Aura Pause Endpoint Details:**
-- The workflow uses the Neo4j Aura `/instances/{id}/pause` endpoint
-- If the request returns 403 or 404 and `AURA_TENANT_ID` is provided, automatically retries using `/tenants/{tenantId}/instances/{id}/pause`
-- Gracefully skips (exit 0) if instance is not found (404) or already paused (409 or state check)
+- The workflow uses the Neo4j Aura `/instances/{instanceId}/pause` endpoint
+- If the request returns 403 or 404 and `AURA_TENANT_ID` is provided, automatically retries using `/tenants/{tenantId}/instances/{instanceId}/pause`
+- Gracefully skips (exit 0) if instance is not found (404), already paused (409), or endpoint forbidden (403) after tenant fallback
 - Fails only on missing credentials or non-recoverable errors
 
 ## Advanced Configuration

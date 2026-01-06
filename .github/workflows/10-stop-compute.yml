@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: validate
     steps:
-      - name: Pause Aura instance (do not fail if not found or already paused)
+      - name: Pause Aura instance (best-effort; tenant-aware)
         env:
           AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
           AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
@@ -82,75 +82,43 @@ jobs:
             exit 1
           fi
 
-          echo "Checking Aura instance ${AURA_INSTANCE_ID} state"
-          get_code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" \
-            "https://api.neo4j.io/v1/instances/${AURA_INSTANCE_ID}" \
-            -H 'Accept: application/json' -o /tmp/aura_get.json -w "%{http_code}")
-          echo "GET /instances/${AURA_INSTANCE_ID} code: $get_code"
+          base="https://api.neo4j.io/v1"
+          inst_pause="${base}/instances/${AURA_INSTANCE_ID}/pause"
+          ten_pause="${base}/tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}/pause"
 
-          # Tenant-aware fallback for GET if 403 or 404 and AURA_TENANT_ID is provided
-          if [ "$get_code" -eq 403 ] || [ "$get_code" -eq 404 ]; then
+          echo "Attempting Aura pause via instance endpoint: ${inst_pause}"
+          code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
+            "$inst_pause" -H 'Content-Type: application/json' -d '{}' \
+            -o /tmp/aura_pause.json -w "%{http_code}") || code=0
+          echo "POST $inst_pause code: $code"
+
+          if [ "$code" -eq 403 ] || [ "$code" -eq 404 ]; then
             if [ -n "${AURA_TENANT_ID:-}" ]; then
-              echo "Retrying with tenant-aware endpoint: /tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}"
-              get_code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" \
-                "https://api.neo4j.io/v1/tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}" \
-                -H 'Accept: application/json' -o /tmp/aura_get.json -w "%{http_code}")
-              echo "GET /tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID} code: $get_code"
+              echo "Retrying pause with tenant-scoped endpoint: ${ten_pause}"
+              code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
+                "$ten_pause" -H 'Content-Type: application/json' -d '{}' \
+                -o /tmp/aura_pause.json -w "%{http_code}") || code=0
+              echo "POST $ten_pause code: $code"
             fi
           fi
 
-          if [ "$get_code" -eq 404 ]; then
+          if [ "$code" -eq 404 ]; then
             echo "::warning::Aura instance not found; skipping"
             exit 0
-          elif [ "$get_code" -lt 200 ] || [ "$get_code" -ge 300 ]; then
-            echo "::error::Failed to query Aura instance (HTTP $get_code)"
-            sed 's/^/    /' /tmp/aura_get.json || true
-            exit 1
-          fi
-
-          state=$(python3 - << 'PY'
-          import json
-          try:
-            d=json.load(open("/tmp/aura_get.json"))
-            print((d.get("state") or d.get("status") or "").lower())
-          except Exception:
-            print("")
-          PY
-          )
-          if [ "$state" = "paused" ]; then
-            echo "::warning::Aura instance is already paused; skipping"
-            exit 0
-          fi
-
-          echo "Attempting to pause Aura instance ${AURA_INSTANCE_ID}"
-          post_code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
-            "https://api.neo4j.io/v1/instances/${AURA_INSTANCE_ID}/pause" \
-            -H 'Content-Type: application/json' -d '{}' -o /tmp/aura_pause.json -w "%{http_code}")
-          echo "POST /instances/${AURA_INSTANCE_ID}/pause code: $post_code"
-
-          # Tenant-aware fallback for POST if 403 or 404 and AURA_TENANT_ID is provided
-          if [ "$post_code" -eq 403 ] || [ "$post_code" -eq 404 ]; then
-            if [ -n "${AURA_TENANT_ID:-}" ]; then
-              echo "Retrying with tenant-aware endpoint: /tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}/pause"
-              post_code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
-                "https://api.neo4j.io/v1/tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}/pause" \
-                -H 'Content-Type: application/json' -d '{}' -o /tmp/aura_pause.json -w "%{http_code}")
-              echo "POST /tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}/pause code: $post_code"
-            fi
-          fi
-
-          if [ "$post_code" -eq 409 ]; then
+          elif [ "$code" -eq 409 ]; then
             echo "::warning::Aura instance already paused; skipping"
             exit 0
-          elif [ "$post_code" -lt 200 ] || [ "$post_code" -ge 300 ]; then
-            echo "::error::Aura pause failed (HTTP $post_code)"
+          elif [ "$code" -eq 403 ]; then
+            echo "::warning::Aura pause endpoint forbidden for this tenant/plan; skipping (best-effort)"
+            sed 's/^/    /' /tmp/aura_pause.json || true
+            exit 0
+          elif [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Aura pause failed (HTTP $code)"
             sed 's/^/    /' /tmp/aura_pause.json || true
             exit 1
           fi
 
           echo "✅ Aura pause request accepted"
-          sleep 2
-          echo "Stop Compute (Aura) completed"
 
   cleanup-temp:
     if: ${{ inputs.action == 'cleanup-temp' }}
