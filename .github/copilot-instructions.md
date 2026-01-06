@@ -14,13 +14,12 @@
 - **Runtime configs:**
   - Data sources in [configs/data-sources.yml](configs/data-sources.yml) with `schema`, `validation` blocks.
   - Clusters per env in [configs/cluster-configurations.yml](configs/cluster-configurations.yml) (node types, workers, autotermination).
-  - Monitoring alerts in [configs/monitoring-config.yml](configs/monitoring-config.yml).
 - **Databricks job params:** Notebooks run without `environment` parameters; preserve task ordering and dependencies.
 
 ## Secrets & Auth
 - **Required secrets:** `AZURE_CREDENTIALS`, `AZURE_SUBSCRIPTION_ID`, `AZURE_TENANT_ID`, `DATABRICKS_TOKEN`, `AURA_CLIENT_ID`, `AURA_CLIENT_SECRET`, `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD` (see [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md#L1)).
 - **Fallback pattern:** Prefer environment-scoped (e.g., `PROD_AZURE_CREDENTIALS`) then repository secrets; workflows use this format consistently.
-- **Secrets management:** Terraform provisions Databricks secret scope "pipeline-secrets" and populates Neo4j/Aura credentials from GitHub secrets.
+- **Secrets management:** GitHub Actions workflow `06-data-pipeline.yml` creates Databricks secret scope "pipeline-secrets" and populates Neo4j/Aura credentials (aura-client-id, aura-client-secret, neo4j-uri, neo4j-username, neo4j-password) from GitHub secrets using the Go-based Databricks CLI.
 
 ## Patterns To Follow
 - **Notebook order & idempotence:** Maintain the 4-stage notebook chain; don't bypass validation before graph transforms.
@@ -32,10 +31,9 @@
 - **Resource naming & tags:** Use conventions in [docs/CONFIGURATION.md](docs/CONFIGURATION.md#L100) for RG/Storage/KeyVault/Databricks; keep `ManagedBy=terraform`, `Environment`, `Project` tags.
 
 ## Integration Points
-- **Databricks ↔ Neo4j:** Neo4j Spark connector (5.3.10) JAR uploaded to DBFS and attached to cluster via Terraform. Credentials stored in Databricks secret scope "pipeline-secrets".
-- **GitHub Actions:** Workflow `02-provision.yml` downloads Neo4j JAR, then runs Terraform to provision infrastructure and configure Unity Catalog.
+- **Databricks ↔ Neo4j:** Neo4j Spark connector (5.3.10) JAR uploaded to DBFS and attached to cluster via Terraform. Credentials stored in Databricks secret scope "pipeline-secrets" (managed by `06-data-pipeline.yml`).
+- **GitHub Actions:** Workflow `02-provision.yml` downloads Neo4j JAR, then runs Terraform to provision infrastructure and configure Unity Catalog. Workflow `06-data-pipeline.yml` handles Databricks secrets setup.
 - **Unity Catalog:** Terraform automatically selects first available catalog or uses override. Schemas (bronze, silver, gold, graph_ready) provisioned via Terraform.
-- **Monitoring:** Alerts & logs configured via `configs/monitoring-config.yml`; operational queries/examples in [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md#L1).
 
 ## When Making Changes (Examples)
 - **Add a new source:** Update [configs/data-sources.yml](configs/data-sources.yml), adjust `csv-ingestion.py`, ensure validation rules in `data-validation.py`, and reflect any new graph mappings in `graph-transformation.py`.

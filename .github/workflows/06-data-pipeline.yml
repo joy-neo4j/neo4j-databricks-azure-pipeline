@@ -48,8 +48,47 @@ jobs:
           echo "  ✅ Data Validation"
           echo "  ✅ Graph Transformation"
           echo "  ✅ Neo4j Loading"
-          echo "  ✅ Customer 360 Analytics"
-          echo "  ✅ Product Recommendations"
-          echo ""
-          echo "Note: Notebooks and jobs are deployed via Terraform (02-provision workflow)"
-          echo "This workflow only validates notebook syntax."
+
+  setup-dbx-secrets:
+    name: Ensure Databricks Secrets Scope and Populate Keys
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: validate-notebooks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Databricks CLI (Go)
+        run: |
+          set -euo pipefail
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+
+      - name: Export Databricks env
+        run: |
+          echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
+          echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Ensure secrets scope (idempotent)
+        run: |
+          set -euo pipefail
+          databricks secrets create-scope --scope pipeline-secrets || true
+          echo "✅ Secrets scope ensured: pipeline-secrets"
+
+      - name: Populate secrets from GitHub repository secrets (best-effort)
+        run: |
+          set -euo pipefail
+          # Aura client credentials (optional)
+          [ -n "${{ secrets.AURA_CLIENT_ID }}" ] && databricks secrets put --scope pipeline-secrets --key aura-client-id --string-value "${{ secrets.AURA_CLIENT_ID }}"
+          [ -n "${{ secrets.AURA_CLIENT_SECRET }}" ] && databricks secrets put --scope pipeline-secrets --key aura-client-secret --string-value "${{ secrets.AURA_CLIENT_SECRET }}"
+          # Neo4j credentials
+          [ -n "${{ secrets.NEO4J_URI }}" ] && databricks secrets put --scope pipeline-secrets --key neo4j-uri --string-value "${{ secrets.NEO4J_URI }}"
+          [ -n "${{ secrets.NEO4J_USERNAME }}" ] && databricks secrets put --scope pipeline-secrets --key neo4j-username --string-value "${{ secrets.NEO4J_USERNAME }}"
+          [ -n "${{ secrets.NEO4J_PASSWORD }}" ] && databricks secrets put --scope pipeline-secrets --key neo4j-password --string-value "${{ secrets.NEO4J_PASSWORD }}"
+          echo "✅ Secrets populated where provided"
+
+      - name: Verify secrets (non-sensitive)
+        run: |
+          set -euo pipefail
+          databricks secrets list-scopes
+          databricks secrets list --scope pipeline-secrets || true

@@ -1,0 +1,93 @@
+name: Stop Compute
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'What to stop/cleanup'
+        required: true
+        type: choice
+        options:
+          - stop-dbx-clusters
+          - stop-aura
+          - cleanup-temp
+      confirm:
+        description: 'Type CONFIRM to proceed'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: stop-compute-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check confirmation
+        run: |
+          if [ "${{ inputs.confirm }}" != "CONFIRM" ]; then
+            echo "::error::Confirmation not provided. Type CONFIRM to proceed."
+            exit 1
+          fi
+          echo "✅ Confirmation validated"
+
+  stop-dbx-clusters:
+    if: ${{ inputs.action == 'stop-dbx-clusters' }}
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Install Databricks CLI (Go)
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+      - name: Export Databricks env
+        run: |
+          echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
+          echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
+      - name: Stop all running clusters
+        run: |
+          set -euo pipefail
+          databricks clusters list --output json | jq -r '.clusters[] | select(.state=="RUNNING") | .cluster_id' | while read cid; do
+            echo "Stopping cluster: ${cid}"
+            databricks clusters delete --cluster-id "${cid}"
+          done
+          echo "✅ All clusters stopped"
+
+  stop-aura:
+    if: ${{ inputs.action == 'stop-aura' }}
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Best-effort suspend Aura instance
+        env:
+          AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
+          AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
+          AURA_INSTANCE_ID: ${{ secrets.AURA_INSTANCE_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AURA_CLIENT_ID:-}" ] || [ -z "${AURA_CLIENT_SECRET:-}" ] || [ -z "${AURA_INSTANCE_ID:-}" ]; then
+            echo "::warning::Aura credentials or instance ID not provided; skipping"
+            exit 0
+          fi
+          echo "Attempting to suspend Aura instance ${AURA_INSTANCE_ID} (best-effort)"
+          # Best-effort: suspend endpoint (ignore errors if unsupported)
+          curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
+            "https://api.neo4j.io/v1/instances/${AURA_INSTANCE_ID}/suspend" \
+            -H 'Content-Type: application/json' -d '{}' || true
+          echo "✅ Aura suspend request sent (if supported)"
+
+  cleanup-temp:
+    if: ${{ inputs.action == 'cleanup-temp' }}
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run stop-compute script (cleanup-temp)
+        run: |
+          bash scripts/stop-compute.sh cleanup-temp
