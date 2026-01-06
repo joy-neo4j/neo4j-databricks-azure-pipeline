@@ -262,16 +262,24 @@ AZURE_TENANT_ID         # Azure AD tenant ID
 DATABRICKS_HOST         # Existing Databricks workspace URL (e.g., https://adb-xxx.azuredatabricks.net)
 DATABRICKS_TOKEN        # Personal access token
 
-# Neo4j Aura
+# Neo4j Database
+NEO4J_URI              # Neo4j connection URI (e.g., neo4j+s://xxxxx.databases.neo4j.io)
+NEO4J_USERNAME         # Neo4j username (typically 'neo4j')
+NEO4J_PASSWORD         # Neo4j password
+
+# Neo4j Aura API (for instance management)
 AURA_CLIENT_ID          # Aura API client ID
 AURA_CLIENT_SECRET      # Aura API client secret
 ```
 
 #### Optional Secrets
 ```bash
+AURA_INSTANCE_ID        # Aura instance ID (for stop-aura workflow action)
 SLACK_WEBHOOK_URL       # Slack notifications
 NOTIFICATION_EMAIL      # Email notifications
 ```
+
+**Note:** Neo4j and Aura credentials are automatically synchronized to Databricks secret scope "pipeline-secrets" by the `06-data-pipeline.yml` workflow.
 
 See [SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for detailed setup instructions.
 
@@ -309,14 +317,16 @@ Navigate to the Actions tab in your repository and run workflows in sequence:
 # 1. Provision complete infrastructure (Azure + Databricks + Aura + Unity Catalog)
 gh workflow run 02-provision.yml
 
-# 2. Validate data pipeline notebooks
+# 2. Setup Databricks secrets and validate data pipeline notebooks
 gh workflow run 06-data-pipeline.yml
 
 # 3. Run end-to-end showcase (optional)
 gh workflow run 07-neo4j-integration-showcase.yml
 ```
 
-**Note**: The new `02-provision.yml` workflow consolidates the previous workflows 02-05 into a single Terraform deployment.
+**Note**: 
+- The `02-provision.yml` workflow consolidates infrastructure deployment into a single Terraform run.
+- The `06-data-pipeline.yml` workflow synchronizes Neo4j/Aura credentials from GitHub secrets to Databricks secret scope "pipeline-secrets".
 
 ### 6. Verify Deployment
 ```bash
@@ -598,7 +608,7 @@ Monitor pipeline performance, errors, and custom metrics:
 - Custom events and metrics
 
 ### Alerting
-Configure alerts in `configs/monitoring-config.yml`:
+Configure alerts as needed through Azure Monitor:
 - Job failures
 - Performance degradation
 - Cost thresholds

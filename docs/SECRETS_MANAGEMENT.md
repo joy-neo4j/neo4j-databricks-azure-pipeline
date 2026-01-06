@@ -2,15 +2,14 @@
 
 ## Overview
 
-This guide provides comprehensive instructions for managing GitHub secrets in the Neo4j-Databricks pipeline deployment. The system uses repository-level secrets with a simple fallback to Azure Key Vault when configured.
+This guide provides comprehensive instructions for managing GitHub secrets in the Neo4j-Databricks pipeline deployment. GitHub repository secrets are synced to Databricks secret scope "pipeline-secrets" by the `06-data-pipeline.yml` workflow using the Go-based Databricks CLI.
 
 ## Table of Contents
 
 - [Secret Types](#secret-types)
 - [Required Secrets](#required-secrets)
-- [Azure Key Vault Fallback](#azure-key-vault-fallback)
+- [Databricks Secrets Synchronization](#databricks-secrets-synchronization)
 - [Setup Instructions](#setup-instructions)
-- [Fallback Mechanism](#fallback-mechanism)
 - [Secret Validation](#secret-validation)
 - [Secret Rotation](#secret-rotation)
 - [Best Practices](#best-practices)
@@ -26,6 +25,21 @@ Shared across all environments and workflows. Suitable for:
 
 ### Environment Secrets
 Not required. The pipeline operates in a single environment. Use repository secrets for all deployments.
+
+## Databricks Secrets Synchronization
+
+The `06-data-pipeline.yml` workflow automatically synchronizes GitHub repository secrets to Databricks:
+
+- **Scope:** `pipeline-secrets` (created automatically if it doesn't exist)
+- **Method:** Go-based Databricks CLI with environment variable authentication
+- **Keys synchronized:**
+  - `aura-client-id` (from `AURA_CLIENT_ID` GitHub secret)
+  - `aura-client-secret` (from `AURA_CLIENT_SECRET` GitHub secret)
+  - `neo4j-uri` (from `NEO4J_URI` GitHub secret)
+  - `neo4j-username` (from `NEO4J_USERNAME` GitHub secret)
+  - `neo4j-password` (from `NEO4J_PASSWORD` GitHub secret)
+
+**Note:** This approach replaces Terraform-managed Databricks secrets. The workflow handles secret scope creation and population idempotently. Run the `06-data-pipeline.yml` workflow after updating any Neo4j or Aura credentials in GitHub secrets.
 
 ## Required Secrets
 
@@ -136,8 +150,46 @@ az account show --query tenantId -o tsv
 - Created at the same time as Client ID
 - **Important:** Save immediately, cannot be retrieved later
 
-## Azure Key Vault Fallback
-Optionally configure secrets in Azure Key Vault and reference them from workflows when needed.
+#### `NEO4J_URI`
+**Type:** URL  
+**Required:** Yes  
+**Description:** Neo4j database connection URI (Aura instance or self-hosted)
+
+**Format:** `neo4j+s://xxxxx.databases.neo4j.io` or `bolt://hostname:7687`
+
+**How to get:**
+- From Neo4j Aura Console → Instance Details → Connection URI
+- For self-hosted: Your Neo4j server URL
+
+#### `NEO4J_USERNAME`
+**Type:** String  
+**Required:** Yes  
+**Description:** Neo4j database username
+
+**Default:** `neo4j` (for most installations)
+
+**How to get:**
+- Aura: From instance creation or password reset
+- Self-hosted: Configured during Neo4j installation
+
+#### `NEO4J_PASSWORD`
+**Type:** String  
+**Required:** Yes  
+**Description:** Neo4j database password
+**Rotation:** Every 90 days recommended
+
+**How to get:**
+- Aura: Set during instance creation or via password reset
+- Self-hosted: Configured during Neo4j installation or via `neo4j-admin set-initial-password`
+
+#### `AURA_INSTANCE_ID` (Optional)
+**Type:** String  
+**Required:** No (only for stop-aura workflow action)  
+**Description:** Neo4j Aura instance ID for suspend/resume operations
+
+**How to get:**
+- From Neo4j Aura Console → Instance Details → Instance ID
+- Format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 
 ## Setup Instructions
 
@@ -193,29 +245,28 @@ Optionally configure secrets in Azure Key Vault and reference them from workflow
    # Aura credentials
    gh secret set AURA_CLIENT_ID --body "YOUR_CLIENT_ID"
    gh secret set AURA_CLIENT_SECRET --body "YOUR_CLIENT_SECRET"
+   
+   # Optional: Aura instance ID for stop-aura workflow action
+   gh secret set AURA_INSTANCE_ID --body "YOUR_INSTANCE_ID"
    ```
 
-## Fallback Mechanism
+4. **Run 06-data-pipeline workflow to sync secrets to Databricks:**
+   ```bash
+   gh workflow run 06-data-pipeline.yml
+   ```
 
-The pipeline implements an intelligent fallback strategy:
+## Secret Synchronization to Databricks
 
-### Priority Order
-1. **Repository Secret:** `AZURE_CREDENTIALS`
-2. **Azure Key Vault:** `keyvault://azure-credentials`
-3. **Error:** Secret not found
+After setting GitHub secrets, the `06-data-pipeline.yml` workflow automatically:
+1. Creates the `pipeline-secrets` scope in Databricks (if it doesn't exist)
+2. Populates the following keys from GitHub secrets:
+   - `aura-client-id`
+   - `aura-client-secret`
+   - `neo4j-uri`
+   - `neo4j-username`
+   - `neo4j-password`
 
-### Implementation Example
-```yaml
-# In GitHub Actions workflow
-env:
-   AZURE_CREDS: ${{ secrets.AZURE_CREDENTIALS }}
-```
-
-### Behavior
-- Automatically tries environment-specific secret first
-- Falls back to repository secret if not found
-- Provides clear error message if all sources fail
-- No manual intervention required
+**When to re-run:** After updating any Neo4j or Aura credentials in GitHub secrets, re-run the `06-data-pipeline.yml` workflow to synchronize changes to Databricks.
 
 ## Secret Validation
 
