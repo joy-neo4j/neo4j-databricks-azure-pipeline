@@ -49,12 +49,12 @@ jobs:
         run: |
           echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
           echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
-      - name: Stop all running clusters
+      - name: Stop all running clusters (fail if none)
         run: |
           set -euo pipefail
           ids=$(databricks clusters list --output json | jq -r '.clusters[] | select(.state=="RUNNING") | .cluster_id')
           if [ -z "$ids" ]; then
-            echo "::warning::No running clusters found"
+            echo "::error::No running clusters found"
             exit 1
           fi
           while read -r cid; do
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: validate
     steps:
-      - name: Best-effort suspend Aura instance (fail on missing or error)
+      - name: Pause Aura instance (do not fail if not found or already paused)
         env:
           AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
           AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
@@ -80,25 +80,60 @@ jobs:
             echo "::error::Aura credentials or instance ID not provided; failing"
             exit 1
           fi
-          echo "Attempting to suspend Aura instance ${AURA_INSTANCE_ID}"
-          code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
-            "https://api.neo4j.io/v1/instances/${AURA_INSTANCE_ID}/suspend" \
-            -H 'Content-Type: application/json' -d '{}' -o /tmp/aura_resp.txt -w "%{http_code}")
-          echo "Response code: $code"
-          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
-            echo "::error::Aura suspend failed with HTTP $code"
-            sed 's/^/    /' /tmp/aura_resp.txt || true
+
+          echo "Checking Aura instance ${AURA_INSTANCE_ID} state"
+          get_code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" \
+            "https://api.neo4j.io/v1/instances/${AURA_INSTANCE_ID}" \
+            -H 'Accept: application/json' -o /tmp/aura_get.json -w "%{http_code}")
+          echo "GET /instances/${AURA_INSTANCE_ID} code: $get_code"
+
+          if [ "$get_code" -eq 404 ]; then
+            echo "::warning::Aura instance not found; skipping"
+            exit 0
+          elif [ "$get_code" -lt 200 ] || [ "$get_code" -ge 300 ]; then
+            echo "::error::Failed to query Aura instance (HTTP $get_code)"
+            sed 's/^/    /' /tmp/aura_get.json || true
             exit 1
           fi
-          echo "✅ Aura suspend request accepted"
+
+          state=$(python3 - << 'PY'
+import json
+try:
+  d=json.load(open("/tmp/aura_get.json"))
+  print((d.get("state") or d.get("status") or "").lower())
+except Exception:
+  print("")
+PY
+)
+          if [ "$state" = "paused" ]; then
+            echo "::warning::Aura instance is already paused; skipping"
+            exit 0
+          fi
+
+          echo "Attempting to pause Aura instance ${AURA_INSTANCE_ID}"
+          post_code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
+            "https://api.neo4j.io/v1/instances/${AURA_INSTANCE_ID}/pause" \
+            -H 'Content-Type: application/json' -d '{}' -o /tmp/aura_pause.json -w "%{http_code}")
+          echo "POST /instances/${AURA_INSTANCE_ID}/pause code: $post_code"
+
+          if [ "$post_code" -eq 409 ]; then
+            echo "::warning::Aura instance already paused; skipping"
+            exit 0
+          elif [ "$post_code" -lt 200 ] || [ "$post_code" -ge 300 ]; then
+            echo "::error::Aura pause failed (HTTP $post_code)"
+            sed 's/^/    /' /tmp/aura_pause.json || true
+            exit 1
+          fi
+
+          echo "✅ Aura pause request accepted"
+          sleep 2
+          echo "Stop Compute (Aura) completed"
 
   cleanup-temp:
     if: ${{ inputs.action == 'cleanup-temp' }}
     runs-on: ubuntu-latest
     needs: validate
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
       - name: Run stop-compute script (cleanup-temp)
         run: |
           bash scripts/stop-compute.sh cleanup-temp

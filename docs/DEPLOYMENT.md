@@ -444,11 +444,6 @@ gh run download <run-id>
    - Workflow run ID
    - Steps to reproduce
 
-### Emergency Contacts
-- **Platform Team:** platform@example.com
-- **On-Call:** Use PagerDuty integration
-- **Slack Channel:** #neo4j-databricks-support
-
 ---
 
 **Last Updated:** 2024-01-10  

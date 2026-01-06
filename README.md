@@ -32,9 +32,9 @@ A production-ready, single-click deployment solution for **e-commerce analytics*
 - [Configuration](#-configuration)
 - [Monitoring and Operations](#-monitoring-and-operations)
 - [Troubleshooting](#-troubleshooting)
-- [Cost Management](#-cost-management)
 - [Validation](#-validation)
 - [Contributing](#-contributing)
+- [Version History](#-version-history)
 
 ## 🔧 Prerequisites
 
@@ -660,26 +660,6 @@ curl -u <AURA_CLIENT_ID>:<AURA_CLIENT_SECRET> \
 ```
 
 See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for detailed troubleshooting guide.
-
-## 💰 Cost Management
-
-### Cost Optimization Features
-- **Auto-pause**: Databricks clusters pause after inactivity
-- **Scheduled jobs**: Run during off-peak hours
-- **Resource tagging**: Track costs by environment
-- **Cleanup workflows**: Remove unused resources
-
-### Cost Monitoring
-```bash
-# View current costs
-az consumption usage list --start-date 2024-01-01
-
-# View cost analysis
-az costmanagement query \
-  --type Usage \
-  --scope "/subscriptions/<SUBSCRIPTION_ID>" \
-  --timeframe MonthToDate
-```
 
 ## ✅ Validation
 
