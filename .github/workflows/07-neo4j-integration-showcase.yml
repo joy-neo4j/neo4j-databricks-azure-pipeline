@@ -1,4 +1,4 @@
-name: 07 - Neo4j Integration Showcase (Single Environment)
+name: 04 - Neo4j - DBX Integration
 
 on:
   workflow_dispatch:
@@ -48,7 +48,7 @@ jobs:
 
       - name: Verify Databricks CLI auth (optional)
         run: |
-          databricks auth whoami || true
+          databricks auth describe || true
 
       - name: Upload configs to DBFS
         run: |

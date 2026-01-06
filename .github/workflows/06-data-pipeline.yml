@@ -1,4 +1,4 @@
-name: 06 - Data Pipeline
+name: 03 - Data Pipeline Preparation and Validation
 
 on:
   workflow_dispatch:
