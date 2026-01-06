@@ -669,17 +669,6 @@ See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for detailed troubleshoot
 - **Resource tagging**: Track costs by environment
 - **Cleanup workflows**: Remove unused resources
 
-### Estimated Costs (Monthly)
-- **Dev Environment**: $200-400
-  - Databricks: $150-250
-  - Neo4j Aura: $50-100
-  - Azure Storage: $10-50
-
-- **Production Environment**: $800-1500
-  - Databricks: $500-1000
-  - Neo4j Aura: $200-400
-  - Azure Storage/Services: $100-200
-
 ### Cost Monitoring
 ```bash
 # View current costs
@@ -723,12 +712,6 @@ Contributions are welcome! Please read our contributing guidelines:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- Azure Databricks team for comprehensive API documentation
-- Neo4j Aura team for graph database excellence
-- Community contributors and testers
-
 ## 📞 Support
 
 - **Issues**: [GitHub Issues](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/issues)
@@ -737,12 +720,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔄 Version History
 
-- **v1.0.0** (2024-01): Initial release with complete deployment automation
-  - Multi-environment support
-  - Enhanced secrets management
-  - Production-ready workflows
-  - Comprehensive documentation
-
----
-
-**Built with ❤️ for the Azure and Neo4j communities**
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.

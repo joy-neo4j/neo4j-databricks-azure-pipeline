@@ -1,4 +1,4 @@
-name: 5 - Stop Compute
+name: Stop Compute
 
 on:
   workflow_dispatch:
@@ -52,18 +52,24 @@ jobs:
       - name: Stop all running clusters
         run: |
           set -euo pipefail
-          databricks clusters list --output json | jq -r '.clusters[] | select(.state=="RUNNING") | .cluster_id' | while read cid; do
+          ids=$(databricks clusters list --output json | jq -r '.clusters[] | select(.state=="RUNNING") | .cluster_id')
+          if [ -z "$ids" ]; then
+            echo "::warning::No running clusters found"
+            exit 1
+          fi
+          while read -r cid; do
+            [ -z "$cid" ] && continue
             echo "Stopping cluster: ${cid}"
             databricks clusters delete --cluster-id "${cid}"
-          done
-          echo "✅ All clusters stopped"
+          done <<< "$ids"
+          echo "✅ Stop request(s) sent"
 
   stop-aura:
     if: ${{ inputs.action == 'stop-aura' }}
     runs-on: ubuntu-latest
     needs: validate
     steps:
-      - name: Best-effort suspend Aura instance
+      - name: Best-effort suspend Aura instance (fail on missing or error)
         env:
           AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
           AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
@@ -71,15 +77,20 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${AURA_CLIENT_ID:-}" ] || [ -z "${AURA_CLIENT_SECRET:-}" ] || [ -z "${AURA_INSTANCE_ID:-}" ]; then
-            echo "::warning::Aura credentials or instance ID not provided; skipping"
-            exit 0
+            echo "::error::Aura credentials or instance ID not provided; failing"
+            exit 1
           fi
-          echo "Attempting to suspend Aura instance ${AURA_INSTANCE_ID} (best-effort)"
-          # Best-effort: suspend endpoint (ignore errors if unsupported)
-          curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
+          echo "Attempting to suspend Aura instance ${AURA_INSTANCE_ID}"
+          code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
             "https://api.neo4j.io/v1/instances/${AURA_INSTANCE_ID}/suspend" \
-            -H 'Content-Type: application/json' -d '{}' || true
-          echo "✅ Aura suspend request sent (if supported)"
+            -H 'Content-Type: application/json' -d '{}' -o /tmp/aura_resp.txt -w "%{http_code}")
+          echo "Response code: $code"
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Aura suspend failed with HTTP $code"
+            sed 's/^/    /' /tmp/aura_resp.txt || true
+            exit 1
+          fi
+          echo "✅ Aura suspend request accepted"
 
   cleanup-temp:
     if: ${{ inputs.action == 'cleanup-temp' }}

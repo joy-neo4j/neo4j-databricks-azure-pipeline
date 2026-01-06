@@ -34,6 +34,5 @@ resource "databricks_job" "neo4j_constraints" {
   max_concurrent_runs = 1
   timeout_seconds     = 3600
 
-  # Optional: Add dependency on secret scope to ensure secrets exist
-  depends_on = [databricks_secret_scope.pipeline_secrets]
+  # Note: Secrets are managed via 06-data-pipeline.yml workflow
 }
