@@ -69,6 +69,9 @@ gh workflow run 06-data-pipeline.yml
 # (Optional) Run end-to-end showcase
 gh workflow run 07-neo4j-integration-showcase.yml
 
+# (Optional) Stop compute resources for cost optimization
+gh workflow run 10-stop-compute.yml --field action=stop-aura --field confirm=CONFIRM
+
 # Monitor progress
 gh run watch
 
@@ -354,16 +357,27 @@ gh workflow run deploy-infrastructure.yml
 
 ### Cost Optimization
 ```bash
-# Pause all clusters
-gh workflow run cleanup-resources.yml \
-  -f action=pause-clusters \
+# Stop Databricks clusters
+gh workflow run 10-stop-compute.yml \
+  -f action=stop-dbx-clusters \
   -f confirm=CONFIRM
 
-# Delete temporary resources
-gh workflow run cleanup-resources.yml \
-  -f action=delete-temporary-resources \
+# Pause Aura instance (uses /pause endpoint with tenant-aware fallback)
+gh workflow run 10-stop-compute.yml \
+  -f action=stop-aura \
+  -f confirm=CONFIRM
+
+# Cleanup temporary resources
+gh workflow run 10-stop-compute.yml \
+  -f action=cleanup-temp \
   -f confirm=CONFIRM
 ```
+
+**Aura Pause Endpoint Details:**
+- The workflow uses the Neo4j Aura `/instances/{id}/pause` endpoint
+- If the request returns 403 or 404 and `AURA_TENANT_ID` is provided, automatically retries using `/tenants/{tenantId}/instances/{id}/pause`
+- Gracefully skips (exit 0) if instance is not found (404) or already paused (409 or state check)
+- Fails only on missing credentials or non-recoverable errors
 
 ## Advanced Configuration
 

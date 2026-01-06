@@ -403,7 +403,7 @@ See [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for advanced config
   - Azure infrastructure (Resource Group, Storage, Key Vault, Databricks workspace)
   - Neo4j Aura instance with credentials stored in Key Vault
   - Databricks cluster with Neo4j Spark Connector 5.3.0
-  - Unity Catalog schemas (bronze, silver, gold, graph_ready, etc.)
+  - Unity Catalog schemas (bronze, silver, gold, graph_ready)
   - Databricks notebooks uploaded to workspace
   - Databricks jobs (ETL pipeline with 6 tasks)
   - Key Vault-backed secret scope for Neo4j credentials
@@ -411,17 +411,25 @@ See [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for advanced config
 - **Use Case**: Complete infrastructure and pipeline deployment in one workflow
 - **Note**: Consolidates the functionality of previous workflows 02-05
 
-#### 3. Data Pipeline Validation
+#### 3. Data Pipeline Validation and Secrets Setup
 **File**: `.github/workflows/06-data-pipeline.yml`
 - **Duration**: 2-3 minutes
 - **Validates**: Notebook syntax and Python compilation
-- **Use Case**: Syntax validation for notebooks (deployment handled by Terraform)
+- **Secrets Setup**: Creates Databricks secret scope "pipeline-secrets" and populates Neo4j/Aura credentials from GitHub secrets
+- **Use Case**: Syntax validation for notebooks and secrets synchronization (deployment handled by Terraform)
 
 #### 4. Neo4j Integration Showcase (Optional)
 **File**: `.github/workflows/07-neo4j-integration-showcase.yml`
 - **Duration**: 10-15 minutes
 - **Executes**: Complete e-commerce pipeline from ingestion to Neo4j
 - **Use Case**: End-to-end pipeline validation and showcase
+
+#### 5. Stop Compute (Cost Management)
+**File**: `.github/workflows/10-stop-compute.yml`
+- **Duration**: 1-2 minutes
+- **Actions**: Stop Databricks clusters, pause Aura instance, or cleanup temporary resources
+- **Aura Pause**: Uses `/pause` endpoint with tenant-aware fallback; skips gracefully if instance not found or already paused
+- **Use Case**: Manual cost optimization by stopping compute resources when not needed
 
 ### Legacy Workflows (Deprecated)
 The following workflows have been consolidated into `02-provision.yml`:
@@ -700,4 +708,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔄 Version History
 
-See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history and release notes.

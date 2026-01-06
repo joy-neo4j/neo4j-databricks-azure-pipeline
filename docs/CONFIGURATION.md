@@ -4,7 +4,18 @@ Complete configuration reference for the Neo4j-Databricks Azure Pipeline.
 
 ## Configuration Files
 
-### 1. Terraform Variables (`terraform/variables.tf`)
+The pipeline uses the following YAML configuration files in the `configs/` directory:
+
+### 1. Data Sources (`configs/data-sources.yml`)
+Defines source data locations, schemas, and validation rules.
+
+### 2. Cluster Configuration (`configs/cluster-configurations.yml`)
+Specifies Databricks cluster settings including node types, worker counts, and Spark configurations.
+
+### 3. Neo4j Connector Configuration (`configs/neo4j-connector-config.yml`)
+Configuration for Neo4j Spark connector settings, including batch size, write mode, and connection parameters.
+
+### 4. Terraform Variables (`terraform/variables.tf`)
 
 #### Environment Configuration
 Environment parameter has been removed. The pipeline operates in a single environment for simplicity and consistency.

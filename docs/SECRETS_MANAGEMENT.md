@@ -2,7 +2,13 @@
 
 ## Overview
 
-This guide provides comprehensive instructions for managing GitHub secrets in the Neo4j-Databricks pipeline deployment. GitHub repository secrets are synced to Databricks secret scope "pipeline-secrets" by the `06-data-pipeline.yml` workflow using the Go-based Databricks CLI.
+This guide provides comprehensive instructions for managing GitHub secrets in the Neo4j-Databricks pipeline deployment. GitHub repository secrets are automatically synchronized to Databricks secret scope "pipeline-secrets" by the `06-data-pipeline.yml` workflow using the Go-based Databricks CLI.
+
+**Key Points:**
+- GitHub repository secrets serve as the single source of truth for Neo4j and Aura credentials
+- The `06-data-pipeline.yml` workflow automatically creates the Databricks secret scope and synchronizes credentials
+- No manual Databricks secrets management is required
+- Terraform does not manage Databricks secrets; they are handled entirely by the workflow
 
 ## Table of Contents
 
@@ -190,6 +196,20 @@ az account show --query tenantId -o tsv
 **How to get:**
 - From Neo4j Aura Console → Instance Details → Instance ID
 - Format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+
+#### `AURA_TENANT_ID` (Optional)
+**Type:** String  
+**Required:** No (only for tenant-aware Aura API fallback)  
+**Description:** Neo4j Aura tenant ID for tenant-scoped API requests
+
+**How to get:**
+- From Neo4j Aura Console → Account Settings → Tenant ID
+- Format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+
+**When to use:**
+- When Aura API requests to `/instances/{id}` return 403 or 404
+- Enables automatic retry using `/tenants/{tenantId}/instances/{id}` endpoints
+- Used by the `10-stop-compute.yml` workflow for Aura pause operations
 
 ## Setup Instructions
 

@@ -18,7 +18,18 @@ case "$ACTION" in
     get_code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" \
       "https://api.neo4j.io/v1/instances/${AURA_INSTANCE_ID}" \
       -H 'Accept: application/json' -o /tmp/aura_get.json -w "%{http_code}")
-    echo "GET code: $get_code"
+    echo "GET /instances/${AURA_INSTANCE_ID} code: $get_code"
+
+    # Tenant-aware fallback for GET if 403 or 404 and AURA_TENANT_ID is provided
+    if [[ "$get_code" -eq 403 || "$get_code" -eq 404 ]]; then
+      if [[ -n "${AURA_TENANT_ID:-}" ]]; then
+        echo "Retrying with tenant-aware endpoint: /tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}"
+        get_code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" \
+          "https://api.neo4j.io/v1/tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}" \
+          -H 'Accept: application/json' -o /tmp/aura_get.json -w "%{http_code}")
+        echo "GET /tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID} code: $get_code"
+      fi
+    fi
 
     if [[ "$get_code" -eq 404 ]]; then
       echo "Aura instance not found; skipping"
@@ -47,7 +58,18 @@ PY
     post_code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
       "https://api.neo4j.io/v1/instances/${AURA_INSTANCE_ID}/pause" \
       -H 'Content-Type: application/json' -d '{}' -o /tmp/aura_pause.json -w "%{http_code}")
-    echo "POST code: $post_code"
+    echo "POST /instances/${AURA_INSTANCE_ID}/pause code: $post_code"
+
+    # Tenant-aware fallback for POST if 403 or 404 and AURA_TENANT_ID is provided
+    if [[ "$post_code" -eq 403 || "$post_code" -eq 404 ]]; then
+      if [[ -n "${AURA_TENANT_ID:-}" ]]; then
+        echo "Retrying with tenant-aware endpoint: /tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}/pause"
+        post_code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
+          "https://api.neo4j.io/v1/tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}/pause" \
+          -H 'Content-Type: application/json' -d '{}' -o /tmp/aura_pause.json -w "%{http_code}")
+        echo "POST /tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}/pause code: $post_code"
+      fi
+    fi
 
     if [[ "$post_code" -eq 409 ]]; then
       echo "Aura instance already paused; skipping"
