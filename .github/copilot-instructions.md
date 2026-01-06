@@ -19,8 +19,9 @@
 
 ## Secrets & Auth
 - **Required secrets:** `AZURE_CREDENTIALS`, `AZURE_SUBSCRIPTION_ID`, `AZURE_TENANT_ID`, `DATABRICKS_TOKEN`, `AURA_CLIENT_ID`, `AURA_CLIENT_SECRET`, `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD` (see [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md#L1)).
+- **Optional secrets:** `AURA_INSTANCE_ID` (for stop-aura workflow), `AURA_TENANT_ID` (for tenant-aware Aura API fallback).
 - **Fallback pattern:** Prefer environment-scoped (e.g., `PROD_AZURE_CREDENTIALS`) then repository secrets; workflows use this format consistently.
-- **Secrets management:** GitHub Actions workflow `06-data-pipeline.yml` creates Databricks secret scope "pipeline-secrets" and populates Neo4j/Aura credentials (aura-client-id, aura-client-secret, neo4j-uri, neo4j-username, neo4j-password) from GitHub secrets using the Go-based Databricks CLI.
+- **Secrets management:** GitHub Actions workflow `06-data-pipeline.yml` creates Databricks secret scope "pipeline-secrets" and populates Neo4j/Aura credentials (aura-client-id, aura-client-secret, neo4j-uri, neo4j-username, neo4j-password) from GitHub secrets using the Go-based Databricks CLI. Terraform does not manage Databricks secrets.
 
 ## Patterns To Follow
 - **Notebook order & idempotence:** Maintain the 4-stage notebook chain; don't bypass validation before graph transforms.
