@@ -15,7 +15,7 @@ Specifies Databricks cluster settings including node types, worker counts, and S
 ### 3. Neo4j Connector Configuration (`configs/neo4j-connector-config.yml`)
 Configuration for Neo4j Spark connector settings, including batch size, write mode, and connection parameters.
 
-### 4. Terraform Variables (`terraform/variables.tf`)
+### Terraform Variables
 
 #### Environment Configuration
 Environment parameter has been removed. The pipeline operates in a single environment for simplicity and consistency.
@@ -47,7 +47,9 @@ variable "auto_pause_minutes" {
 }
 ```
 
-### 2. Data Sources (`configs/data-sources.yml`)
+## Data Source Configuration
+
+### Data Sources (`configs/data-sources.yml`)
 
 ```yaml
 sources:
@@ -64,7 +66,9 @@ sources:
           references: table.column
 ```
 
-### 3. Cluster Configuration (`configs/cluster-configurations.yml`)
+## Cluster Configuration
+
+### Cluster Configuration (`configs/cluster-configurations.yml`)
 
 ```yaml
 environment_name:
@@ -81,7 +85,9 @@ environment_name:
     TagName: "TagValue"
 ```
 
-### 4. Neo4j Connector Configuration (`configs/neo4j-connector-config.yml`)
+## Neo4j Connector Configuration
+
+### Neo4j Connector Configuration (`configs/neo4j-connector-config.yml`)
 
 Configuration for Neo4j Spark connector settings, including batch size, write mode, and connection parameters.
 

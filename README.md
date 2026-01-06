@@ -275,8 +275,7 @@ AURA_CLIENT_SECRET      # Aura API client secret
 #### Optional Secrets
 ```bash
 AURA_INSTANCE_ID        # Aura instance ID (for stop-aura workflow action)
-SLACK_WEBHOOK_URL       # Slack notifications
-NOTIFICATION_EMAIL      # Email notifications
+AURA_TENANT_ID          # Aura tenant ID (for tenant-aware Aura API fallback)
 ```
 
 **Note:** Neo4j and Aura credentials are automatically synchronized to Databricks secret scope "pipeline-secrets" by the `06-data-pipeline.yml` workflow.
@@ -428,7 +427,7 @@ See [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for advanced config
 **File**: `.github/workflows/10-stop-compute.yml`
 - **Duration**: 1-2 minutes
 - **Actions**: Stop Databricks clusters, pause Aura instance, or cleanup temporary resources
-- **Aura Pause**: Uses `/pause` endpoint with tenant-aware fallback; skips gracefully if instance not found or already paused
+- **Aura Pause**: Uses `/instances/{instanceId}/pause` endpoint with tenant-aware fallback to `/tenants/{tenantId}/instances/{instanceId}/pause`; fails on missing credentials; skips (exit 0) if instance not found (404), already paused (409), or endpoint forbidden (403) after tenant fallback
 - **Use Case**: Manual cost optimization by stopping compute resources when not needed
 
 ### Legacy Workflows (Deprecated)

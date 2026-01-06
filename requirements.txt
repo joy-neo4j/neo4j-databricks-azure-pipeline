@@ -1,20 +1,2 @@
-# Core Dependencies
-databricks-cli>=0.18.0
-databricks-sdk>=0.12.0
-neo4j>=5.14.0
-pyyaml>=6.0
-requests>=2.31.0
-
-# Azure Dependencies
-azure-identity>=1.15.0
-azure-mgmt-databricks>=2.0.0
-azure-mgmt-storage>=21.1.0
-azure-storage-blob>=12.19.0
-
-# Data Processing
-pandas>=2.0.0
-pyspark>=3.5.0
-
-# Utilities
-python-dotenv>=1.0.0
-click>=8.1.0
+neo4j
+pyyaml
