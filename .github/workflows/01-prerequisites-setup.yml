@@ -1,4 +1,4 @@
-name: 01 - Prerequisites Setup
+name: 1 - Prerequisites Setup
 
 on:
   workflow_dispatch:

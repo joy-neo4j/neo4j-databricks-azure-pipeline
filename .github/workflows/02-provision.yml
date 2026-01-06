@@ -1,4 +1,4 @@
-name: 02 - Provision (Azure + Databricks + Aura + UC)
+name: 2 - Infra Provision (Azure_DBX_Aura)
 
 on:
   workflow_dispatch:

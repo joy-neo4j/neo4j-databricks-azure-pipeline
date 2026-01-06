@@ -1,4 +1,4 @@
-name: 04 - Neo4j - DBX Integration
+name: 4 - Integration (Neo4j_DBX) 
 
 on:
   workflow_dispatch:
