@@ -70,26 +70,9 @@ environment_name:
     TagName: "TagValue"
 ```
 
-### 4. Monitoring Configuration (`configs/monitoring-config.yml`)
+### 4. Neo4j Connector Configuration (`configs/neo4j-connector-config.yml`)
 
-```yaml
-alerts:
-  - name: alert_name
-    severity: critical  # critical, warning, info
-    condition:
-      metric: metric_name
-      operator: greater_than  # equals, greater_than, less_than
-      threshold: value
-      window_minutes: 15
-    notification:
-      - slack
-      - email
-    environments: [dev, staging, prod]
-```
-
-### 5. Secrets Configuration (`configs/secrets-config.yml`)
-
-See [Secrets Management Guide](SECRETS_MANAGEMENT.md) for complete reference.
+Configuration for Neo4j Spark connector settings, including batch size, write mode, and connection parameters.
 
 ## Single Environment Settings
 

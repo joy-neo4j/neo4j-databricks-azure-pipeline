@@ -14,6 +14,7 @@
 - **Runtime configs:**
   - Data sources in [configs/data-sources.yml](configs/data-sources.yml) with `schema`, `validation` blocks.
   - Clusters per env in [configs/cluster-configurations.yml](configs/cluster-configurations.yml) (node types, workers, autotermination).
+  - Neo4j connector settings in [configs/neo4j-connector-config.yml](configs/neo4j-connector-config.yml).
 - **Databricks job params:** Notebooks run without `environment` parameters; preserve task ordering and dependencies.
 
 ## Secrets & Auth
@@ -26,7 +27,7 @@
 - **Delta layers:**
   - Bronze: raw append-only tables.
   - Silver: cleaned/validated tables.
-  - Gold: graph-ready nodes/relationships (naming like `neo4j_pipeline.gold.nodes`).
+  - Graph Ready: graph-ready nodes/relationships for Neo4j loading.
 - **Terraform changes:** Keep variable validations intact and update env `*.tfvars.example` when adding new inputs; do not hardcode per-env values in `main.tf`.
 - **Resource naming & tags:** Use conventions in [docs/CONFIGURATION.md](docs/CONFIGURATION.md#L100) for RG/Storage/KeyVault/Databricks; keep `ManagedBy=terraform`, `Environment`, `Project` tags.
 
@@ -39,6 +40,7 @@
 - **Add a new source:** Update [configs/data-sources.yml](configs/data-sources.yml), adjust `csv-ingestion.py`, ensure validation rules in `data-validation.py`, and reflect any new graph mappings in `graph-transformation.py`.
 - **Modify cluster sizing:** Edit per-env entries in [configs/cluster-configurations.yml](configs/cluster-configurations.yml); if changing Spark version/node type, update cluster resource in Terraform.
 - **Extend the pipeline:** Add a new notebook and insert a dependent `task` in the Terraform job resource, preserving the DAG and base parameters.
+- **Update Neo4j/Aura credentials:** Update GitHub repository secrets, then re-run the `06-data-pipeline.yml` workflow to sync to Databricks.
 
 ## Gotchas
 - Ensure GitHub secrets are configured; missing credentials will fail Terraform apply.

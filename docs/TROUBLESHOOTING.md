@@ -430,16 +430,8 @@ terraform apply 2>&1 | tee terraform.log
 ### Support Channels
 - **Documentation:** Review all docs in `/docs`
 - **GitHub Issues:** https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/issues
-- **Slack:** #neo4j-databricks-support
-- **Email:** support@example.com
-
-### Emergency Procedures
-For critical production issues:
-1. Contact on-call via PagerDuty
-2. Post in #incidents Slack channel
-3. Start incident bridge
-4. Follow runbook procedures
+- **GitHub Discussions:** https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/discussions
 
 ---
 
-**Last Updated:** 2024-01-10
+**Last Updated:** 2026-01-06

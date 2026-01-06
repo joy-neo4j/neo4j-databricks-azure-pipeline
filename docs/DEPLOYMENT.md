@@ -60,8 +60,14 @@ gh secret set AURA_CLIENT_SECRET --body "YOUR_CLIENT_SECRET"
 
 ### Step 5: Deploy (2 min)
 ```bash
-# Trigger deployment
-gh workflow run deploy-full-pipeline.yml
+# Trigger infrastructure provisioning
+gh workflow run 02-provision.yml
+
+# Setup data pipeline and sync secrets to Databricks
+gh workflow run 06-data-pipeline.yml
+
+# (Optional) Run end-to-end showcase
+gh workflow run 07-neo4j-integration-showcase.yml
 
 # Monitor progress
 gh run watch
