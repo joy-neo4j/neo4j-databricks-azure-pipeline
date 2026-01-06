@@ -1,4 +1,4 @@
-name: Stop Compute
+name: 5 - Stop Compute
 
 on:
   workflow_dispatch:
