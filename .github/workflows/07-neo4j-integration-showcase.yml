@@ -1,4 +1,4 @@
-name: 4 - Integration (Neo4j_DBX) 
+name: 4 - Integration (Neo4j_DBX)
 
 on:
   workflow_dispatch:
@@ -363,7 +363,7 @@ jobs:
                 }
               ]
             }
-            
+
             with open("/tmp/neo4j-loading-job.json", "w") as f:
                 json.dump(payload, f)
 
@@ -515,7 +515,7 @@ jobs:
           run_job(job)
           EOF
           python /tmp/run-neo4j-loading.py
-      
+
       - name: Upload Loading Summary
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
