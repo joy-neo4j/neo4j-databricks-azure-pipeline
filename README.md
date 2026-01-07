@@ -427,7 +427,7 @@ See [docs/SECRETS_MANAGEMENT.md](docs/SECRETS_MANAGEMENT.md) for advanced config
 **File**: `.github/workflows/10-stop-compute.yml`
 - **Duration**: 1-2 minutes
 - **Actions**: Stop Databricks clusters, pause Aura instance, or cleanup temporary resources
-- **Aura Pause**: Uses `/instances/{instanceId}/pause` endpoint with tenant-aware fallback to `/tenants/{tenantId}/instances/{instanceId}/pause`; fails on missing credentials; skips (exit 0) if instance not found (404), already paused (409), or endpoint forbidden (403) after tenant fallback
+- **Aura Pause**: Uses OAuth 2.0 Bearer token authentication to call `/instances/{instanceId}/pause` endpoint with tenant-aware fallback to `/tenants/{tenantId}/instances/{instanceId}/pause`; enforces strict HTTP 202 success (fails on any other response code); fails on missing credentials
 - **Use Case**: Manual cost optimization by stopping compute resources when not needed
 
 ### Legacy Workflows (Deprecated)

@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: validate
     steps:
-      - name: Pause Aura instance (best-effort; tenant-aware)
+      - name: Pause Aura instance (OAuth2; strict 202)
         env:
           AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
           AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
@@ -77,48 +77,58 @@ jobs:
           AURA_TENANT_ID: ${{ secrets.AURA_TENANT_ID }}
         run: |
           set -euo pipefail
+          # Validate required secrets
           if [ -z "${AURA_CLIENT_ID:-}" ] || [ -z "${AURA_CLIENT_SECRET:-}" ] || [ -z "${AURA_INSTANCE_ID:-}" ]; then
             echo "::error::Aura credentials or instance ID not provided; failing"
             exit 1
           fi
 
+          # Obtain OAuth2 access token (Bearer)
+          echo "Requesting OAuth2 access token"
+          token_resp=$(curl -sS --request POST 'https://api.neo4j.io/oauth/token' \
+            --user "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" \
+            --header 'Content-Type: application/x-www-form-urlencoded' \
+            --data-urlencode 'grant_type=client_credentials')
+          ACCESS_TOKEN=$(echo "$token_resp" | jq -r '.access_token')
+          if [ -z "${ACCESS_TOKEN}" ] || [ "${ACCESS_TOKEN}" = "null" ]; then
+            echo "::error::Failed to obtain access token"
+            echo "$token_resp" | sed 's/^/    /'
+            exit 1
+          fi
+          echo "✅ Access token acquired"
+
           base="https://api.neo4j.io/v1"
           inst_pause="${base}/instances/${AURA_INSTANCE_ID}/pause"
           ten_pause="${base}/tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}/pause"
 
+          # Attempt pause using instance endpoint
           echo "Attempting Aura pause via instance endpoint: ${inst_pause}"
-          code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
-            "$inst_pause" -H 'Content-Type: application/json' -d '{}' \
+          code=$(curl -sS -X POST \
+            "$inst_pause" -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H 'Content-Type: application/json' -d '{}' \
             -o /tmp/aura_pause.json -w "%{http_code}") || code=0
           echo "POST $inst_pause code: $code"
 
+          # If forbidden or not found, try tenant-scoped endpoint (if provided)
           if [ "$code" -eq 403 ] || [ "$code" -eq 404 ]; then
             if [ -n "${AURA_TENANT_ID:-}" ]; then
               echo "Retrying pause with tenant-scoped endpoint: ${ten_pause}"
-              code=$(curl -sS -u "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" -X POST \
-                "$ten_pause" -H 'Content-Type: application/json' -d '{}' \
+              code=$(curl -sS -X POST \
+                "$ten_pause" -H "Authorization: Bearer $ACCESS_TOKEN" \
+                -H 'Content-Type: application/json' -d '{}' \
                 -o /tmp/aura_pause.json -w "%{http_code}") || code=0
               echo "POST $ten_pause code: $code"
             fi
           fi
 
-          if [ "$code" -eq 404 ]; then
-            echo "::warning::Aura instance not found; skipping"
-            exit 0
-          elif [ "$code" -eq 409 ]; then
-            echo "::warning::Aura instance already paused; skipping"
-            exit 0
-          elif [ "$code" -eq 403 ]; then
-            echo "::warning::Aura pause endpoint forbidden for this tenant/plan; skipping (best-effort)"
-            sed 's/^/    /' /tmp/aura_pause.json || true
-            exit 0
-          elif [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
-            echo "::error::Aura pause failed (HTTP $code)"
+          # Strict success: only 202 is accepted; all others fail
+          if [ "$code" -ne 202 ]; then
+            echo "::error::Aura pause failed (HTTP $code). Only 202 is accepted as success."
             sed 's/^/    /' /tmp/aura_pause.json || true
             exit 1
           fi
 
-          echo "✅ Aura pause request accepted"
+          echo "✅ Aura pause request accepted (202)"
 
   cleanup-temp:
     if: ${{ inputs.action == 'cleanup-temp' }}

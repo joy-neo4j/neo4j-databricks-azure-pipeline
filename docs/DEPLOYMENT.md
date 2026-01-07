@@ -362,7 +362,7 @@ gh workflow run 10-stop-compute.yml \
   -f action=stop-dbx-clusters \
   -f confirm=CONFIRM
 
-# Pause Aura instance (uses /instances/{id}/pause with tenant-aware fallback)
+# Pause Aura instance (OAuth 2.0 Bearer token auth; strict HTTP 202)
 gh workflow run 10-stop-compute.yml \
   -f action=stop-aura \
   -f confirm=CONFIRM
@@ -374,10 +374,11 @@ gh workflow run 10-stop-compute.yml \
 ```
 
 **Aura Pause Endpoint Details:**
-- The workflow uses the Neo4j Aura `/instances/{instanceId}/pause` endpoint
+- The workflow uses OAuth 2.0 client credentials flow to obtain a Bearer access token from `https://api.neo4j.io/oauth/token`
+- The Bearer token is then used to authenticate API calls to the Neo4j Aura `/instances/{instanceId}/pause` endpoint
 - If the request returns 403 or 404 and `AURA_TENANT_ID` is provided, automatically retries using `/tenants/{tenantId}/instances/{instanceId}/pause`
-- Gracefully skips (exit 0) if instance is not found (404), already paused (409), or endpoint forbidden (403) after tenant fallback
-- Fails only on missing credentials or non-recoverable errors
+- Enforces strict HTTP 202 success: any response code other than 202 will fail the workflow
+- Fails on missing credentials or any non-202 response
 
 ## Advanced Configuration
 
