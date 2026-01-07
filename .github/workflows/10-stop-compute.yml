@@ -52,8 +52,8 @@ jobs:
         run: |
           set -euo pipefail
           databricks clusters list --output json > /tmp/clusters.json
-          # Support both shapes: {"clusters": [...]} or [...]
-          ids=$(jq -r '(.clusters // .) | .[]? | select(.state=="RUNNING") | .cluster_id' /tmp/clusters.json)
+          # Handle both shapes safely by catching indexing errors on arrays
+          ids=$(jq -r 'if type=="object" then (.clusters // []) else . end | .[]? | select(.state=="RUNNING") | .cluster_id' /tmp/clusters.json)
           if [ -z "$ids" ]; then
             echo "::warning::No running clusters found"
             exit 0
