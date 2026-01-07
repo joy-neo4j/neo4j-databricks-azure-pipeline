@@ -1,4 +1,4 @@
-name: 2 - Infra Provision (Azure_DBX_Neo4j-Aura)
+name: 2 - Infra Provision (Azure + DBX + Neo4j_Aura)
 
 on:
   workflow_dispatch:

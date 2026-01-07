@@ -1,4 +1,4 @@
-name: 4 - Integration (Neo4j-Aura_DBX)
+name: 4 - Integration (Neo4j_Aura + DBX)
 
 on:
   workflow_dispatch:
