@@ -1,5 +1,5 @@
 #!/bin/bash
-# Stop Compute / Cleanup Script (OAuth2 Bearer; strict 202)
+# Stop Compute / Cleanup Script (OAuth2 Bearer; 202-only success; 409 skip)
 set -euo pipefail
 ACTION=${1:-stop-dbx-clusters}
 
@@ -47,7 +47,12 @@ case "$ACTION" in
       echo "POST $ten_pause code: $code"
     fi
 
-    # Strict success: only 202 is accepted
+    # Treat 409 (already paused) as skip; everything else must be 202 to succeed
+    if [[ "$code" -eq 409 ]]; then
+      echo "Aura instance already paused; skipping"
+      exit 0
+    fi
+
     if [[ "$code" -ne 202 ]]; then
       echo "Aura pause failed (HTTP $code). Only 202 is accepted as success."
       sed 's/^/    /' /tmp/aura_pause.json || true
@@ -55,9 +60,6 @@ case "$ACTION" in
     fi
 
     echo "✅ Aura pause request accepted (202)"
-    ;;
-  cleanup-temp)
-    echo "Cleaning up temporary data... (add steps as needed)"
     ;;
   *)
     echo "Unknown action: ${ACTION}"; exit 1;;
