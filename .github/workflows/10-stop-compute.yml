@@ -1,4 +1,4 @@
-name: Stop Compute
+name: 5 - Stop Compute
 
 on:
   workflow_dispatch:
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: validate
     steps:
-      - name: Pause Aura instance (OAuth2 Bearer; 202-only success; 409 skip)
+      - name: Pause Aura instance
         env:
           AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
           AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
