@@ -10,7 +10,6 @@ on:
         options:
           - stop-dbx-clusters
           - stop-aura
-          - cleanup-temp
       confirm:
         description: 'Type CONFIRM to proceed'
         required: true
@@ -49,13 +48,15 @@ jobs:
         run: |
           echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
           echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
-      - name: Stop all running clusters (fail if none)
+      - name: Stop all running clusters (skip if none)
         run: |
           set -euo pipefail
-          ids=$(databricks clusters list --output json | jq -r '.clusters[] | select(.state=="RUNNING") | .cluster_id')
+          databricks clusters list --output json > /tmp/clusters.json
+          # Support both shapes: {"clusters": [...]} or [...]
+          ids=$(jq -r '(.clusters // .) | .[]? | select(.state=="RUNNING") | .cluster_id' /tmp/clusters.json)
           if [ -z "$ids" ]; then
-            echo "::error::No running clusters found"
-            exit 1
+            echo "::warning::No running clusters found"
+            exit 0
           fi
           while read -r cid; do
             [ -z "$cid" ] && continue
@@ -69,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: validate
     steps:
-      - name: Pause Aura instance (OAuth2; strict 202)
+      - name: Pause Aura instance (OAuth2 Bearer; 202-only success; 409 skip)
         env:
           AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
           AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
@@ -121,7 +122,12 @@ jobs:
             fi
           fi
 
-          # Strict success: only 202 is accepted; all others fail
+          # Treat 409 (already paused) as skip; everything else must be 202 to succeed
+          if [ "$code" -eq 409 ]; then
+            echo "::warning::Aura instance already paused; skipping"
+            exit 0
+          fi
+
           if [ "$code" -ne 202 ]; then
             echo "::error::Aura pause failed (HTTP $code). Only 202 is accepted as success."
             sed 's/^/    /' /tmp/aura_pause.json || true
@@ -129,14 +135,3 @@ jobs:
           fi
 
           echo "✅ Aura pause request accepted (202)"
-
-  cleanup-temp:
-    if: ${{ inputs.action == 'cleanup-temp' }}
-    runs-on: ubuntu-latest
-    needs: validate
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Run stop-compute script (cleanup-temp)
-        run: |
-          bash scripts/stop-compute.sh cleanup-temp
