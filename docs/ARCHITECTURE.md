@@ -7,14 +7,14 @@ The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solu
 ## High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        GitHub Actions                            │
-│                    (Orchestration Layer)                         │
+┌────────────────────────────────────────────────────────────────┐
+│                        GitHub Actions                          │
+│                    (Orchestration Layer)                       │
 └────────┬────────────────────────────────────┬──────────────────┘
-         │                                     │
-         │ Terraform IaC                       │ Databricks Jobs
-         │                                     │
-         ▼                                     ▼
+         │                                    │
+         │ Terraform IaC                      │ Databricks Jobs
+         │                                    │
+         ▼                                    ▼
 ┌─────────────────┐                  ┌─────────────────────────┐
 │  Azure          │                  │  Databricks             │
 │  Infrastructure │                  │  Workspace              │
@@ -24,9 +24,9 @@ The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solu
 │                 │                  │  - Jobs                 │
 │                 │                  │  - Unity Catalog        │
 └────────┬────────┘                  └──────────┬──────────────┘
-         │                                       │
-         │                                       │
-         │                                       ▼
+         │                                      │
+         │                                      │
+         │                                      ▼
          │                            ┌──────────────────────┐
          │                            │  Data Processing     │
          │                            │                      │
