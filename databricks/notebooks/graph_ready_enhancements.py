@@ -16,6 +16,22 @@ dbutils.widgets.text("catalog", "", "Unity Catalog name")
 CATALOG = dbutils.widgets.get("catalog") or "neo4j_pipeline"
 print(f"Using catalog: {CATALOG}")
 
+# Type definitions
+STRING_MAP_TYPE = T.MapType(T.StringType(), T.StringType())
+
+# Column name candidates for schema-aware lookups
+CATEGORY_COLUMNS = ["category", "category_name", "category_id"]
+DATE_COLUMNS = ["purchase_date", "order_date", "created_at", "timestamp", "date"]
+AMOUNT_COLUMNS = ["amount", "price", "total_amount", "unit_price", "subtotal"]
+REVIEW_DATE_COLUMNS = ["review_date", "created_at", "timestamp", "date"]
+RATING_COLUMNS = ["rating", "score", "stars"]
+CUSTOMER_COLUMNS = ["customer_id", "user_id"]
+PRODUCT_COLUMNS = ["product_id", "sku", "item_id"]
+SUPPLIER_ID_COLUMNS = ["supplier_id", "id"]
+SUPPLIER_NAME_COLUMNS = ["name", "supplier_name"]
+SUPPLIER_COUNTRY_COLUMNS = ["country", "region"]
+SUPPLIER_COLUMNS_IN_PRODUCTS = ["supplier_id", "supplier"]
+
 # Helpers
 def table_exists(fullname: str) -> bool:
     try:
@@ -28,11 +44,16 @@ def has_columns(df, cols):
     s = set(c.lower() for c in df.columns)
     return all(c.lower() in s for c in cols)
 
-map_str_str = T.MapType(T.StringType(), T.StringType())
+def find_real_column(df, colname_lower):
+    """Find actual column name in dataframe matching the lowercase name."""
+    for rc in df.columns:
+        if rc.lower() == colname_lower:
+            return rc
+    return colname_lower
 
 def merge_props_json(props_col, add_map_col):
     """Merge a JSON string column with a map<string,string> column to a new JSON string."""
-    return F.to_json(F.map_concat(F.coalesce(F.from_json(props_col, map_str_str), F.create_map()), add_map_col))
+    return F.to_json(F.map_concat(F.coalesce(F.from_json(props_col, STRING_MAP_TYPE), F.create_map()), add_map_col))
 
 # COMMAND ----------
 # 1) Product category enrichment
@@ -43,15 +64,10 @@ if table_exists(prod_nodes_tbl) and table_exists(prod_silver_tbl):
     prod_silver = spark.table(prod_silver_tbl)
     # Determine a category column if present
     category_col = None
-    for cand in ["category", "category_name", "category_id"]:
+    for cand in CATEGORY_COLUMNS:
         if cand in [c.lower() for c in prod_silver.columns]:
-            # preserve original case
-            for real in prod_silver.columns:
-                if real.lower() == cand:
-                    category_col = real
-                    break
-            if category_col:
-                break
+            category_col = find_real_column(prod_silver, cand)
+            break
     if category_col is not None:
         enriched = prod_nodes.alias("n").join(
             prod_silver.select(F.col("id").cast("string").alias("node_id"), F.col(category_col).cast("string").alias("category")),
@@ -75,20 +91,17 @@ if table_exists(purch_tbl) and table_exists(orders_tbl):
     purch = spark.table(purch_tbl).select("from_id", "to_id", "properties")
     orders = spark.table(orders_tbl)
     # Identify columns
-    date_col = next((c for c in ["purchase_date","order_date","created_at","timestamp","date"] if c in [x.lower() for x in orders.columns]), None)
-    amt_col  = next((c for c in ["amount","price","total_amount","unit_price","subtotal"] if c in [x.lower() for x in orders.columns]), None)
-    cust_col = next((c for c in ["customer_id","user_id"] if c in [x.lower() for x in orders.columns]), None)
-    prod_col = next((c for c in ["product_id","sku","item_id"] if c in [x.lower() for x in orders.columns]), None)
+    date_col = next((c for c in DATE_COLUMNS if c in [x.lower() for x in orders.columns]), None)
+    amt_col  = next((c for c in AMOUNT_COLUMNS if c in [x.lower() for x in orders.columns]), None)
+    cust_col = next((c for c in CUSTOMER_COLUMNS if c in [x.lower() for x in orders.columns]), None)
+    prod_col = next((c for c in PRODUCT_COLUMNS if c in [x.lower() for x in orders.columns]), None)
 
     if date_col and cust_col and prod_col:
         # Recover real-case columns
-        def real(colname):
-            for rc in orders.columns:
-                if rc.lower() == colname:
-                    return rc
-            return colname
-        date_rc = real(date_col); cust_rc = real(cust_col); prod_rc = real(prod_col)
-        amt_rc  = real(amt_col) if amt_col else None
+        date_rc = find_real_column(orders, date_col)
+        cust_rc = find_real_column(orders, cust_col)
+        prod_rc = find_real_column(orders, prod_col)
+        amt_rc  = find_real_column(orders, amt_col) if amt_col else None
 
         o_sel = orders.select(
             F.col(cust_rc).cast("string").alias("from_id"),
@@ -117,19 +130,16 @@ reviews_tbl = f"{CATALOG}.silver.reviews"
 if table_exists(review_tbl) and table_exists(reviews_tbl):
     rel = spark.table(review_tbl).select("from_id","to_id","properties")
     rev = spark.table(reviews_tbl)
-    date_col = next((c for c in ["review_date","created_at","timestamp","date"] if c in [x.lower() for x in rev.columns]), None)
-    rating_col = next((c for c in ["rating","score","stars"] if c in [x.lower() for x in rev.columns]), None)
-    cust_col = next((c for c in ["customer_id","user_id"] if c in [x.lower() for x in rev.columns]), None)
-    prod_col = next((c for c in ["product_id","sku","item_id"] if c in [x.lower() for x in rev.columns]), None)
+    date_col = next((c for c in REVIEW_DATE_COLUMNS if c in [x.lower() for x in rev.columns]), None)
+    rating_col = next((c for c in RATING_COLUMNS if c in [x.lower() for x in rev.columns]), None)
+    cust_col = next((c for c in CUSTOMER_COLUMNS if c in [x.lower() for x in rev.columns]), None)
+    prod_col = next((c for c in PRODUCT_COLUMNS if c in [x.lower() for x in rev.columns]), None)
 
     if date_col and cust_col and prod_col:
-        def real(colname):
-            for rc in rev.columns:
-                if rc.lower() == colname:
-                    return rc
-            return colname
-        date_rc = real(date_col); cust_rc = real(cust_col); prod_rc = real(prod_col)
-        rating_rc = real(rating_col) if rating_col else None
+        date_rc = find_real_column(rev, date_col)
+        cust_rc = find_real_column(rev, cust_col)
+        prod_rc = find_real_column(rev, prod_col)
+        rating_rc = find_real_column(rev, rating_col) if rating_col else None
 
         r_sel = rev.select(
             F.col(cust_rc).cast("string").alias("from_id"),
@@ -160,24 +170,20 @@ prod_silver_tbl = f"{CATALOG}.silver.products"
 if table_exists(sup_silver_tbl):
     sup = spark.table(sup_silver_tbl)
     # Pick common columns if present
-    sid = next((c for c in ["supplier_id","id"] if c in [x.lower() for x in sup.columns]), None)
-    name = next((c for c in ["name","supplier_name"] if c in [x.lower() for x in sup.columns]), None)
-    country = next((c for c in ["country","region"] if c in [x.lower() for x in sup.columns]), None)
-    def real(df, colname):
-        for rc in df.columns:
-            if rc.lower() == colname:
-                return rc
-        return colname
+    sid = next((c for c in SUPPLIER_ID_COLUMNS if c in [x.lower() for x in sup.columns]), None)
+    name = next((c for c in SUPPLIER_NAME_COLUMNS if c in [x.lower() for x in sup.columns]), None)
+    country = next((c for c in SUPPLIER_COUNTRY_COLUMNS if c in [x.lower() for x in sup.columns]), None)
+    
     if sid:
-        sid_rc = real(sup, sid)
+        sid_rc = find_real_column(sup, sid)
         sel = sup.select(F.col(sid_rc).cast("string").alias("node_id"))
         props_keys = []
         props_vals = []
         if name:
-            name_rc = real(sup, name)
+            name_rc = find_real_column(sup, name)
             props_keys.append(F.lit("name")); props_vals.append(F.col(name_rc).cast("string"))
         if country:
-            country_rc = real(sup, country)
+            country_rc = find_real_column(sup, country)
             props_keys.append(F.lit("country")); props_vals.append(F.col(country_rc).cast("string"))
         if props_keys:
             props_map = F.map_from_arrays(F.array(*props_keys), F.array(*props_vals))
@@ -194,16 +200,11 @@ else:
 # SUPPLIES relationships (supplier -> product)
 if table_exists(prod_silver_tbl):
     prod = spark.table(prod_silver_tbl)
-    sid = next((c for c in ["supplier_id","supplier"] if c in [x.lower() for x in prod.columns]), None)
-    pid = next((c for c in ["product_id","id","sku","item_id"] if c in [x.lower() for x in prod.columns]), None)
+    sid = next((c for c in SUPPLIER_COLUMNS_IN_PRODUCTS if c in [x.lower() for x in prod.columns]), None)
+    pid = next((c for c in ["id"] + PRODUCT_COLUMNS if c in [x.lower() for x in prod.columns]), None)
     if sid and pid:
-        def real(df, colname):
-            for rc in df.columns:
-                if rc.lower() == colname:
-                    return rc
-            return colname
-        sid_rc = real(prod, sid)
-        pid_rc = real(prod, pid)
+        sid_rc = find_real_column(prod, sid)
+        pid_rc = find_real_column(prod, pid)
         supplies = prod.select(
             F.col(sid_rc).cast("string").alias("from_id"),
             F.col(pid_rc).cast("string").alias("to_id"),

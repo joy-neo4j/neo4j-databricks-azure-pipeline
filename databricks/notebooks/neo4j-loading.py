@@ -243,7 +243,7 @@ def load_nodes_to_neo4j(nodes_df, uri, username, password, batch_size):
                     session.run(query, nodes=batch_data)
                     
                     total_loaded += len(batch)
-                    pct = int(100 * total_loaded / max(total_count, 1))
+                    pct = int(100 * total_loaded / (total_count or 1))
                     print(f"  Progress: {total_loaded}/{total_count} ({pct}%)")
             
             except Exception as e:
@@ -269,11 +269,12 @@ def load_relationships_to_neo4j(rels_df, uri, username, password, batch_size):
     
     driver = GraphDatabase.driver(uri, auth=(username, password))
     
-    rel_groups = rels_df.select("relationship_type","source_node_label","target_node_label").distinct().collect()
+    # Group by relationship type and source/target labels
+    relationship_type_groups = rels_df.select("relationship_type","source_node_label","target_node_label").distinct().collect()
     
     total_loaded = 0
     
-    for row in rel_groups:
+    for row in relationship_type_groups:
         rel_type = row['relationship_type']
         source_label = row['source_node_label']
         target_label = row['target_node_label']
@@ -316,7 +317,7 @@ def load_relationships_to_neo4j(rels_df, uri, username, password, batch_size):
                     session.run(query, rels=batch_data)
                     
                     total_loaded += len(batch)
-                    pct = int(100 * total_loaded / max(total_count, 1))
+                    pct = int(100 * total_loaded / (total_count or 1))
                     print(f"  Progress: {total_loaded}/{total_count} ({pct}%)")
             
             except Exception as e:
