@@ -54,7 +54,7 @@ if table_exists(prod_nodes_tbl) and table_exists(prod_silver_tbl):
                 break
     if category_col is not None:
         enriched = prod_nodes.alias("n").join(
-            prod_silver.select(F.col("product_id").cast("string").alias("node_id"), F.col(category_col).cast("string").alias("category")),
+            prod_silver.select(F.col("id").cast("string").alias("node_id"), F.col(category_col).cast("string").alias("category")),
             on="node_id", how="left"
         ).withColumn(
             "properties",
