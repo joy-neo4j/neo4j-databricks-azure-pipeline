@@ -43,6 +43,14 @@ CATALOG = catalog_param or (preferred_catalog if preferred_catalog in catalog_na
 spark.sql(f"USE CATALOG {CATALOG}")
 print(f"Using catalog: {CATALOG}")
 
+# Helper to check table existence
+def table_exists(fullname: str) -> bool:
+    try:
+        spark.table(fullname)
+        return True
+    except Exception:
+        return False
+
 # COMMAND ----------
 # Get Neo4j credentials from Databricks secrets
 
@@ -96,7 +104,19 @@ cust_nodes = spark.table(f"{CATALOG}.graph_ready.customer_nodes").select(
 prod_nodes = spark.table(f"{CATALOG}.graph_ready.product_nodes").select(
     F.col("node_id"), F.col("properties"), F.lit("Product").alias("node_label")
 )
+
 nodes_df = cust_nodes.unionByName(prod_nodes)
+
+# Optionally include Supplier nodes if present
+if table_exists(f"{CATALOG}.graph_ready.supplier_nodes"):
+    sup_nodes = spark.table(f"{CATALOG}.graph_ready.supplier_nodes").select(
+        F.col("node_id"), F.col("properties"), F.lit("Supplier").alias("node_label")
+    )
+    nodes_df = nodes_df.unionByName(sup_nodes)
+    print("Including Supplier nodes from graph_ready.supplier_nodes")
+else:
+    print("Supplier nodes table not found in graph_ready; skipping suppliers for this run")
+
 print(f"Nodes to load: {nodes_df.count()}")
 
 purchased = spark.table(f"{CATALOG}.graph_ready.purchased_relationships").select(
@@ -115,7 +135,24 @@ reviewed = spark.table(f"{CATALOG}.graph_ready.reviewed_relationships").select(
     F.lit("REVIEWED").alias("relationship_type"),
     F.col("properties")
 )
+
 relationships_df = purchased.unionByName(reviewed)
+
+# Optionally include SUPPLIES relationships if present
+if table_exists(f"{CATALOG}.graph_ready.supplies_relationships"):
+    supplies = spark.table(f"{CATALOG}.graph_ready.supplies_relationships").select(
+        F.col("from_id").alias("source_node_id"),
+        F.lit("Supplier").alias("source_node_label"),
+        F.col("to_id").alias("target_node_id"),
+        F.lit("Product").alias("target_node_label"),
+        F.lit("SUPPLIES").alias("relationship_type"),
+        F.col("properties")
+    )
+    relationships_df = relationships_df.unionByName(supplies)
+    print("Including SUPPLIES relationships from graph_ready.supplies_relationships")
+else:
+    print("SUPPLIES relationships table not found in graph_ready; skipping SUPPLIES for this run")
+
 print(f"Relationships to load: {relationships_df.count()}")
 
 # COMMAND ----------
@@ -127,7 +164,8 @@ def setup_neo4j_constraints(uri, username, password):
     
     constraints = [
         "CREATE CONSTRAINT customer_id IF NOT EXISTS FOR (c:Customer) REQUIRE c.id IS UNIQUE",
-        "CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE"
+        "CREATE CONSTRAINT product_id IF NOT EXISTS FOR (p:Product) REQUIRE p.id IS UNIQUE",
+        "CREATE CONSTRAINT supplier_id IF NOT EXISTS FOR (s:Supplier) REQUIRE s.id IS UNIQUE"
     ]
     
     indexes = [
@@ -205,7 +243,8 @@ def load_nodes_to_neo4j(nodes_df, uri, username, password, batch_size):
                     session.run(query, nodes=batch_data)
                     
                     total_loaded += len(batch)
-                    print(f"  Progress: {total_loaded}/{total_count} ({100*total_loaded//total_count}%)")
+                    pct = int(100 * total_loaded / (total_count or 1))
+                    print(f"  Progress: {total_loaded}/{total_count} ({pct}%)")
             
             except Exception as e:
                 print(f"  ❌ Error in batch {i//batch_size}: {str(e)}")
@@ -230,46 +269,42 @@ def load_relationships_to_neo4j(rels_df, uri, username, password, batch_size):
     
     driver = GraphDatabase.driver(uri, auth=(username, password))
     
-    # Group by relationship type
-    rel_types = rels_df.select("relationship_type").distinct().collect()
+    # Group by relationship type and source/target labels
+    relationship_type_groups = rels_df.select("relationship_type","source_node_label","target_node_label").distinct().collect()
     
     total_loaded = 0
     
-    for row in rel_types:
+    for row in relationship_type_groups:
         rel_type = row['relationship_type']
-        type_df = rels_df.filter(F.col("relationship_type") == rel_type)
+        source_label = row['source_node_label']
+        target_label = row['target_node_label']
+        
+        type_df = rels_df.filter(
+            (F.col("relationship_type") == rel_type) &
+            (F.col("source_node_label") == source_label) &
+            (F.col("target_node_label") == target_label)
+        )
         
         total_count = type_df.count()
-        print(f"\n📦 Loading {total_count} {rel_type} relationships...")
+        print(f"\n📦 Loading {total_count} {rel_type} relationships ({source_label} -> {target_label})...")
         
-        # Convert to list
         rels_data = type_df.select(
-            "source_node_id", "source_node_label",
-            "target_node_id", "target_node_label",
-            "properties"
+            "source_node_id", "target_node_id", "properties"
         ).collect()
         
-        # Process in batches
         for i in range(0, len(rels_data), batch_size):
             batch = rels_data[i:i+batch_size]
             
             try:
                 with driver.session() as session:
-                    # Prepare batch data
                     batch_data = []
                     for rel in batch:
                         props = json.loads(rel['properties'])
                         batch_data.append({
                             'source_id': rel['source_node_id'],
-                            'source_label': rel['source_node_label'],
                             'target_id': rel['target_node_id'],
-                            'target_label': rel['target_node_label'],
                             'properties': props
                         })
-                    
-                    # Use dynamic label matching
-                    source_label = batch[0]['source_node_label']
-                    target_label = batch[0]['target_node_label']
                     
                     query = f"""
                     UNWIND $rels AS rel
@@ -282,7 +317,8 @@ def load_relationships_to_neo4j(rels_df, uri, username, password, batch_size):
                     session.run(query, rels=batch_data)
                     
                     total_loaded += len(batch)
-                    print(f"  Progress: {total_loaded}/{total_count} ({100*total_loaded//total_count}%)")
+                    pct = int(100 * total_loaded / (total_count or 1))
+                    print(f"  Progress: {total_loaded}/{total_count} ({pct}%)")
             
             except Exception as e:
                 print(f"  ❌ Error in batch {i//batch_size}: {str(e)}")

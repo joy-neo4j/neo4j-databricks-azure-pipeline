@@ -145,6 +145,32 @@ No environment input is required. Workflows deploy to the single configured envi
 
 ## Best Practices
 
+## Graph Ready Tables
+
+The pipeline creates graph-ready tables in the `graph_ready` schema that are optimized for Neo4j loading:
+
+### Core Tables
+- **graph_ready.customer_nodes**: Customer entities with properties (name, email, age, etc.)
+- **graph_ready.product_nodes**: Product entities with properties (name, description, price, etc.)
+  - Properties may include `category` when available in silver.products
+- **graph_ready.purchased_relationships**: Customer → Product PURCHASED relationships
+  - Properties may include `purchase_date` and `amount` when available in silver.orders
+- **graph_ready.reviewed_relationships**: Customer → Product REVIEWED relationships
+  - Properties may include `review_date` and `rating` when available in silver.reviews
+
+### Optional Supplier Tables
+- **graph_ready.supplier_nodes**: Supplier entities (created only when silver.suppliers exists)
+  - node_id = supplier_id
+  - Properties include `name`, `country` when available
+- **graph_ready.supplies_relationships**: Supplier → Product SUPPLIES relationships (created only when supplier data is available)
+  - from_id = supplier_id, to_id = product_id
+
+### Enrichment
+The optional `graph_ready_enhancements.py` notebook enriches existing graph_ready tables with additional properties when matching silver data is present. Enrichments are:
+- Schema-aware: only applied when source tables/columns exist
+- Idempotent: can be run multiple times safely
+- Non-breaking: existing functionality continues to work without running enhancements
+
 ### Naming Conventions
 ```
 Resource Groups: rg-{project}
