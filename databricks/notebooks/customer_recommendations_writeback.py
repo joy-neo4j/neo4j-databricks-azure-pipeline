@@ -52,7 +52,7 @@ except Exception as e:
 # Convert to neo4j+s protocol for TLS
 if neo4j_uri.startswith("neo4j://"):
     neo4j_uri = neo4j_uri.replace("neo4j://", "neo4j+s://")
-    print(f"✅ Converted URI to TLS: {neo4j_uri}")
+    print("✅ Converted Neo4j URI to TLS (neo4j+s)")
 
 # COMMAND ----------
 # Read customer recommendations from Neo4j
