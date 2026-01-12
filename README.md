@@ -437,6 +437,64 @@ The following workflows have been consolidated into `02-provision.yml`:
 - `04-databricks-configuration.yml.deprecated`
 - `05-unity-catalog-setup.yml.deprecated`
 
+### Multi-Environment Deployment
+
+#### Option 1: Deploy Second Environment in Same Subscription
+
+To deploy a second environment (e.g., dev, staging) in the same Azure subscription while reusing an existing Databricks workspace:
+
+1. **Create a new Resource Group** for the second environment:
+   ```bash
+   # Example: Create a dev environment resource group
+   az group create \
+     --name rg-neo4j-dbx-dev \
+     --location uksouth
+   ```
+
+2. **Update Terraform variables** for the second environment:
+   ```hcl
+   # terraform/terraform.tfvars (or use a separate tfvars file like dev.tfvars)
+   resource_group_name = "rg-neo4j-dbx-dev"
+   location = "uksouth"
+   
+   # Reuse existing Databricks workspace
+   create_databricks_workspace = false
+   databricks_workspace_name = "dbw-neo4j-prod"  # Reference existing workspace
+   
+   # Use different catalog name to isolate data
+   catalog_name_override = "neo4j_pipeline_dev"
+   
+   # Use different storage account for separation
+   storage_account_name = null  # Auto-generates unique name
+   storage_container_name = "pipeline-data-dev"
+   ```
+
+3. **Deploy using Terraform**:
+   ```bash
+   cd terraform
+   terraform workspace new dev  # Optional: use Terraform workspaces
+   terraform plan -var-file="dev.tfvars"
+   terraform apply -var-file="dev.tfvars"
+   ```
+
+4. **Key Benefits**:
+   - **Resource Isolation**: Each environment has its own Resource Group, Storage, and Unity Catalog
+   - **Cost Efficiency**: Reuse existing Databricks workspace to save licensing costs
+   - **Data Separation**: Different Unity Catalogs ensure complete data isolation
+   - **Flexible Cleanup**: Delete entire Resource Group to remove environment
+
+5. **GitHub Actions Configuration**:
+   ```yaml
+   # In workflow, pass environment-specific variables:
+   - name: Terraform Apply
+     env:
+       TF_VAR_resource_group_name: ${{ secrets.DEV_RESOURCE_GROUP_NAME }}
+       TF_VAR_catalog_name_override: neo4j_pipeline_dev
+       TF_VAR_create_databricks_workspace: false
+   ```
+
+**Note**: Each environment will have its own Neo4j Aura instance. To reuse a single Aura instance across environments, manually configure Neo4j credentials in each environment's Databricks secret scope.
+
 ## 🏗️ Architecture
 
 ### E-commerce Data Model

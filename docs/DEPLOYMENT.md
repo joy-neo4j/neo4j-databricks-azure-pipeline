@@ -459,6 +459,119 @@ gh run download <run-id>
    - Workflow run ID
    - Steps to reproduce
 
+## Multi-Environment Deployment
+
+### Overview
+Deploy multiple isolated environments (dev, staging, prod) in the same Azure subscription while sharing a Databricks workspace to optimize costs.
+
+### Option 1: Reuse Existing Databricks Workspace
+
+**Use Case**: Deploy a second environment (e.g., dev) in the same subscription while reusing an existing Databricks workspace.
+
+#### Step 1: Prepare Environment-Specific Configuration
+```bash
+# Create a separate tfvars file for the new environment
+cd terraform
+cp terraform.tfvars.example dev.tfvars
+```
+
+#### Step 2: Edit dev.tfvars
+```hcl
+# Resource Group (new for this environment)
+resource_group_name = "rg-neo4j-dbx-dev"
+location = "uksouth"
+
+# Reuse existing Databricks workspace
+create_databricks_workspace = false
+databricks_workspace_name = "dbw-neo4j-prod"  # Reference existing workspace
+
+# Isolated Unity Catalog for this environment
+catalog_name_override = "neo4j_pipeline_dev"
+
+# Separate storage for this environment
+storage_account_name = null  # Auto-generates unique name
+storage_container_name = "pipeline-data-dev"
+
+# Environment-specific Neo4j settings (optional - creates new Aura instance)
+neo4j_region = "uksouth"
+neo4j_tier = "professional"
+neo4j_memory = "8GB"
+```
+
+#### Step 3: Deploy Dev Environment
+```bash
+# Option A: Using Terraform directly
+terraform plan -var-file="dev.tfvars" -out=dev.tfplan
+terraform apply dev.tfplan
+
+# Option B: Using Terraform workspaces
+terraform workspace new dev
+terraform plan -var-file="dev.tfvars"
+terraform apply -var-file="dev.tfvars"
+```
+
+#### Step 4: Configure GitHub Secrets for Dev Environment
+```bash
+# Set dev-specific secrets (optional - for GitHub Actions)
+gh secret set DEV_RESOURCE_GROUP_NAME --body "rg-neo4j-dbx-dev"
+gh secret set DEV_CATALOG_NAME --body "neo4j_pipeline_dev"
+gh secret set DEV_NEO4J_URI --body "neo4j+s://xxx.databases.neo4j.io"
+```
+
+#### Step 5: Update Workflow for Dev Environment
+```yaml
+# In .github/workflows/07-neo4j-integration-showcase.yml
+# Add environment-specific inputs
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        type: choice
+        options:
+          - dev
+          - prod
+        default: 'dev'
+
+# Use environment-specific catalog
+env:
+  CATALOG_NAME: ${{ inputs.environment == 'dev' && 'neo4j_pipeline_dev' || 'neo4j_pipeline' }}
+```
+
+### Benefits of This Approach
+
+1. **Cost Efficiency**: Share Databricks workspace license and infrastructure costs
+2. **Resource Isolation**: Each environment has its own:
+   - Azure Resource Group
+   - Storage Account
+   - Unity Catalog
+   - Neo4j Aura instance (optional)
+3. **Data Separation**: Complete isolation via separate Unity Catalogs
+4. **Easy Cleanup**: Delete entire Resource Group to remove environment
+5. **Flexible Configuration**: Mix and match shared and isolated resources
+
+### Environment Comparison
+
+| Resource | Shared | Isolated |
+|----------|--------|----------|
+| Databricks Workspace | ✅ | |
+| Resource Group | | ✅ |
+| Storage Account | | ✅ |
+| Unity Catalog | | ✅ |
+| Neo4j Aura | | ✅ |
+| Key Vault | | ✅ |
+
+### Cleanup Dev Environment
+```bash
+# Option 1: Using Terraform
+cd terraform
+terraform workspace select dev
+terraform destroy -var-file="dev.tfvars"
+
+# Option 2: Delete Resource Group directly
+az group delete --name rg-neo4j-dbx-dev --yes --no-wait
+```
+
 ---
 
 **Last Updated:** 2024-01-10  

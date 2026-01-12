@@ -71,7 +71,10 @@ jobs:
           databricks workspace import /Shared/neo4j-pipeline/csv-ingestion --file databricks/notebooks/csv-ingestion.py --language PYTHON --format SOURCE --overwrite
           databricks workspace import /Shared/neo4j-pipeline/data-validation --file databricks/notebooks/data-validation.py --language PYTHON --format SOURCE --overwrite
           databricks workspace import /Shared/neo4j-pipeline/graph-transformation --file databricks/notebooks/graph-transformation.py --language PYTHON --format SOURCE --overwrite
+          databricks workspace import /Shared/neo4j-pipeline/graph_ready_enhancements --file databricks/notebooks/graph_ready_enhancements.py --language PYTHON --format SOURCE --overwrite
           databricks workspace import /Shared/neo4j-pipeline/neo4j-loading --file databricks/notebooks/neo4j-loading.py --language PYTHON --format SOURCE --overwrite
+          databricks workspace import /Shared/neo4j-pipeline/customer_recommendations_writeback --file databricks/notebooks/customer_recommendations_writeback.py --language PYTHON --format SOURCE --overwrite
+          databricks workspace import /Shared/neo4j-pipeline/supplier_metrics_writeback --file databricks/notebooks/supplier_metrics_writeback.py --language PYTHON --format SOURCE --overwrite
 
       - name: Run E-commerce Data Ingestion
         if: ${{ !inputs.skip_ingestion }}
@@ -346,9 +349,24 @@ jobs:
                   "timeout_seconds": 1200
                 },
                 {
+                  "task_key": "graph_ready_enhancements",
+                  "description": "Optional enrichments to graph-ready tables",
+                  "depends_on": [{"task_key": "graph_transformation"}],
+                  "notebook_task": {
+                    "notebook_path": "/Shared/neo4j-pipeline/graph_ready_enhancements",
+                    "base_parameters": {"catalog": cat}
+                  },
+                  "new_cluster": {
+                    "spark_version": "13.3.x-scala2.12",
+                    "node_type_id": "Standard_DS3_v2",
+                    "num_workers": 2
+                  },
+                  "timeout_seconds": 1200
+                },
+                {
                   "task_key": "neo4j_loading",
                   "description": "Load data to Neo4j Aura",
-                  "depends_on": [{"task_key": "graph_transformation"}],
+                  "depends_on": [{"task_key": "graph_ready_enhancements"}],
                   "notebook_task": {
                     "notebook_path": "/Shared/neo4j-pipeline/neo4j-loading",
                     "base_parameters": {"batch_size": "1000", "catalog": cat}
@@ -360,6 +378,58 @@ jobs:
                     "spark_conf": {"spark.databricks.delta.preview.enabled": "true"}
                   },
                   "timeout_seconds": 1800
+                },
+                {
+                  "task_key": "customer_recommendations_writeback",
+                  "description": "Write customer recommendations back to Delta",
+                  "depends_on": [{"task_key": "neo4j_loading"}],
+                  "notebook_task": {
+                    "notebook_path": "/Shared/neo4j-pipeline/customer_recommendations_writeback",
+                    "base_parameters": {"catalog": cat}
+                  },
+                  "new_cluster": {
+                    "spark_version": "13.3.x-scala2.12",
+                    "node_type_id": "Standard_DS3_v2",
+                    "num_workers": 2,
+                    "spark_conf": {"spark.databricks.delta.preview.enabled": "true"},
+                    "spark_env_vars": {},
+                    "custom_tags": {},
+                    "init_scripts": []
+                  },
+                  "libraries": [
+                    {
+                      "maven": {
+                        "coordinates": "org.neo4j:neo4j-connector-apache-spark_2.12:5.3.1_for_spark_3"
+                      }
+                    }
+                  ],
+                  "timeout_seconds": 1200
+                },
+                {
+                  "task_key": "supplier_metrics_writeback",
+                  "description": "Write supplier metrics back to Delta",
+                  "depends_on": [{"task_key": "neo4j_loading"}],
+                  "notebook_task": {
+                    "notebook_path": "/Shared/neo4j-pipeline/supplier_metrics_writeback",
+                    "base_parameters": {"catalog": cat}
+                  },
+                  "new_cluster": {
+                    "spark_version": "13.3.x-scala2.12",
+                    "node_type_id": "Standard_DS3_v2",
+                    "num_workers": 2,
+                    "spark_conf": {"spark.databricks.delta.preview.enabled": "true"},
+                    "spark_env_vars": {},
+                    "custom_tags": {},
+                    "init_scripts": []
+                  },
+                  "libraries": [
+                    {
+                      "maven": {
+                        "coordinates": "org.neo4j:neo4j-connector-apache-spark_2.12:5.3.1_for_spark_3"
+                      }
+                    }
+                  ],
+                  "timeout_seconds": 1200
                 }
               ]
             }
