@@ -69,20 +69,34 @@ if table_exists(prod_nodes_tbl) and table_exists(prod_silver_tbl):
             category_col = find_real_column(prod_silver, cand)
             break
     if category_col is not None:
+        # Step 1: Prepare join DataFrame
+        join_df = prod_silver.select(
+            F.col("id").cast("string").alias("node_id"),
+            F.col(category_col).cast("string").alias("category")
+        )
+        # Step 2: Join
         enriched = prod_nodes.alias("n").join(
-            prod_silver.select(F.col("id").cast("string").alias("node_id"), F.col(category_col).cast("string").alias("category")),
-            on="node_id", how="left"
-        ).withColumn(
+            join_df, on="node_id", how="left"
+        )
+        enriched = enriched.cache()
+        # Step 3: Merge properties
+        enriched = enriched.withColumn(
             "properties",
-            merge_props_json(F.col("properties"), F.map_from_arrays(F.array(F.lit("category")), F.array(F.col("category"))))
+            merge_props_json(
+                F.col("properties"),
+                F.map_from_arrays(
+                    F.array(F.lit("category")),
+                    F.array(F.col("category"))
+                )
+            )
         ).select("node_id", "properties")
+        # Step 4: Write result
         enriched.write.mode("overwrite").saveAsTable(prod_nodes_tbl)
         print("✓ Enriched product_nodes with category")
     else:
         print("(skip) No category-like column found in silver.products")
 else:
     print("(skip) product_nodes or silver.products missing")
-
 # COMMAND ----------
 # 2) PURCHASED enrichment: purchase_date and amount
 purch_tbl = f"{CATALOG}.graph_ready.purchased_relationships"
