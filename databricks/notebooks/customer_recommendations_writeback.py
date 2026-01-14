@@ -61,14 +61,17 @@ if neo4j_uri.startswith("neo4j://"):
 print("Reading customer recommendations from Neo4j...")
 
 cypher_query = """
-MATCH (c:Customer)-[:PURCHASED]->(p1:Product)
-MATCH (other:Customer)-[:PURCHASED]->(p1)
-MATCH (other)-[:PURCHASED]->(p2:Product)
-WHERE c <> other AND NOT (c)-[:PURCHASED]->(p2)
-WITH c.id as customer_id, p2.id as product_id, count(*) as frequency
-ORDER BY customer_id, frequency DESC
+CALL {
+  MATCH (c:Customer)-[:PURCHASED]->(p1:Product)
+  MATCH (other:Customer)-[:PURCHASED]->(p1)
+  MATCH (other)-[:PURCHASED]->(p2:Product)
+  WHERE c <> other AND NOT (c)-[:PURCHASED]->(p2)
+  WITH c.id AS customer_id, p2.id AS product_id, count(*) AS frequency
+  ORDER BY customer_id, frequency DESC
+  LIMIT 10000
+  RETURN customer_id, product_id, frequency
+}
 RETURN customer_id, product_id, frequency
-LIMIT 10000
 """
 
 try:
