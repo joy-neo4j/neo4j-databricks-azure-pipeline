@@ -1,20 +1,21 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC # Graph Ready Enhancements (Optional Enrichment)
-# MAGIC 
+# MAGIC
 # MAGIC Extends existing graph_ready tables with optional fields if source columns exist, and
 # MAGIC creates Supplier graph_ready artifacts when silver data is available.
-# MAGIC 
+# MAGIC
 # MAGIC Parameters:
 # MAGIC - catalog: Unity Catalog name (optional)
 
 # COMMAND ----------
+
 from pyspark.sql import functions as F, types as T
 
 # Parameters
 dbutils.widgets.text("catalog", "", "Unity Catalog name")
 CATALOG = dbutils.widgets.get("catalog") or "neo4j_pipeline"
-print(f"Using catalog: {CATALOG
+print(f"Using catalog: {CATALOG}")
 
 # Type definitions
 STRING_MAP_TYPE = T.MapType(T.StringType(), T.StringType())
@@ -40,48 +41,63 @@ def table_exists(fullname: str) -> bool:
     except Exception:
         return False
 
-def real(df, desired_lower: str) -> str:
+def find_real_column(df, desired_lower: str):
     for rc in df.columns:
         if rc.lower() == desired_lower:
             return rc
-    return desired_lower
+    return None
+
+# Candidate columns
+CATEGORY_COLUMNS = ["category", "category_name", "category_id"]
+PRODUCT_ID_COLUMNS = ["product_id", "id", "sku", "item_id"]
 
 map_str_str = T.MapType(T.StringType(), T.StringType())
 
 def merge_props_json(props_col, add_map_col):
     """
-    Merge an existing JSON string map with an additional map, ensuring unique keys.
-    New keys/values take precedence if present; no duplicate keys are emitted.
+    Merge an existing JSON map (string) with an additional map<string,string>, ensuring unique keys.
+    New values (add_map_col) take precedence when the same key exists.
     """
     existing = F.coalesce(F.from_json(props_col, map_str_str), F.create_map())
     merged = F.map_zip_with(existing, add_map_col, lambda k, v1, v2: F.coalesce(v2, v1))
     return F.to_json(merged)
 
+
 # COMMAND ----------
+
 # 1) Product category enrichment
 prod_nodes_tbl = f"{CATALOG}.graph_ready.product_nodes"
 prod_silver_tbl = f"{CATALOG}.silver.products"
+
 if table_exists(prod_nodes_tbl) and table_exists(prod_silver_tbl):
     prod_nodes = spark.table(prod_nodes_tbl).select("node_id", "properties")
     prod_silver = spark.table(prod_silver_tbl)
-    # Determine a category column if present
+
+    # Detect product id column
+    pid_col = None
+    for cand in PRODUCT_ID_COLUMNS:
+        if cand in [c.lower() for c in prod_silver.columns]:
+            pid_col = find_real_column(prod_silver, cand)
+            break
+
+    # Detect category column
     category_col = None
     for cand in CATEGORY_COLUMNS:
         if cand in [c.lower() for c in prod_silver.columns]:
             category_col = find_real_column(prod_silver, cand)
             break
-    if category_col is not None:
+
+    if pid_col is not None and category_col is not None:
         # Step 1: Prepare join DataFrame
         join_df = prod_silver.select(
-            F.col("id").cast("string").alias("node_id"),
+            F.col(pid_col).cast("string").alias("node_id"),
             F.col(category_col).cast("string").alias("category")
         )
+
         # Step 2: Join
-        enriched = prod_nodes.alias("n").join(
-            join_df, on="node_id", how="left"
-        )
-        enriched = enriched.cache()
-        # Step 3: Merge properties
+        enriched = prod_nodes.alias("n").join(join_df, on="node_id", how="left")
+
+        # Step 3: Merge properties (no duplicate keys)
         enriched = enriched.withColumn(
             "properties",
             merge_props_json(
@@ -92,14 +108,17 @@ if table_exists(prod_nodes_tbl) and table_exists(prod_silver_tbl):
                 )
             )
         ).select("node_id", "properties")
+
         # Step 4: Write result
         enriched.write.mode("overwrite").saveAsTable(prod_nodes_tbl)
         print("✓ Enriched product_nodes with category")
     else:
-        print("(skip) No category-like column found in silver.products")
+        print("(skip) Missing product id or category column in silver.products")
 else:
     print("(skip) product_nodes or silver.products missing")
+
 # COMMAND ----------
+
 # 2) PURCHASED enrichment: purchase_date and amount
 purch_tbl = f"{CATALOG}.graph_ready.purchased_relationships"
 orders_tbl = f"{CATALOG}.silver.orders"
@@ -140,6 +159,7 @@ else:
     print("(skip) purchased_relationships or silver.orders missing")
 
 # COMMAND ----------
+
 # 3) REVIEWED enrichment: review_date and rating
 review_tbl = f"{CATALOG}.graph_ready.reviewed_relationships"
 reviews_tbl = f"{CATALOG}.silver.reviews"
@@ -178,34 +198,51 @@ else:
     print("(skip) reviewed_relationships or silver.reviews missing")
 
 # COMMAND ----------
+
 # 4) Supplier graph_ready artifacts (optional)
 sup_silver_tbl = f"{CATALOG}.silver.suppliers"
 prod_silver_tbl = f"{CATALOG}.silver.products"
 
+# Define candidates (ensure these exist earlier in the notebook)
+SUPPLIER_ID_COLUMNS = ["supplier_id", "id"]
+SUPPLIER_NAME_COLUMNS = ["name", "supplier_name"]
+SUPPLIER_COUNTRY_COLUMNS = ["country", "region"]
+SUPPLIER_COLUMNS_IN_PRODUCTS = ["supplier_id", "supplier"]
+PRODUCT_COLUMNS = ["product_id", "sku", "item_id"]
+
 # Supplier nodes
 if table_exists(sup_silver_tbl):
     sup = spark.table(sup_silver_tbl)
-    # Pick common columns if present
+
     sid = next((c for c in SUPPLIER_ID_COLUMNS if c in [x.lower() for x in sup.columns]), None)
     name = next((c for c in SUPPLIER_NAME_COLUMNS if c in [x.lower() for x in sup.columns]), None)
     country = next((c for c in SUPPLIER_COUNTRY_COLUMNS if c in [x.lower() for x in sup.columns]), None)
-    
+
     if sid:
         sid_rc = find_real_column(sup, sid)
-        sel = sup.select(F.col(sid_rc).cast("string").alias("node_id"))
-        props_keys = []
-        props_vals = []
+
+        # Build key/value pairs only for present columns
+        pairs = []
         if name:
             name_rc = find_real_column(sup, name)
-            props_keys.append(F.lit("name")); props_vals.append(F.col(name_rc).cast("string"))
+            pairs.extend([F.lit("name"), F.col(name_rc).cast("string")])
         if country:
             country_rc = find_real_column(sup, country)
-            props_keys.append(F.lit("country")); props_vals.append(F.col(country_rc).cast("string"))
-        if props_keys:
-            props_map = F.map_from_arrays(F.array(*props_keys), F.array(*props_vals))
-        else:
-            props_map = F.create_map()
-        sup_nodes = sel.withColumn("properties", F.to_json(props_map))
+            pairs.extend([F.lit("country"), F.col(country_rc).cast("string")])
+
+        props_map = F.create_map(*pairs) if pairs else F.create_map()
+        # Remove null-valued entries if any
+        props_map = F.map_filter(props_map, lambda k, v: v.isNotNull())
+
+        sup_nodes = (
+            sup.select(
+                F.col(sid_rc).cast("string").alias("node_id"),
+                F.to_json(props_map).alias("properties")
+            )
+            .where(F.col("node_id").isNotNull())
+            .dropDuplicates(["node_id"])
+        )
+
         sup_nodes.write.mode("overwrite").saveAsTable(f"{CATALOG}.graph_ready.supplier_nodes")
         print("✓ Created graph_ready.supplier_nodes")
     else:
@@ -217,15 +254,20 @@ else:
 if table_exists(prod_silver_tbl):
     prod = spark.table(prod_silver_tbl)
     sid = next((c for c in SUPPLIER_COLUMNS_IN_PRODUCTS if c in [x.lower() for x in prod.columns]), None)
-    pid = next((c for c in ["id"] + PRODUCT_COLUMNS if c in [x.lower() for x in prod.columns]), None)
+    pid = next((c for c in (["id"] + PRODUCT_COLUMNS) if c in [x.lower() for x in prod.columns]), None)
+
     if sid and pid:
         sid_rc = find_real_column(prod, sid)
         pid_rc = find_real_column(prod, pid)
-        supplies = prod.select(
-            F.col(sid_rc).cast("string").alias("from_id"),
-            F.col(pid_rc).cast("string").alias("to_id"),
-            F.to_json(F.create_map()).alias("properties")
-        ).where(F.col("from_id").isNotNull() & F.col("to_id").isNotNull()).dropDuplicates(["from_id","to_id"])
+        supplies = (
+            prod.select(
+                F.col(sid_rc).cast("string").alias("from_id"),
+                F.col(pid_rc).cast("string").alias("to_id"),
+                F.to_json(F.create_map()).alias("properties")
+            )
+            .where(F.col("from_id").isNotNull() & F.col("to_id").isNotNull())
+            .dropDuplicates(["from_id", "to_id"])
+        )
         supplies.write.mode("overwrite").saveAsTable(f"{CATALOG}.graph_ready.supplies_relationships")
         print("✓ Created graph_ready.supplies_relationships")
     else:
