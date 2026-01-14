@@ -14,7 +14,7 @@ from pyspark.sql import functions as F, types as T
 # Parameters
 dbutils.widgets.text("catalog", "", "Unity Catalog name")
 CATALOG = dbutils.widgets.get("catalog") or "neo4j_pipeline"
-print(f"Using catalog: {CATALOG}")
+print(f"Using catalog: {CATALOG
 
 # Type definitions
 STRING_MAP_TYPE = T.MapType(T.StringType(), T.StringType())
@@ -40,20 +40,22 @@ def table_exists(fullname: str) -> bool:
     except Exception:
         return False
 
-def has_columns(df, cols):
-    s = set(c.lower() for c in df.columns)
-    return all(c.lower() in s for c in cols)
-
-def find_real_column(df, colname_lower):
-    """Find actual column name in dataframe matching the lowercase name."""
+def real(df, desired_lower: str) -> str:
     for rc in df.columns:
-        if rc.lower() == colname_lower:
+        if rc.lower() == desired_lower:
             return rc
-    return colname_lower
+    return desired_lower
+
+map_str_str = T.MapType(T.StringType(), T.StringType())
 
 def merge_props_json(props_col, add_map_col):
-    """Merge a JSON string column with a map<string,string> column to a new JSON string."""
-    return F.to_json(F.map_concat(F.coalesce(F.from_json(props_col, STRING_MAP_TYPE), F.create_map()), add_map_col))
+    """
+    Merge an existing JSON string map with an additional map, ensuring unique keys.
+    New keys/values take precedence if present; no duplicate keys are emitted.
+    """
+    existing = F.coalesce(F.from_json(props_col, map_str_str), F.create_map())
+    merged = F.map_zip_with(existing, add_map_col, lambda k, v1, v2: F.coalesce(v2, v1))
+    return F.to_json(merged)
 
 # COMMAND ----------
 # 1) Product category enrichment
