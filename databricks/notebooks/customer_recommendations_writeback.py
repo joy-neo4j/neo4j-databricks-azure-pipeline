@@ -61,7 +61,8 @@ if neo4j_uri.startswith("neo4j://"):
 print("Reading customer recommendations from Neo4j...")
 
 cypher_query = """
-CALL {
+CALL () 
+{
   MATCH (c:Customer)-[:PURCHASED]->(p1:Product)
   MATCH (other:Customer)-[:PURCHASED]->(p1)
   MATCH (other)-[:PURCHASED]->(p2:Product)
