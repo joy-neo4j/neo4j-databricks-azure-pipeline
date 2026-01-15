@@ -60,7 +60,7 @@ flowchart LR
   classDef store fill:#ff6666,stroke:#8b0000,stroke-width:2px;
   class Silver,Delta,GR,Gold store
 
-  classDef compute fill:#cfe2f3,stroke:#0b5394,stroke-width:2px;
+  classDef compute fill:#0000ff,stroke:#00008b,stroke-width:2px;
   class GH,DBX,NEO4J compute
 ```
 
