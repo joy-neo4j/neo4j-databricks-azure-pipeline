@@ -85,14 +85,14 @@ jobs:
           # Handle both shapes safely by catching indexing errors on arrays
           ids=$(jq -r 'if type=="object" then (.clusters // []) else . end | .[]? | select(.state=="TERMINATED") | .cluster_id' /tmp/clusters.json)
           if [ -z "$ids" ]; then
-            echo "::warning::No stopped clusters found"
+            echo "::warning::No stopped clusters found to start"
             exit 0
           fi
           echo "Starting cluster: ${{ inputs.cluster_id }}"
           databricks clusters start "${{ inputs.cluster_id }}"
           # Wait until RUNNING
           for i in {1..30}; do
-            STATE=$(databricks clusters get --cluster-id "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
+            STATE=$(databricks clusters get "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
             echo "Cluster state: $STATE (attempt $i/30)"
             if [ "$STATE" = "RUNNING" ]; then
               echo "✅ Cluster is RUNNING"
@@ -161,14 +161,14 @@ jobs:
           # Handle both shapes safely by catching indexing errors on arrays
           ids=$(jq -r 'if type=="object" then (.clusters // []) else . end | .[]? | select(.state=="RUNNING") | .cluster_id' /tmp/clusters.json)
           if [ -z "$ids" ]; then
-            echo "::warning::No running clusters found"
+            echo "::warning::No running clusters found to stop"
             exit 0
           fi
           echo "Stopping cluster: ${{ inputs.cluster_id }}"
           databricks clusters delete "${{ inputs.cluster_id }}"
           # Wait until TERMINATED
           for i in {1..30}; do
-            STATE=$(databricks clusters get --cluster-id "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
+            STATE=$(databricks clusters get "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
             echo "Cluster state: $STATE (attempt $i/30)"
             if [ "$STATE" = "TERMINATED" ]; then
               echo "✅ Cluster is TERMINATED"
