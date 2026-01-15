@@ -46,7 +46,7 @@ This update focuses on:
 flowchart LR
   GH[GitHub Actions] -->|Databricks CLI & SDK| DBX[Azure Databricks]
   DBX -->|Unity Catalog| Silver[(Silver Tables)]
-  Silver -->|Graph Transformation| GR[graph_ready.*]
+  Silver -->|Graph Transformation| GR[(Graph_Ready Tables)]
   GR -->|Neo4j Loader| NEO4J[Neo4j Aura]
   NEO4J -->|Write-back via Connector/Python| Delta[(Delta Tables)]
   Delta --> Gold[(Gold Tables)]
@@ -57,8 +57,8 @@ flowchart LR
     GH -.->|Validation| NEO4J
   end
 
-  classDef store fill:#e2f0d9,stroke:#6aa84f,stroke-width:1px;
-  class Silver,Delta,Gold store
+  classDef store fill:#ff6666,stroke:#8b0000,stroke-width:2px;
+  class Silver,Delta,Graph_Ready,Gold store
 ```
 
 **System Flow:**
