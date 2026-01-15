@@ -5,8 +5,8 @@ All notable changes to this project will be documented here.
 ## Upcoming Features
 
 - GDS examples and feature engineering (e.g., PageRank) with write-back to Silver/Gold, positioning Neo4j in the middle of the Medallion Architecture.
-- Large-scale loading best practices and integration with Neo4j Parallel Spark Loader for efficient, parallel relationship ingestion.
-- A catalog of notebooks covering: write to Neo4j, read from Neo4j, and run graph algorithms in Databricks.
+- Large-scale loading best practices and integration with Neo4j Parallel Spark Loader for efficient, parallel relationship ingestion using https://github.com/neo4j-field/neo4j-parallel-spark-loader
+- Create a catalog of existing notebooks covering: write to Neo4j, read from Neo4j, and run graph algorithms in Databricks.
 
 ## [1.3.0] - 2026-01-15
 - Streamline README from 769 to 92 lines with Quick Start focus and embedded Mermaid architecture diagram.
