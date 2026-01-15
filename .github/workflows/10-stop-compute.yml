@@ -13,7 +13,7 @@ on:
           - start-aura
           - stop-aura
       cluster_id:
-        description: 'Databricks Cluster ID (required for start-dbx-cluster)'
+        description: 'Databricks Cluster ID (required for start-dbx-cluster and stop-dbx-clusters)'
         required: false
         type: string
       confirm:
@@ -58,36 +58,38 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-
       - name: Install Databricks CLI and SDK
         run: |
           set -euo pipefail
           pip install databricks-sdk neo4j
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
           echo "$HOME/.databricks/bin" >> $GITHUB_PATH
-
       - name: Export Databricks env
         run: |
           echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
           echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
-
       - name: Verify Databricks auth
         run: |
           databricks auth describe || true
-
       - name: Start Cluster
         env:
           DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: |
           set -euo pipefail
+          databricks clusters list --output json > /tmp/clusters.json
+          # Handle both shapes safely by catching indexing errors on arrays
+          ids=$(jq -r 'if type=="object" then (.clusters // []) else . end | .[]? | select(.state=="TERMINATED") | .cluster_id' /tmp/clusters.json)
+          if [ -z "$ids" ]; then
+            echo "::warning::No stopped clusters found"
+            exit 0
+          fi
           echo "Starting cluster: ${{ inputs.cluster_id }}"
-          databricks clusters start --cluster-id "${{ inputs.cluster_id }}"
+          databricks clusters start "${{ inputs.cluster_id }}"
           # Wait until RUNNING
           for i in {1..30}; do
             STATE=$(databricks clusters get --cluster-id "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
@@ -98,7 +100,6 @@ jobs:
             fi
             sleep 10
           done
-
       - name: Validate Neo4j connectivity
         env:
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
@@ -120,7 +121,6 @@ jobs:
           except Exception as e:
             print(f'❌ Neo4j validation failed: {e}'); sys.exit(1)
           PY
-
       - name: Append summary
         run: |
           echo "### Compute Start Summary" >> $GITHUB_STEP_SUMMARY
@@ -133,15 +133,27 @@ jobs:
     if: ${{ inputs.action == 'stop-dbx-clusters' }}
     runs-on: ubuntu-latest
     needs: validate
+    timeout-minutes: 30
     steps:
-      - name: Install Databricks CLI (Go)
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install Databricks CLI and SDK
         run: |
+          set -euo pipefail
+          pip install databricks-sdk neo4j
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
           echo "$HOME/.databricks/bin" >> $GITHUB_PATH
       - name: Export Databricks env
         run: |
           echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
           echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
+      - name: Verify Databricks auth
+        run: |
+          databricks auth describe || true
       - name: Stop all running clusters (skip if none)
         run: |
           set -euo pipefail
@@ -152,12 +164,18 @@ jobs:
             echo "::warning::No running clusters found"
             exit 0
           fi
-          while read -r cid; do
-            [ -z "$cid" ] && continue
-            echo "Stopping cluster: ${cid}"
-            databricks clusters delete --cluster-id "${cid}"
-          done <<< "$ids"
-          echo "✅ Stop request(s) sent"
+          echo "Starting cluster: ${{ inputs.cluster_id }}"
+          databricks clusters start "${{ inputs.cluster_id }}"
+          # Wait until RUNNING
+          for i in {1..30}; do
+            STATE=$(databricks clusters get --cluster-id "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
+            echo "Cluster state: $STATE (attempt $i/30)"
+            if [ "$STATE" = "RUNNING" ]; then
+              echo "✅ Cluster is RUNNING"
+              break
+            fi
+            sleep 10
+          done
       - name: Append summary
         run: |
           echo "### Compute Stop Summary" >> $GITHUB_STEP_SUMMARY
