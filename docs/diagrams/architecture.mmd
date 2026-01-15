@@ -1,0 +1,19 @@
+%% Mermaid diagram: System + Data Flow Architecture
+%% Render using Mermaid-compatible viewers or GH Markdown (via extensions)
+
+flowchart LR
+  GH[GitHub Actions] -->|Databricks CLI & SDK| DBX[Azure Databricks]
+  DBX -->|Unity Catalog| Silver[(Silver Tables)]
+  Silver -->|Graph Transformation| GR[graph_ready.*]
+  GR -->|Neo4j Loader| NEO4J[Neo4j Aura]
+  NEO4J -->|Write-back via Connector/Python| Delta[(Delta Tables)]
+  Delta --> Gold[(Gold Tables)]
+
+  subgraph Operations
+    GH -.->|Start/Stop Workflows| DBX
+    GH -.->|Secrets & OIDC| DBX
+    GH -.->|Validation| NEO4J
+  end
+
+  classDef store fill:#e2f0d9,stroke:#6aa84f,stroke-width:1px;
+  class Silver,Delta,Gold store
