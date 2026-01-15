@@ -91,15 +91,15 @@ jobs:
           echo "Starting cluster: ${{ inputs.cluster_id }}"
           databricks clusters start "${{ inputs.cluster_id }}"
           # Wait until RUNNING
-          for i in {1..30}; do
-            STATE=$(databricks clusters get "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
-            echo "Cluster state: $STATE (attempt $i/30)"
-            if [ "$STATE" = "RUNNING" ]; then
-              echo "✅ Cluster is RUNNING"
-              break
-            fi
-            sleep 10
-          done
+          # for i in {1..30}; do
+          #   STATE=$(databricks clusters get "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
+          #   echo "Cluster state: $STATE (attempt $i/30)"
+          #   if [ "$STATE" = "RUNNING" ]; then
+          #     echo "✅ Cluster is RUNNING"
+          #     break
+          #   fi
+          #   sleep 10
+          # done
       - name: Validate Neo4j connectivity
         env:
           NEO4J_URI: ${{ secrets.NEO4J_URI }}
@@ -121,13 +121,13 @@ jobs:
           except Exception as e:
             print(f'❌ Neo4j validation failed: {e}'); sys.exit(1)
           PY
-      - name: Append summary
-        run: |
-          echo "### Compute Start Summary" >> $GITHUB_STEP_SUMMARY
-          echo "**Action:** Start Databricks Cluster" >> $GITHUB_STEP_SUMMARY
-          echo "**Cluster ID:** ${{ inputs.cluster_id }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** Cluster started and validated" >> $GITHUB_STEP_SUMMARY
-          echo "**Neo4j:** Connectivity validated (if secrets set)" >> $GITHUB_STEP_SUMMARY
+      # - name: Append summary
+      #   run: |
+      #     echo "### Compute Start Summary" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Action:** Start Databricks Cluster" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Cluster ID:** ${{ inputs.cluster_id }}" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Status:** Cluster started and validated" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Neo4j:** Connectivity validated (if secrets set)" >> $GITHUB_STEP_SUMMARY
 
   stop-dbx-clusters:
     if: ${{ inputs.action == 'stop-dbx-clusters' }}
@@ -167,20 +167,20 @@ jobs:
           echo "Stopping cluster: ${{ inputs.cluster_id }}"
           databricks clusters delete "${{ inputs.cluster_id }}"
           # Wait until TERMINATED
-          for i in {1..30}; do
-            STATE=$(databricks clusters get "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
-            echo "Cluster state: $STATE (attempt $i/30)"
-            if [ "$STATE" = "TERMINATED" ]; then
-              echo "✅ Cluster is TERMINATED"
-              break
-            fi
-            sleep 10
-          done
-      - name: Append summary
-        run: |
-          echo "### Compute Stop Summary" >> $GITHUB_STEP_SUMMARY
-          echo "**Action:** Stop All Databricks Clusters" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** Stop request(s) sent to all running clusters" >> $GITHUB_STEP_SUMMARY
+      #     for i in {1..30}; do
+      #       STATE=$(databricks clusters get "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
+      #       echo "Cluster state: $STATE (attempt $i/30)"
+      #       if [ "$STATE" = "TERMINATED" ]; then
+      #         echo "✅ Cluster is TERMINATED"
+      #         break
+      #       fi
+      #       sleep 10
+      #     done
+      # - name: Append summary
+      #   run: |
+      #     echo "### Compute Stop Summary" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Action:** Stop All Databricks Clusters" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Status:** Stop request(s) sent to all running clusters" >> $GITHUB_STEP_SUMMARY
 
   start-aura:
     if: ${{ inputs.action == 'start-aura' }}
@@ -253,12 +253,12 @@ jobs:
 
           echo "✅ Aura resume request accepted (202)"
 
-      - name: Append summary
-        run: |
-          echo "### Compute Start Summary" >> $GITHUB_STEP_SUMMARY
-          echo "**Action:** Start Neo4j Aura Instance" >> $GITHUB_STEP_SUMMARY
-          echo "**Instance ID:** ${{ secrets.AURA_INSTANCE_ID }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** Resume request accepted (202)" >> $GITHUB_STEP_SUMMARY
+      # - name: Append summary
+      #   run: |
+      #     echo "### Compute Start Summary" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Action:** Start Neo4j Aura Instance" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Instance ID:** ${{ secrets.AURA_INSTANCE_ID }}" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Status:** Resume request accepted (202)" >> $GITHUB_STEP_SUMMARY
 
   stop-aura:
     if: ${{ inputs.action == 'stop-aura' }}
@@ -331,9 +331,9 @@ jobs:
 
           echo "✅ Aura pause request accepted (202)"
 
-      - name: Append summary
-        run: |
-          echo "### Compute Stop Summary" >> $GITHUB_STEP_SUMMARY
-          echo "**Action:** Stop Neo4j Aura Instance" >> $GITHUB_STEP_SUMMARY
-          echo "**Instance ID:** ${{ secrets.AURA_INSTANCE_ID }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Status:** Pause request accepted (202)" >> $GITHUB_STEP_SUMMARY
+      # - name: Append summary
+      #   run: |
+      #     echo "### Compute Stop Summary" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Action:** Stop Neo4j Aura Instance" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Instance ID:** ${{ secrets.AURA_INSTANCE_ID }}" >> $GITHUB_STEP_SUMMARY
+      #     echo "**Status:** Pause request accepted (202)" >> $GITHUB_STEP_SUMMARY
