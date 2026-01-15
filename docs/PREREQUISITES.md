@@ -35,7 +35,7 @@ For comprehensive permission requirements including:
 - Unity Catalog permissions
 - Verification commands
 
-Please refer to the **Prerequisite Permissions** section in the [main README](../README.md#-prerequisite-permissions).
+Please see below for a quick reference summary.
 
 ## Quick Reference
 

@@ -34,23 +34,50 @@ This repository provides a single-click deployer and end-to-end pipeline integra
    - Stop: run the `Compute Stop` workflow with your `cluster_id`.
    - Both workflows print summary details to the GitHub job summary.
 
+## Prerequisite Permissions
+
+For comprehensive permission requirements including:
+- Azure Service Principal permissions
+- Databricks PAT user permissions
+- Unity Catalog permissions
+- Verification commands
+
+Please refer to the [Prerequisites documentation](docs/PREREQUISITES.md).
+
 ## Architecture
 
-- See [docs/diagrams/architecture.mmd](docs/diagrams/architecture.mmd) for the Mermaid source describing end-to-end flows:
-  - GitHub Actions → Databricks (Jobs, CLI/SDK) → Unity Catalog Silver → graph_ready → Neo4j Aura → Delta write-backs → Gold.
-  - Start/Stop, secrets, and validation paths.
+```mermaid
+flowchart LR
+  GH[GitHub Actions] -->|Databricks CLI & SDK| DBX[Azure Databricks]
+  DBX -->|Unity Catalog| Silver[(Silver Tables)]
+  Silver -->|Graph Transformation| GR[graph_ready.*]
+  GR -->|Neo4j Loader| NEO4J[Neo4j Aura]
+  NEO4J -->|Write-back via Connector/Python| Delta[(Delta Tables)]
+  Delta --> Gold[(Gold Tables)]
 
-## Detailed Docs (existing)
+  subgraph Operations
+    GH -.->|Start/Stop Workflows| DBX
+    GH -.->|Secrets & OIDC| DBX
+    GH -.->|Validation| NEO4J
+  end
 
-- [Prerequisite Permissions](docs/PREREQUISITES.md)
-- [Secrets Configuration](docs/SECRETS_MANAGEMENT.md)
-- [Deployment Workflows](docs/DEPLOYMENT.md)
-- [Configuration](docs/CONFIGURATION.md)
-- [Monitoring and Operations](docs/MONITORING.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
-- [Validation](docs/VALIDATION.md)
+  classDef store fill:#e2f0d9,stroke:#6aa84f,stroke-width:1px;
+  class Silver,Delta,Gold store
+```
 
-> Note: We are repurposing the existing detailed docs; no new long-form docs added in this PR. If a link does not exist in your repo, adjust to the closest existing doc name.
+**System Flow:**
+- GitHub Actions → Databricks (Jobs, CLI/SDK) → Unity Catalog Silver → graph_ready → Neo4j Aura → Delta write-backs → Gold
+- Start/Stop workflows manage compute, secrets via OIDC, and validation paths
+
+## Detailed References
+
+- [Prerequisites](docs/PREREQUISITES.md) - Required permissions and tools
+- [Secrets Configuration](docs/SECRETS_MANAGEMENT.md) - Secrets setup and management
+- [Deployment Workflows](docs/DEPLOYMENT.md) - Deployment procedures
+- [Configuration](docs/CONFIGURATION.md) - Configuration options
+- [Architecture](docs/ARCHITECTURE.md) - Detailed architecture documentation
+- [Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [Validation](docs/VALIDATION.md) - Validation procedures
 
 ## Manual-run Path (tested)
 

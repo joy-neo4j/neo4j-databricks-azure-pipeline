@@ -151,7 +151,7 @@ pytest tests/integration/
 
 ## Monitoring
 
-For ongoing validation and monitoring, see:
-- [Monitoring and Operations](MONITORING.md)
+For ongoing validation and monitoring:
 - Azure Monitor dashboards
 - Application Insights logs
+- Databricks job run monitoring
