@@ -69,14 +69,33 @@ gh workflow run 06-data-pipeline.yml
 # (Optional) Run end-to-end showcase
 gh workflow run 07-neo4j-integration-showcase.yml
 
-# (Optional) Stop compute resources for cost optimization
-gh workflow run 10-stop-compute.yml --field action=stop-aura --field confirm=CONFIRM
-
 # Monitor progress
 gh run watch
 
 # View deployment URL
 gh run view --log
+```
+
+### Step 6: Start/Stop Compute (optional)
+```bash
+# Start a specific Databricks cluster (validates Neo4j connectivity)
+gh workflow run compute-start.yml --field cluster_id=YOUR_CLUSTER_ID
+
+# Stop a specific Databricks cluster
+gh workflow run compute-stop.yml --field cluster_id=YOUR_CLUSTER_ID
+
+# Or use unified workflow for all compute operations:
+# Start cluster
+gh workflow run 10-stop-compute.yml --field action=start-dbx-cluster --field cluster_id=YOUR_CLUSTER_ID --field confirm=CONFIRM
+
+# Stop all running clusters
+gh workflow run 10-stop-compute.yml --field action=stop-dbx-clusters --field confirm=CONFIRM
+
+# Start Aura instance
+gh workflow run 10-stop-compute.yml --field action=start-aura --field confirm=CONFIRM
+
+# Stop Aura instance
+gh workflow run 10-stop-compute.yml --field action=stop-aura --field confirm=CONFIRM
 ```
 
 ## Detailed Deployment Steps
@@ -124,48 +143,115 @@ Single environment deployment using the workflows below.
 
 ### Deployment Workflows
 
-#### Full Pipeline Deployment
-**When to use:** Initial setup, major infrastructure changes
+#### 1. Prerequisites Setup (Optional)
+**File:** `.github/workflows/01-prerequisites-setup.yml`  
+**When to use:** Pre-deployment validation  
+**Duration:** 2-3 minutes
 
-**What it deploys:**
-- Azure resource group
-- Storage account
-- Key Vault
-- Log Analytics & App Insights
-- Databricks workspace
-- Neo4j Aura instance
-- Databricks notebooks & jobs
-
-**Duration:** 15-20 minutes
+**What it validates:**
+- Azure credentials
+- Databricks token
+- Neo4j Aura credentials
 
 ```bash
-gh workflow run deploy-full-pipeline.yml
+gh workflow run 01-prerequisites-setup.yml
 ```
 
-#### Infrastructure Only
-**When to use:** Infrastructure updates without code changes
+#### 2. Provision Infrastructure
+**File:** `.github/workflows/02-provision.yml`  
+**When to use:** Initial setup or infrastructure updates  
+**Duration:** 10-15 minutes
 
 **What it deploys:**
-- Azure resources via Terraform
-- Neo4j Aura instance
-
-**Duration:** 8-12 minutes
+- Azure infrastructure (Resource Group, Storage, Key Vault, Databricks workspace)
+- Neo4j Aura instance with credentials in Key Vault
+- Databricks cluster with Neo4j Spark Connector
+- Unity Catalog schemas (bronze, silver, gold, graph_ready)
+- Databricks notebooks uploaded to workspace
+- Databricks jobs (ETL pipeline)
+- Key Vault-backed secret scope
 
 ```bash
-gh workflow run deploy-infrastructure.yml
+gh workflow run 02-provision.yml
 ```
 
-#### Data Pipeline Only
-**When to use:** Code updates, notebook changes
+#### 3. Data Pipeline Setup
+**File:** `.github/workflows/06-data-pipeline.yml`  
+**When to use:** Secrets synchronization and notebook validation  
+**Duration:** 2-3 minutes
 
-**What it deploys:**
-- Databricks notebooks
-- Job configurations
-
-**Duration:** 5-8 minutes
+**What it does:**
+- Validates notebook syntax and Python compilation
+- Creates Databricks secret scope "pipeline-secrets"
+- Syncs Neo4j/Aura credentials from GitHub secrets to Databricks
 
 ```bash
-gh workflow run deploy-data-pipeline.yml
+gh workflow run 06-data-pipeline.yml
+```
+
+#### 4. Neo4j Integration Showcase (Optional)
+**File:** `.github/workflows/07-neo4j-integration-showcase.yml`  
+**When to use:** End-to-end pipeline validation  
+**Duration:** 10-15 minutes
+
+**What it executes:**
+- Complete e-commerce pipeline from ingestion to Neo4j
+- Data validation and graph transformation
+- Neo4j loading and write-back operations
+
+```bash
+gh workflow run 07-neo4j-integration-showcase.yml
+```
+
+#### 5. Start/Stop Compute Management
+
+**Standalone Workflows:**
+
+**File:** `.github/workflows/compute-start.yml`  
+Start a specific Databricks cluster and validate Neo4j connectivity:
+```bash
+gh workflow run compute-start.yml --field cluster_id=YOUR_CLUSTER_ID
+```
+
+**File:** `.github/workflows/compute-stop.yml`  
+Stop a specific Databricks cluster:
+```bash
+gh workflow run compute-stop.yml --field cluster_id=YOUR_CLUSTER_ID
+```
+
+**Unified Workflow:**
+
+**File:** `.github/workflows/10-stop-compute.yml`  
+**When to use:** Manage all compute resources from one workflow  
+**Duration:** 1-2 minutes
+
+**Available actions:**
+- `start-dbx-cluster`: Start specific cluster by ID with Neo4j validation
+- `stop-dbx-clusters`: Stop all running clusters
+- `start-aura`: Resume Neo4j Aura instance
+- `stop-aura`: Pause Neo4j Aura instance
+
+```bash
+# Start cluster
+gh workflow run 10-stop-compute.yml \
+  --field action=start-dbx-cluster \
+  --field cluster_id=YOUR_CLUSTER_ID \
+  --field confirm=CONFIRM
+
+# Stop all clusters
+gh workflow run 10-stop-compute.yml \
+  --field action=stop-dbx-clusters \
+  --field confirm=CONFIRM
+
+# Start Aura
+gh workflow run 10-stop-compute.yml \
+  --field action=start-aura \
+  --field confirm=CONFIRM
+
+# Stop Aura
+gh workflow run 10-stop-compute.yml \
+  --field action=stop-aura \
+  --field confirm=CONFIRM
 ```
 
 ### Post-Deployment Verification
@@ -205,8 +291,8 @@ curl -u $AURA_CLIENT_ID:$AURA_CLIENT_SECRET \
 
 #### 4. Run Test Pipeline
 ```bash
-# Trigger ETL job
-gh workflow run scheduled-etl.yml
+# Trigger showcase workflow for end-to-end validation
+gh workflow run 07-neo4j-integration-showcase.yml
 
 # Monitor execution
 gh run watch
@@ -305,18 +391,20 @@ git log --oneline databricks/notebooks/
 git checkout <commit-hash> databricks/notebooks/
 
 # 3. Redeploy
-gh workflow run deploy-data-pipeline.yml
+gh workflow run 06-data-pipeline.yml
 ```
 
 #### Full Environment Rollback
 ```bash
-# 1. Restore from backup
-gh workflow run manage-environments.yml \
-  -f action=rollback \
-  -f source_environment=dev
+# 1. Revert to previous infrastructure state
+cd terraform
+git checkout <previous-commit>
+terraform plan
+terraform apply
 
 # 2. Verify restoration
-gh run list --workflow=manage-environments.yml
+gh workflow run 02-provision.yml
+gh run watch
 ```
 
 ## Maintenance Operations
@@ -350,7 +438,7 @@ az ad sp credential reset --name neo4j-databricks-sp --years 1
 gh secret set AZURE_CREDENTIALS < new-credentials.json
 
 # 3. Test deployment
-gh workflow run deploy-infrastructure.yml
+gh workflow run 02-provision.yml
 
 # 4. Revoke old credentials (after verification)
 ```
@@ -429,8 +517,8 @@ gh run view <run-id> --log-failed
 
 ### Check Status
 ```bash
-# List recent runs
-gh run list --workflow=deploy-full-pipeline.yml
+# List recent runs for provision workflow
+gh run list --workflow=02-provision.yml
 
 # Run details
 gh run view <run-id>
@@ -438,12 +526,10 @@ gh run view <run-id>
 
 ### Debugging
 ```bash
-# Enable debug logging
-gh workflow run deploy-full-pipeline.yml \
-  -f environment=dev \
-  -f debug=true
+# View workflow logs
+gh run view <run-id> --log
 
-# Download artifacts
+# Download artifacts (if any)
 gh run download <run-id>
 ```
 

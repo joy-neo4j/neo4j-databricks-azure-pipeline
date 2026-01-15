@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented here.
 
+## Upcoming Features
+
+- GDS examples and feature engineering (e.g., PageRank) with write-back to Silver/Gold, positioning Neo4j in the middle of the Medallion Architecture.
+- Large-scale loading best practices and integration with Neo4j Parallel Spark Loader for efficient, parallel relationship ingestion using https://github.com/neo4j-field/neo4j-parallel-spark-loader
+- Create a catalog of existing notebooks covering: write to Neo4j, read from Neo4j, and run graph algorithms in Databricks.
+
+## [1.3.0] - 2026-01-15
+- Streamline README from 769 to 92 lines with Quick Start focus and embedded Mermaid architecture diagram.
+- Add explanation for Quick Start (existing infra) vs Full Deployment (deploy workspace, Aura, validate).
+- Enhance PREREQUISITES.md with comprehensive permission requirements and verification commands.
+- Refresh ARCHITECTURE.md and DEPLOYMENT.md to reflect current workflows and remove outdated references.
+- Create VALIDATION.md for validation procedures; remove MONITORING.md.
+- Add new standalone workflows: compute-start.yml (start cluster + Neo4j validation), compute-stop.yml (stop cluster).
+- Enhance 10-stop-compute.yml with unified start/stop actions for Databricks clusters and Neo4j Aura.
+- Add Version History section in README linking to CHANGELOG.md.
+
 ## [1.2.0] - 2026-01-06
 - Integrate Databricks secrets setup into 06-data-pipeline workflow.
 - Remove Terraform-managed Databricks secrets.

@@ -1,15 +1,21 @@
-name: 5 - Stop Compute
+name: 5 - Start/Stop Compute
 
 on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'What to stop/cleanup'
+        description: 'Compute action to perform'
         required: true
         type: choice
         options:
+          - start-dbx-cluster
           - stop-dbx-clusters
+          - start-aura
           - stop-aura
+      cluster_id:
+        description: 'Databricks Cluster ID (required for start-dbx-cluster)'
+        required: false
+        type: string
       confirm:
         description: 'Type CONFIRM to proceed'
         required: true
@@ -20,7 +26,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: stop-compute-${{ github.ref }}
+  group: compute-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -34,6 +40,94 @@ jobs:
             exit 1
           fi
           echo "✅ Confirmation validated"
+
+      - name: Validate cluster_id for start action
+        if: ${{ inputs.action == 'start-dbx-cluster' }}
+        run: |
+          if [ -z "${{ inputs.cluster_id }}" ]; then
+            echo "::error::cluster_id is required for start-dbx-cluster action"
+            exit 1
+          fi
+          echo "✅ Cluster ID provided: ${{ inputs.cluster_id }}"
+
+  start-dbx-cluster:
+    if: ${{ inputs.action == 'start-dbx-cluster' }}
+    runs-on: ubuntu-latest
+    needs: validate
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Databricks CLI and SDK
+        run: |
+          set -euo pipefail
+          pip install databricks-sdk neo4j
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          echo "$HOME/.databricks/bin" >> $GITHUB_PATH
+
+      - name: Export Databricks env
+        run: |
+          echo "DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}" >> $GITHUB_ENV
+          echo "DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}" >> $GITHUB_ENV
+
+      - name: Verify Databricks auth
+        run: |
+          databricks auth describe || true
+
+      - name: Start Cluster
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          set -euo pipefail
+          echo "Starting cluster: ${{ inputs.cluster_id }}"
+          databricks clusters start --cluster-id "${{ inputs.cluster_id }}"
+          # Wait until RUNNING
+          for i in {1..30}; do
+            STATE=$(databricks clusters get --cluster-id "${{ inputs.cluster_id }}" | grep -i state | awk '{print $2}')
+            echo "Cluster state: $STATE (attempt $i/30)"
+            if [ "$STATE" = "RUNNING" ]; then
+              echo "✅ Cluster is RUNNING"
+              break
+            fi
+            sleep 10
+          done
+
+      - name: Validate Neo4j connectivity
+        env:
+          NEO4J_URI: ${{ secrets.NEO4J_URI }}
+          NEO4J_USERNAME: ${{ secrets.NEO4J_USERNAME }}
+          NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
+        run: |
+          python - << 'PY'
+          import os, sys
+          from neo4j import GraphDatabase
+          uri=os.environ.get('NEO4J_URI'); user=os.environ.get('NEO4J_USERNAME'); pwd=os.environ.get('NEO4J_PASSWORD')
+          if not uri or not user or not pwd:
+            print('::warning::Missing Neo4j secrets; skipping connectivity test')
+            sys.exit(0)
+          try:
+            drv=GraphDatabase.driver(uri, auth=(user, pwd))
+            with drv.session() as s:
+              assert s.run('RETURN 1 as ok').single()['ok']==1
+            drv.close(); print('✅ Neo4j connectivity OK')
+          except Exception as e:
+            print(f'❌ Neo4j validation failed: {e}'); sys.exit(1)
+          PY
+
+      - name: Append summary
+        run: |
+          echo "### Compute Start Summary" >> $GITHUB_STEP_SUMMARY
+          echo "**Action:** Start Databricks Cluster" >> $GITHUB_STEP_SUMMARY
+          echo "**Cluster ID:** ${{ inputs.cluster_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Cluster started and validated" >> $GITHUB_STEP_SUMMARY
+          echo "**Neo4j:** Connectivity validated (if secrets set)" >> $GITHUB_STEP_SUMMARY
 
   stop-dbx-clusters:
     if: ${{ inputs.action == 'stop-dbx-clusters' }}
@@ -64,6 +158,89 @@ jobs:
             databricks clusters delete --cluster-id "${cid}"
           done <<< "$ids"
           echo "✅ Stop request(s) sent"
+      - name: Append summary
+        run: |
+          echo "### Compute Stop Summary" >> $GITHUB_STEP_SUMMARY
+          echo "**Action:** Stop All Databricks Clusters" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Stop request(s) sent to all running clusters" >> $GITHUB_STEP_SUMMARY
+
+  start-aura:
+    if: ${{ inputs.action == 'start-aura' }}
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Resume Aura instance
+        env:
+          AURA_CLIENT_ID: ${{ secrets.AURA_CLIENT_ID }}
+          AURA_CLIENT_SECRET: ${{ secrets.AURA_CLIENT_SECRET }}
+          AURA_INSTANCE_ID: ${{ secrets.AURA_INSTANCE_ID }}
+          AURA_TENANT_ID: ${{ secrets.AURA_TENANT_ID }}
+        run: |
+          set -euo pipefail
+          # Validate required secrets
+          if [ -z "${AURA_CLIENT_ID:-}" ] || [ -z "${AURA_CLIENT_SECRET:-}" ] || [ -z "${AURA_INSTANCE_ID:-}" ]; then
+            echo "::error::Aura credentials or instance ID not provided; failing"
+            exit 1
+          fi
+
+          # Obtain OAuth2 access token (Bearer)
+          echo "Requesting OAuth2 access token"
+          token_resp=$(curl -sS --request POST 'https://api.neo4j.io/oauth/token' \
+            --user "$AURA_CLIENT_ID:$AURA_CLIENT_SECRET" \
+            --header 'Content-Type: application/x-www-form-urlencoded' \
+            --data-urlencode 'grant_type=client_credentials')
+          ACCESS_TOKEN=$(echo "$token_resp" | jq -r '.access_token')
+          if [ -z "${ACCESS_TOKEN}" ] || [ "${ACCESS_TOKEN}" = "null" ]; then
+            echo "::error::Failed to obtain access token"
+            echo "$token_resp" | sed 's/^/    /'
+            exit 1
+          fi
+          echo "✅ Access token acquired"
+
+          base="https://api.neo4j.io/v1"
+          inst_resume="${base}/instances/${AURA_INSTANCE_ID}/resume"
+          ten_resume="${base}/tenants/${AURA_TENANT_ID}/instances/${AURA_INSTANCE_ID}/resume"
+
+          # Attempt resume using instance endpoint
+          echo "Attempting Aura resume via instance endpoint: ${inst_resume}"
+          code=$(curl -sS -X POST \
+            "$inst_resume" -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H 'Content-Type: application/json' -d '{}' \
+            -o /tmp/aura_resume.json -w "%{http_code}") || code=0
+          echo "POST $inst_resume code: $code"
+
+          # If forbidden or not found, try tenant-scoped endpoint (if provided)
+          if [ "$code" -eq 403 ] || [ "$code" -eq 404 ]; then
+            if [ -n "${AURA_TENANT_ID:-}" ]; then
+              echo "Retrying resume with tenant-scoped endpoint: ${ten_resume}"
+              code=$(curl -sS -X POST \
+                "$ten_resume" -H "Authorization: Bearer $ACCESS_TOKEN" \
+                -H 'Content-Type: application/json' -d '{}' \
+                -o /tmp/aura_resume.json -w "%{http_code}") || code=0
+              echo "POST $ten_resume code: $code"
+            fi
+          fi
+
+          # Treat 409 (already running) as skip; everything else must be 202 to succeed
+          if [ "$code" -eq 409 ]; then
+            echo "::warning::Aura instance already running; skipping"
+            exit 0
+          fi
+
+          if [ "$code" -ne 202 ]; then
+            echo "::error::Aura resume failed (HTTP $code). Only 202 is accepted as success."
+            sed 's/^/    /' /tmp/aura_resume.json || true
+            exit 1
+          fi
+
+          echo "✅ Aura resume request accepted (202)"
+
+      - name: Append summary
+        run: |
+          echo "### Compute Start Summary" >> $GITHUB_STEP_SUMMARY
+          echo "**Action:** Start Neo4j Aura Instance" >> $GITHUB_STEP_SUMMARY
+          echo "**Instance ID:** ${{ secrets.AURA_INSTANCE_ID }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Resume request accepted (202)" >> $GITHUB_STEP_SUMMARY
 
   stop-aura:
     if: ${{ inputs.action == 'stop-aura' }}
@@ -135,3 +312,10 @@ jobs:
           fi
 
           echo "✅ Aura pause request accepted (202)"
+
+      - name: Append summary
+        run: |
+          echo "### Compute Stop Summary" >> $GITHUB_STEP_SUMMARY
+          echo "**Action:** Stop Neo4j Aura Instance" >> $GITHUB_STEP_SUMMARY
+          echo "**Instance ID:** ${{ secrets.AURA_INSTANCE_ID }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Pause request accepted (202)" >> $GITHUB_STEP_SUMMARY
