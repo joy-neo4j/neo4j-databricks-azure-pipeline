@@ -2,7 +2,13 @@
 
 [![Provision Infrastructure](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/02-provision.yml/badge.svg)](https://github.com/joy-neo4j/neo4j-databricks-azure-pipeline/actions/workflows/02-provision.yml)
 
-This repository provides a single-click deployer and end-to-end pipeline integrating Azure Databricks with Neo4j Aura. This update focuses on:
+This repository provides a single-click deployer and end-to-end pipeline integrating Azure Databricks with Neo4j Aura. 
+
+**Use this repository to:**
+- **Quick Start**: Run pipelines manually in an existing Databricks workspace with Neo4j Aura
+- **Full Deployment**: Deploy and provision Azure Databricks workspace, Neo4j Aura instance, and validate the complete pipeline end-to-end (see [Deployment Workflows](docs/DEPLOYMENT.md) for detailed steps)
+
+This update focuses on:
 - A streamlined Quick Start for users who already have a Databricks workspace and Neo4j Aura.
 - Clear pointers to detailed documentation for permissions, secrets, deployment workflows, configuration, monitoring/operations, troubleshooting, and validation.
 - Start/Stop workflows to manage compute and validate connectivity.
@@ -81,8 +87,6 @@ flowchart LR
 - **Compute Stop**: stops a specified Databricks cluster.
 - See workflow files under `.github/workflows/`.
 
-## Upcoming features/versions (Secondary scope)
+## Version History
 
-- GDS examples and feature engineering (e.g., PageRank) with write-back to Silver/Gold, positioning Neo4j in the middle of the Medallion Architecture.
-- Large-scale loading best practices and integration with Neo4j Parallel Spark Loader for efficient, parallel relationship ingestion.
-- A catalog of notebooks covering: write to Neo4j, read from Neo4j, and run graph algorithms in Databricks.
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history and release notes.

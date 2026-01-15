@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented here.
 
+## Upcoming Features (Secondary Scope)
+
+- GDS examples and feature engineering (e.g., PageRank) with write-back to Silver/Gold, positioning Neo4j in the middle of the Medallion Architecture.
+- Large-scale loading best practices and integration with Neo4j Parallel Spark Loader for efficient, parallel relationship ingestion.
+- A catalog of notebooks covering: write to Neo4j, read from Neo4j, and run graph algorithms in Databricks.
+
 ## [1.2.0] - 2026-01-06
 - Integrate Databricks secrets setup into 06-data-pipeline workflow.
 - Remove Terraform-managed Databricks secrets.
