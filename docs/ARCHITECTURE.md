@@ -6,44 +6,72 @@ The Neo4j-Databricks Azure Pipeline is a production-ready, cloud-native ETL solu
 
 ## High-Level Architecture
 
+```mermaid
+flowchart LR
+  GH[GitHub Actions] -->|Databricks CLI & SDK| DBX[Azure Databricks]
+  DBX -->|Unity Catalog| Silver[(Silver Tables)]
+  Silver -->|Graph Transformation| GR[graph_ready.*]
+  GR -->|Neo4j Loader| NEO4J[Neo4j Aura]
+  NEO4J -->|Write-back via Connector/Python| Delta[(Delta Tables)]
+  Delta --> Gold[(Gold Tables)]
+
+  subgraph Operations
+    GH -.->|Start/Stop Workflows| DBX
+    GH -.->|Secrets & OIDC| DBX
+    GH -.->|Validation| NEO4J
+  end
+
+  classDef store fill:#e2f0d9,stroke:#6aa84f,stroke-width:1px;
+  class Silver,Delta,Gold store
 ```
-┌────────────────────────────────────────────────────────────────┐
-│                        GitHub Actions                          │
-│                    (Orchestration Layer)                       │
-└────────┬────────────────────────────────────┬──────────────────┘
-         │                                    │
-         │ Terraform IaC                      │ Databricks Jobs
-         │                                    │
-         ▼                                    ▼
-┌─────────────────┐                  ┌─────────────────────────┐
-│  Azure          │                  │  Databricks             │
-│  Infrastructure │                  │  Workspace              │
-│                 │                  │                         │
-│  - Resource Grp │                  │  - Notebooks            │
-│  - Storage Acc  │◄────────────────►│  - Clusters             │
-│                 │                  │  - Jobs                 │
-│                 │                  │  - Unity Catalog        │
-└────────┬────────┘                  └──────────┬──────────────┘
-         │                                      │
-         │                                      │
-         │                                      ▼
-         │                            ┌──────────────────────┐
-         │                            │  Data Processing     │
-         │                            │                      │
-         │                            │  Bronze → Silver     │
-         │                            │  Silver → Gold       │
-         │                            └──────────┬───────────┘
-         │                                       │
-         ▼                                       ▼
-┌─────────────────┐                  ┌──────────────────────┐
-│  Neo4j Aura     │◄─────────────────│  Graph               │
-│  Graph Database │                  │  Transformation      │
-│                 │                  │                      │
-│  - Nodes        │                  │  - Nodes             │
-│  - Relationships│                  │  - Relationships     │
-│  - Constraints  │                  │  - Properties        │
-└─────────────────┘                  └──────────────────────┘
-```
+
+**System Components:**
+- **GitHub Actions**: Orchestration layer for deployment and operations
+- **Azure Databricks**: Data processing with Unity Catalog
+- **Neo4j Aura**: Graph database for relationship analysis
+- **Delta Tables**: Storage layer with ACID transactions
+
+**Data Flow:**
+1. GitHub Actions trigger Databricks jobs via CLI/SDK
+2. Bronze → Silver → graph_ready transformations in Unity Catalog
+3. Neo4j loader writes graph structures to Aura
+4. Write-back operations from Neo4j to Delta tables
+5. Gold layer aggregates for analytics
+
+## Deployment Architecture
+
+### GitHub Actions Workflows
+
+#### Core Deployment Workflows
+1. **01-prerequisites-setup.yml**: Validates Azure, Databricks, and Neo4j credentials
+2. **02-provision.yml**: Terraform-based infrastructure provisioning
+3. **06-data-pipeline.yml**: Notebook validation and secrets synchronization
+4. **07-neo4j-integration-showcase.yml**: End-to-end pipeline execution
+
+#### Operations Workflows
+1. **compute-start.yml**: Start Databricks cluster with Neo4j validation
+2. **compute-stop.yml**: Stop Databricks cluster
+3. **10-stop-compute.yml**: Unified start/stop for all compute resources
+   - start-dbx-cluster: Start specific cluster
+   - stop-dbx-clusters: Stop all running clusters
+   - start-aura: Resume Neo4j Aura instance
+   - stop-aura: Pause Neo4j Aura instance
+
+### Terraform Infrastructure
+
+**Managed Resources:**
+- Azure Resource Group
+- Storage Account (ADLS Gen2)
+- Key Vault for secrets
+- Databricks workspace (optional)
+- Databricks clusters with Neo4j Spark Connector
+- Unity Catalog schemas
+- Databricks jobs and notebooks
+
+**Configuration:**
+- Single-environment deployment (no per-env variables)
+- Consistent resource naming and tagging
+- Auto-termination and cost optimization
 
 ## Component Architecture
 

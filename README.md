@@ -34,16 +34,6 @@ This repository provides a single-click deployer and end-to-end pipeline integra
    - Stop: run the `Compute Stop` workflow with your `cluster_id`.
    - Both workflows print summary details to the GitHub job summary.
 
-## Prerequisite Permissions
-
-For comprehensive permission requirements including:
-- Azure Service Principal permissions
-- Databricks PAT user permissions
-- Unity Catalog permissions
-- Verification commands
-
-Please refer to the [Prerequisites documentation](docs/PREREQUISITES.md).
-
 ## Architecture
 
 ```mermaid
