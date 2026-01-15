@@ -58,7 +58,10 @@ flowchart LR
   end
 
   classDef store fill:#ff6666,stroke:#8b0000,stroke-width:2px;
-  class Silver,Delta,Graph_Ready,Gold store
+  class Silver,Delta,GR,Gold store
+
+  classDef compute fill:#cfe2f3,stroke:#0b5394,stroke-width:2px;
+  class GH,DBX,NEO4J compute
 ```
 
 **System Flow:**
